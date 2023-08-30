@@ -19,7 +19,7 @@ namespace LMS_ELibrary.Data
         public int? ChudeID { get; set; }
         public virtual Chude_Db Chude { get; set; }
         public DateTime? Sualancuoi { get; set; }
-        public BigInteger? Kichthuoc { get; set; }
+        public double? Kichthuoc { get; set; }
         public string? Path { get; set; }
         [Required]
         public int Status { get; set; }
