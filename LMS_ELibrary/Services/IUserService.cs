@@ -6,6 +6,6 @@ namespace LMS_ELibrary.Services
 {
     public interface IUserService
     {
-        Task<User_Model> Login(int id);
+        Task<User_Model> Login(User_Model user);
     }
 }

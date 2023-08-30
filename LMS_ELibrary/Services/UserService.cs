@@ -12,21 +12,24 @@ namespace LMS_ELibrary.Services
         public readonly LMS_ELibraryContext _context;
         public readonly IMapper _mapper;
 
-        public UserService(LMS_ELibraryContext context,IMapper mapper)
+        public UserService(LMS_ELibraryContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public async Task <User_Model> Login(int id)
+        public async Task<User_Model> Login(User_Model _user)
         {
             try
             {
-                var result = await _context.user_Dbs.SingleOrDefaultAsync(u => u.UserID == id);
+                string username = _user.UserName;
+                string pass = _user.Password;
+                var result = await _context.user_Dbs.SingleOrDefaultAsync(u => u.UserName == username && u.Password == pass);
                 if (result != null)
                 {
                     User_Model user = new User_Model();
                     user = _mapper.Map<User_Model>(result);
+                    user.Password = "***";
                     if (result.Gioitinh == true)
                     {
                         user.Gioitinh = "Nam";
@@ -44,7 +47,8 @@ namespace LMS_ELibrary.Services
                     if (result.Role == 0)
                     {
                         user.Role = "Quan ly";
-                    }else if (result.Role == 1)
+                    }
+                    else if (result.Role == 1)
                     {
                         user.Role = "Giao vien";
                     }
@@ -60,15 +64,15 @@ namespace LMS_ELibrary.Services
                     throw new Exception("Not Found");
                 }
 
-                
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
-                
+
             }
-            
-           
+
+
         }
     }
 }

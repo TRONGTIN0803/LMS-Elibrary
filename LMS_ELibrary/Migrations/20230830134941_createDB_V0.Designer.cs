@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_ELibrary.Migrations
 {
     [DbContext(typeof(LMS_ELibraryContext))]
-    [Migration("20230830085917_createDB_V0")]
+    [Migration("20230830134941_createDB_V0")]
     partial class createDB_V0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,10 +190,7 @@ namespace LMS_ELibrary.Migrations
                     b.Property<int>("Tinhtrang")
                         .HasColumnType("int");
 
-                    b.Property<int>("TobomonId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TomonId")
+                    b.Property<int?>("TobomonId")
                         .HasColumnType("int");
 
                     b.HasKey("MonhocID");
@@ -432,9 +429,7 @@ namespace LMS_ELibrary.Migrations
                 {
                     b.HasOne("LMS_ELibrary.Data.Tobomon_Db", "Tobomon")
                         .WithMany("ListMonhoc")
-                        .HasForeignKey("TobomonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TobomonId");
 
                     b.Navigation("Tobomon");
                 });

@@ -188,10 +188,7 @@ namespace LMS_ELibrary.Migrations
                     b.Property<int>("Tinhtrang")
                         .HasColumnType("int");
 
-                    b.Property<int>("TobomonId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TomonId")
+                    b.Property<int?>("TobomonId")
                         .HasColumnType("int");
 
                     b.HasKey("MonhocID");
@@ -430,9 +427,7 @@ namespace LMS_ELibrary.Migrations
                 {
                     b.HasOne("LMS_ELibrary.Data.Tobomon_Db", "Tobomon")
                         .WithMany("ListMonhoc")
-                        .HasForeignKey("TobomonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TobomonId");
 
                     b.Navigation("Tobomon");
                 });

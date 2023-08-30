@@ -1,4 +1,5 @@
-﻿using LMS_ELibrary.Services;
+﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,11 @@ namespace LMS_ELibrary.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> Login(int id)
+        [HttpPost("login")]
+        
+        public async Task<IActionResult> Login(User_Model user)
         {
-            var result=await _userService.Login(id);
+            var result = await _userService.Login(user);
             return Ok(result);
         }
     }

@@ -66,8 +66,7 @@ namespace LMS_ELibrary.Migrations
                     MaMonhoc = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Mota = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tinhtrang = table.Column<int>(type: "int", nullable: false),
-                    TomonId = table.Column<int>(type: "int", nullable: true),
-                    TobomonId = table.Column<int>(type: "int", nullable: false)
+                    TobomonId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,8 +75,7 @@ namespace LMS_ELibrary.Migrations
                         name: "FK_Monhoc_Tobomon_TobomonId",
                         column: x => x.TobomonId,
                         principalTable: "Tobomon",
-                        principalColumn: "TobomonId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "TobomonId");
                 });
 
             migrationBuilder.CreateTable(

@@ -11,7 +11,9 @@ namespace LMS_ELibrary.Model
  
         public string? Mota { get; set; }
         public int? Tinhtrang { get; set; }
-        public int? TomonId { get; set; }
-        
+        public int? TobomonId { get; set; }
+
+        public virtual List<Tailieu_Baigiang_Model> ListTailieu_Baigiang { get; set; }
+
     }
 }

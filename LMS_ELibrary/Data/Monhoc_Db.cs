@@ -18,7 +18,7 @@ namespace LMS_ELibrary.Data
         [Required]
         public string Mota { get; set; }
         public int Tinhtrang { get; set; }
-        public int? TomonId { get; set; }
+        public int? TobomonId { get; set; }
         public virtual Tobomon_Db Tobomon { get; set; }
 
         public virtual List<Lopgiangday_Db> ListLopgiangday { get; set; }
