@@ -10,7 +10,7 @@ namespace LMS_ELibrary.Services
 
         Task<Monhoc_Model> chitietMonhoc(int id);
 
-        Task<IEnumerable<Monhoc_Db>> locMonhoc(int sort);
+        Task<IEnumerable<Monhoc_Model>> locMonhoc(int option);
 
     }
 }

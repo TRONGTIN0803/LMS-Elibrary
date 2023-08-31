@@ -14,6 +14,7 @@ namespace LMS_ELibrary.Model
         public int? TobomonId { get; set; }
 
         public virtual List<Tailieu_Baigiang_Model> ListTailieu_Baigiang { get; set; }
+        public virtual List<Lopgiangday_Model> ListLopgiangday { get; set; }
 
     }
 }

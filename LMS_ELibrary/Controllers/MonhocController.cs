@@ -29,9 +29,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpGet("Loc")]//0=>theo ten ; 1=>theo lan truy cap gan nhat
-        public async Task<IActionResult>locMonhoc(int sort)
+        public async Task<IActionResult>locMonhoc(int option)
         {
-            return Ok(await _monhocService.locMonhoc(sort));
+            return Ok(await _monhocService.locMonhoc(option));
         }
 
         [HttpGet("{id}")]
