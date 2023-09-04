@@ -25,10 +25,10 @@ namespace LMS_ELibrary.Data
         public string Sdt { get; set; }
         public string? Diachi { get; set; }
 
-        public virtual List<Lopgiangday_Db> ListLopgiangday { get; set; }
-        public virtual List<Tailieu_Baigiang_Db> ListTailieu_Baigiang { get; set; }
-        public virtual List<Dethi_Db> ListDethi { get; set; }
-        public virtual List<Thongbao_Db> ListThongbao { get; set; }
-        public virtual List<Help_Db> ListHelp { get; set; }
+        public virtual List<Lopgiangday_Db>? ListLopgiangday { get; set; }
+        public virtual List<Tailieu_Baigiang_Db>? ListTailieu_Baigiang { get; set; }
+        public virtual List<Dethi_Db>? ListDethi { get; set; }
+        public virtual List<Thongbao_Db>? ListThongbao { get; set; }
+        public virtual List<Help_Db>? ListHelp { get; set; }
     }
 }

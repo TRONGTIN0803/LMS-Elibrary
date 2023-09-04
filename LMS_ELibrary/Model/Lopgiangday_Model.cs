@@ -13,5 +13,8 @@ namespace LMS_ELibrary.Model
         
         public DateTime? Thoigian { get; set; }
         public DateTime? Truycapgannhat { get; set; }
+
+        public virtual User_Model? User { get; set; }
+        public virtual Monhoc_Model? Monhoc { get; set; }
     }
 }

@@ -56,42 +56,58 @@ namespace LMS_ELibrary.Services
         {
             var result = await _context.chude_Dbs.ToListAsync();
             List<Chude_Model> kq = new List<Chude_Model>();
-            List<Tailieu_Baigiang_Db> listtailieu = new List<Tailieu_Baigiang_Db>();
+           
             foreach(var chude in result)
             {
-                var x = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p=>p.ChudeID==chude.ChudeID);
-                if (x!=null)
+                var col = _context.Entry(chude);
+                col.Collection(n => n.ListTailieu_Baigiang).Load();
+                
+                if (chude.ListTailieu_Baigiang != null)
                 {
-                    var col = _context.Entry(chude);
-                    col.Collection(n => n.ListTailieu_Baigiang).Load();
-                    if (chude.ListTailieu_Baigiang != null)
+                    List<Tailieu_Baigiang_Db> listtailieu = new List<Tailieu_Baigiang_Db>();
+                    foreach (var item in chude.ListTailieu_Baigiang)
                     {
-                        chude.ListTailieu_Baigiang.ForEach(e =>
+                        if (item.Type==1)
                         {
                             Tailieu_Baigiang_Db tailieu = new Tailieu_Baigiang_Db();
-                            tailieu.UserId = e.UserId;
-                            tailieu.TenDoc = e.TenDoc;
-                            tailieu.Status = e.Status;
-                            tailieu.MonhocID = e.MonhocID;
-                            tailieu.Sualancuoi = e.Sualancuoi;
-                            tailieu.Path = e.Path;
-                            tailieu.Kichthuoc = e.Kichthuoc;
-                            tailieu.ChudeID = e.ChudeID;
+                            tailieu.UserId = item.UserId;
+                            tailieu.TenDoc = item.TenDoc;
+                            tailieu.Status = item.Status;
+                            tailieu.MonhocID = item.MonhocID;
+                            tailieu.Sualancuoi = item.Sualancuoi;
+                            tailieu.Path = item.Path;
+                            tailieu.Kichthuoc = item.Kichthuoc;
+                            tailieu.ChudeID = item.ChudeID;
                             listtailieu.Add(tailieu);
-                        });
+                        }
                     }
-
                     chude.ListTailieu_Baigiang = listtailieu;
                 }
+                
+               
                 
             }
             
 
             kq=_mapper.Map<List<Chude_Model>>(result);
+            foreach (Chude_Model model in kq)
+            {
+
+                foreach (var x1 in model.ListTailieu_Baigiang)
+                {
+                    x1.Type = "Bai Giang";
+                    if (x1.Status == "0")
+                    {
+                        x1.Status = "Cho Duyet";
+                    }else if (x1.Status == "1")
+                    {
+                        x1.Status = "Da Duyet";
+                    }
+                }
+            }
+
             return kq;
         }
-
-        
 
         public async Task<KqJson> deletetChude(int id)
         {
@@ -112,6 +128,40 @@ namespace LMS_ELibrary.Services
             }
 
             return kq;
+        }
+
+        public async Task<KqJson> addBaigiang_Chude(int iduser,int idmonhoc,int idchude, Tailieu_Baigiang_Db baigiang)
+        {
+            try
+            {
+                Tailieu_Baigiang_Db addhbaigiang = new Tailieu_Baigiang_Db();
+                addhbaigiang.ChudeID = idchude;
+                addhbaigiang.UserId = iduser;
+                addhbaigiang.TenDoc = baigiang.TenDoc;
+                addhbaigiang.MonhocID = idmonhoc;
+                addhbaigiang.Sualancuoi = DateTime.Now;
+                addhbaigiang.Status = 0;
+                addhbaigiang.Type = 1;
+                await _context.tailieu_Baigiang_Dbs.AddAsync(addhbaigiang);
+                int row = await _context.SaveChangesAsync();
+                KqJson kq = new KqJson();
+                if (row > 0)
+                {
+                    kq.Status = true;
+                    kq.Message = "Them thanh cong";
+                }
+                else
+                {
+                    kq.Status = false;
+                    kq.Message = "Them That bai";
+                }
+
+                return kq;
+            }catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            
         }
     }
 }
