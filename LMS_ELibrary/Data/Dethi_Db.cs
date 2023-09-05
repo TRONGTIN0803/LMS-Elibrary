@@ -15,13 +15,15 @@ namespace LMS_ELibrary.Data
         [Required]
         public int Status { get; set; }
         public int? UserID { get; set; }
-        public virtual User_Db User { get; set; }
+        
         [Required]
         public DateTime Ngaytao { get; set; }
         public int? MonhocID { get; set; }
-        public virtual Monhoc_Db Monhoc { get; set; }
+        
         public string? File_Path { get; set; }
 
+        public virtual User_Db? User { get; set; }
+        public virtual Monhoc_Db? Monhoc { get; set; }
         public virtual List<Ex_QA_Db> ListExQA { get; set; }
     }
 }

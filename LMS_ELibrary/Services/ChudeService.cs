@@ -130,38 +130,6 @@ namespace LMS_ELibrary.Services
             return kq;
         }
 
-        public async Task<KqJson> addBaigiang_Chude(int iduser,int idmonhoc,int idchude, Tailieu_Baigiang_Db baigiang)
-        {
-            try
-            {
-                Tailieu_Baigiang_Db addhbaigiang = new Tailieu_Baigiang_Db();
-                addhbaigiang.ChudeID = idchude;
-                addhbaigiang.UserId = iduser;
-                addhbaigiang.TenDoc = baigiang.TenDoc;
-                addhbaigiang.MonhocID = idmonhoc;
-                addhbaigiang.Sualancuoi = DateTime.Now;
-                addhbaigiang.Status = 0;
-                addhbaigiang.Type = 1;
-                await _context.tailieu_Baigiang_Dbs.AddAsync(addhbaigiang);
-                int row = await _context.SaveChangesAsync();
-                KqJson kq = new KqJson();
-                if (row > 0)
-                {
-                    kq.Status = true;
-                    kq.Message = "Them thanh cong";
-                }
-                else
-                {
-                    kq.Status = false;
-                    kq.Message = "Them That bai";
-                }
-
-                return kq;
-            }catch(Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            
-        }
+        
     }
 }

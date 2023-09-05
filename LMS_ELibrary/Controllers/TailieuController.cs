@@ -16,10 +16,10 @@ namespace LMS_ELibrary.Controllers
             _tailieuService = tailieuService;
         }
 
-        [HttpGet("getall")]
-        public async Task<IActionResult> getalltailieu()
+        [HttpGet("getall/{user_id}")]
+        public async Task<IActionResult> getalltailieu(int user_id)
         {
-            return Ok(await _tailieuService.getAlltailieu());
+            return Ok(await _tailieuService.getAlltailieu(user_id));
         }
 
         [HttpPut("updateTailieu/{id}")]
@@ -32,6 +32,12 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>addTailieu(Tailieu_Baigiang_Model tailieu)
         {
             return Ok(await _tailieuService.addTailieu(tailieu));
+        }
+
+        [HttpDelete("delTailieu/{id}")]
+        public async Task<IActionResult>delleteTailieu(int id)
+        {
+            return Ok(await _tailieuService.delTailieu(id));
         }
     }
 }

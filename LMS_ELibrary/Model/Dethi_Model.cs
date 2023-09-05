@@ -7,7 +7,7 @@ namespace LMS_ELibrary.Model
     { 
         public string? Madethi { get; set; }
         
-        public int? Status { get; set; }
+        public string? Status { get; set; }
         public int? UserID { get; set; }
         
        
@@ -15,5 +15,8 @@ namespace LMS_ELibrary.Model
         public int? MonhocID { get; set; }
         
         public string? File_Path { get; set; }
+
+        public virtual User_Model? User { get; set; }
+        public virtual Monhoc_Model? Monhoc { get; set; }
     }
 }

@@ -13,13 +13,13 @@ namespace LMS_ELibrary.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DocId { get; set; }
         public int? UserId { get; set; }
-        public virtual User_Db? User { get; set; }
+       
         [Required]
         public string TenDoc { get; set; }
         public int? MonhocID { get; set; }
-        public virtual Monhoc_Db? Monhoc { get; set; }
+        
         public int? ChudeID { get; set; }
-        public virtual Chude_Db? Chude { get; set; }
+       
         public DateTime? Sualancuoi { get; set; }
         public double? Kichthuoc { get; set; }
         public string? Path { get; set; }
@@ -27,5 +27,9 @@ namespace LMS_ELibrary.Data
         public int Status { get; set; }
         [Required]
         public int Type { get; set; }
+
+        public virtual User_Db? User { get; set; }
+        public virtual Monhoc_Db? Monhoc { get; set; }
+        public virtual Chude_Db? Chude { get; set; }
     }
 }

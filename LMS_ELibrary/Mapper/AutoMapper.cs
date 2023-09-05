@@ -14,6 +14,7 @@ namespace LMS_ELibrary.Mapper
             CreateMap<Monhoc_Db, Monhoc_Model>();
             CreateMap<Chude_Db, Chude_Model>();
             CreateMap<Lopgiangday_Db, Lopgiangday_Model>();
+            CreateMap<Dethi_Db, Dethi_Model>();
 
         }
     }

@@ -5,9 +5,11 @@ namespace LMS_ELibrary.Services
 {
     public interface ITailieuService
     {
-        Task<IEnumerable<Tailieu_Baigiang_Model>> getAlltailieu();
+        Task<IEnumerable<Tailieu_Baigiang_Model>> getAlltailieu(int id);
         Task<KqJson> editTailieu(int id,Tailieu_Baigiang_Model tailieu);
 
         Task<KqJson> addTailieu(Tailieu_Baigiang_Model tailieu);
+
+        Task<KqJson> delTailieu(int id);
     }
 }

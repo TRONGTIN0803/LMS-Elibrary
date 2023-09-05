@@ -39,11 +39,7 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _chudeService.deletetChude(id));
         }
 
-        [HttpPost("addBaiGiang/{idchude}")]
-        public async Task<IActionResult>addBaiGiang_Chude(int iduser,int idmonhoc,int idchude,Tailieu_Baigiang_Db baigiang)
-        {
-            return Ok(await _chudeService.addBaigiang_Chude(iduser,idmonhoc,idchude, baigiang));
-        }
+       
 
     }
 }

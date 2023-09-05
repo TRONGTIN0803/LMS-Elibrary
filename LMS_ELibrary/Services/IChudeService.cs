@@ -10,6 +10,6 @@ namespace LMS_ELibrary.Services
         Task<KqJson> addChude(Chude_Model chude);
         Task<KqJson> deletetChude(int id);
 
-        Task<KqJson> addBaigiang_Chude(int iduser,int idmonhoc,int idchude, Tailieu_Baigiang_Db baigiang);
+        
     }
 }

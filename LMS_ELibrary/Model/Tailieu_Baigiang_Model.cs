@@ -20,5 +20,6 @@ namespace LMS_ELibrary.Model
         public string? Type { get; set; }
 
         public virtual User_Model? User { get; set; }
+        public virtual Monhoc_Model? Monhoc { get; set; }
     }
 }
