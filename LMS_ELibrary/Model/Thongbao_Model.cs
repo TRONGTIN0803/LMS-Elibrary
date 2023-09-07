@@ -13,5 +13,7 @@ namespace LMS_ELibrary.Model
         public int? UserID { get; set; }
         
         public int? Status { get; set; }
+
+        //public virtual User_Db? User { get; set; }
     }
 }

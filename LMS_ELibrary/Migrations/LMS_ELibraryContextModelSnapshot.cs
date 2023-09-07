@@ -37,7 +37,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasKey("ChudeID");
 
-                    b.ToTable("Chude");
+                    b.ToTable("Chude", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Dethi_Db", b =>
@@ -74,7 +74,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Dethi");
+                    b.ToTable("Dethi", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Ex_QA_Db", b =>
@@ -97,7 +97,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("QAID");
 
-                    b.ToTable("Ex_QA");
+                    b.ToTable("Ex_QA", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Help_Db", b =>
@@ -127,7 +127,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Help");
+                    b.ToTable("Help", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Lopgiangday_Db", b =>
@@ -160,7 +160,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("LopGiangday");
+                    b.ToTable("LopGiangday", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Monhoc_Db", b =>
@@ -195,7 +195,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("TobomonId");
 
-                    b.ToTable("Monhoc");
+                    b.ToTable("Monhoc", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.QA_Db", b =>
@@ -225,7 +225,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("MonhocID");
 
-                    b.ToTable("QA");
+                    b.ToTable("QA", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Tailieu_Baigiang_Db", b =>
@@ -272,7 +272,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tailieu_Baigiang");
+                    b.ToTable("Tailieu_Baigiang", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Thongbao_Db", b =>
@@ -304,7 +304,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Thongbao");
+                    b.ToTable("Thongbao", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Tobomon_Db", b =>
@@ -321,7 +321,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasKey("TobomonId");
 
-                    b.ToTable("Tobomon");
+                    b.ToTable("Tobomon", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.User_Db", b =>
@@ -366,7 +366,7 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Dethi_Db", b =>

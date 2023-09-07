@@ -18,5 +18,6 @@ namespace LMS_ELibrary.Model
 
         public virtual User_Model? User { get; set; }
         public virtual Monhoc_Model? Monhoc { get; set; }
+        public virtual List<Ex_QA_Model>? ListExQA { get; set; }
     }
 }

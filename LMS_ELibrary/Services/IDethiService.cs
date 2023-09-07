@@ -10,5 +10,20 @@ namespace LMS_ELibrary.Services
         Task<IEnumerable<Dethi_Model>> filterDethitheoMon(int id);
 
         Task<IEnumerable<Dethi_Model>> filterDethitheoTohomon(int id);
+
+        Task<KqJson> tao_dethi_nganhangcauhoi(Dethi_Model dethi,List<int>idQues);
+
+        Task<IEnumerable<Dethi_Model>> searchDethi(string madethi);
+
+        Task<Dethi_Model> chitietDethi(int id);
+
+        Task<KqJson> doiMadethi(int iddethi, Dethi_Model dethi);
+        
+        Task<KqJson> guiPheduyet(int iddethi);
+        
+        Task<KqJson> xoaDethi(int iddethi);
+
+
+
     }
 }

@@ -11,5 +11,8 @@ namespace LMS_ELibrary.Model
         public int? MonhocID { get; set; }
   
         public DateTime? Lancuoisua { get; set; }
+
+        public virtual Monhoc_Model? Monhoc { get; set; }
+        
     }
 }
