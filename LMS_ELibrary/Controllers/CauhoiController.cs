@@ -2,6 +2,7 @@
 using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LMS_ELibrary.ServiceInterface;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -9,8 +10,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class CauhoiController : ControllerBase
     {
-        private readonly CauhoiService _cauhoiSerivce;
-        public CauhoiController(CauhoiService cauhoiSerivce)
+        private readonly ICauhoiService _cauhoiSerivce;
+        public CauhoiController(ICauhoiService cauhoiSerivce)
         {
             _cauhoiSerivce = cauhoiSerivce;
         }

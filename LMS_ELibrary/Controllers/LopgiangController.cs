@@ -1,6 +1,7 @@
 ﻿using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LMS_ELibrary.ServiceInterface;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -8,8 +9,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class LopgiangController : ControllerBase
     {
-        private readonly LopgiangService _lopgiangservice;
-        public LopgiangController(LopgiangService lopgiangservice)
+        private readonly ILopgiangService _lopgiangservice;
+        public LopgiangController(ILopgiangService lopgiangservice)
         {
             _lopgiangservice = lopgiangservice;
         }

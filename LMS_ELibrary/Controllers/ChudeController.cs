@@ -3,6 +3,7 @@ using LMS_ELibrary.Model;
 using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LMS_ELibrary.ServiceInterface;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -10,8 +11,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class ChudeController : ControllerBase
     {
-        private readonly ChudeService _chudeService;
-        public ChudeController(ChudeService chudeService)
+        private readonly IChudeService _chudeService;
+        public ChudeController(IChudeService chudeService)
         {
             _chudeService = chudeService;
         }

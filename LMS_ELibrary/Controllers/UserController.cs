@@ -1,5 +1,5 @@
 ﻿using LMS_ELibrary.Model;
-using LMS_ELibrary.Services;
+using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +9,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
-        public UserController(UserService userService)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -35,10 +35,16 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _userService.UpLoadAvt(user_id,file));
         }
 
-        [HttpPut("changePass/{user_id}")]
+        [HttpPut("changePasshahaha/{user_id}")]
         public async Task<IActionResult>changePass(int user_id,ChangePass pass)
         {
             return Ok(await _userService.changePassword(user_id, pass));
+        }
+
+        [HttpGet("Avt_da_tai_len/{user_id}")]
+        public async Task<IActionResult>Avtdatailen(int user_id)
+        {
+            return Ok(await _userService.Avt_da_tai_len(user_id));
         }
     }
 }

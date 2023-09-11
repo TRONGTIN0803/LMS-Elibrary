@@ -1,6 +1,8 @@
-﻿using LMS_ELibrary.Services;
+﻿
+using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LMS_ELibrary.ServiceInterface;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -8,9 +10,9 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class HotroController : ControllerBase
     {
-        private readonly HotroService _hotroService;
+        private readonly IHotroService _hotroService;
 
-        public HotroController(HotroService hotroService)
+        public HotroController(IHotroService hotroService)
         {
             _hotroService = hotroService;
         }

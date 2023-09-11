@@ -1,6 +1,7 @@
 ﻿using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LMS_ELibrary.ServiceInterface;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -8,8 +9,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class MonhocController : ControllerBase
     {
-        private readonly MonhocService _monhocService;
-        public MonhocController(MonhocService monhocService)
+        private readonly IMonhocService _monhocService;
+        public MonhocController(IMonhocService monhocService)
         {
             _monhocService = monhocService;
         }

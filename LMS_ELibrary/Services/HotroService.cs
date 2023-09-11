@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS_ELibrary.Services
 {
-    public interface IHotroService
-    {
-        Task<IEnumerable<Help_Model>> getAlllisthotro();
-
-        Task<KqJson> PostHelp(Help_Model help);
-    }
-
     public class HotroService : IHotroService
     {
         private readonly LMS_ELibraryContext _context;

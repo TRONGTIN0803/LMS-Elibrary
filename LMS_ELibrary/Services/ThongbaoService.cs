@@ -1,30 +1,13 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace LMS_ELibrary.Services
 {
-    public interface IThongbaoService
-    {
-        Task<IEnumerable<Thongbao_Model>> getallThongbao(int id);
-
-        Task<IEnumerable<Thongbao_Model>> searchThongbao(int user_id, string keyword);
-
-        Task<object> chitietThongbao(int idthongbao);
-
-        Task<KqJson> xoaThongbao(List<int> listid);
-
-        // 0 => chua doc ; 1 => da doc
-        Task<object> locThongBao(int user_id,int status); 
-
-        Task<KqJson> danhDauThongBao(int thongbao_id,int status);
-        
-
-
-    }
     public class ThongbaoService : IThongbaoService
     {
         private readonly LMS_ELibraryContext _context;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -8,17 +9,8 @@ using System.Text.RegularExpressions;
 
 namespace LMS_ELibrary.Services
 {
-    public interface IUserService
-    {
-        Task<User_Model> Login(User_Model user);
-
-        Task<object> checkInfor(int user_id);
-
-        Task<object> UpLoadAvt(int user_id, IFormFile file);
-
-        Task<KqJson> changePassword(int user_id, ChangePass pass);
-    }
-    public class UserService : IUserService
+    
+    public class UserService:IUserService
     {
         public readonly LMS_ELibraryContext _context;
         public readonly IMapper _mapper;
@@ -27,6 +19,37 @@ namespace LMS_ELibrary.Services
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<Avt_Model>> Avt_da_tai_len(int user_id)
+        {
+            try
+            {
+                if (user_id != null)
+                {
+                    List<Avt_Model> list_avt = new List<Avt_Model>();
+                    var result = await (from avt in _context.avt_Db where avt.UserId == user_id select avt).ToListAsync();
+
+                    if (result != null)
+                    {
+                        list_avt = _mapper.Map<List<Avt_Model>>(result);
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                    return list_avt;
+                }
+                else
+                {
+                    throw new Exception("Bad Request!");
+                }
+
+            }catch(Exception e)
+            {
+                
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<KqJson> changePassword(int user_id, ChangePass pass)

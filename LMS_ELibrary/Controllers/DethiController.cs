@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
+using LMS_ELibrary.ServiceInterface;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -12,8 +13,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class DethiController : ControllerBase
     {
-        private readonly DethiService _dethiService;
-        public DethiController(DethiService dethiService)
+        private readonly IDethiService _dethiService;
+        public DethiController(IDethiService dethiService)
         {
             _dethiService = dethiService;
         }

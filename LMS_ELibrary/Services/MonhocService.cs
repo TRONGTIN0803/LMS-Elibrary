@@ -1,22 +1,13 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography.Xml;
 
 namespace LMS_ELibrary.Services
 {
-    public interface IMonhocService
-    {
-        Task<IEnumerable<Monhoc_Model>> getAllMonhoc();
-        Task<Monhoc_Model> searchMonhoc(string key);
-
-        Task<Monhoc_Model> chitietMonhoc(int id);
-
-        Task<IEnumerable<Monhoc_Model>> locMonhoc(int option);
-
-    }
     public class MonhocService : IMonhocService
     {
         private readonly LMS_ELibraryContext _context;

@@ -1,25 +1,13 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace LMS_ELibrary.Services
 {
-    public interface IBaigiangService
-    {
-        Task<IEnumerable<Tailieu_Baigiang_Model>> getallbaigigang(int id);
-
-        Task<IEnumerable<Tailieu_Baigiang_Model>> searchBaigiang(int id, string key);
-
-        Task<IEnumerable<Tailieu_Baigiang_Model>> filterBaigiang(int id, int monId);
-
-        Task<KqJson> addBaigiang(Tailieu_Baigiang_Db baigiang);
-
-        Task<KqJson> changeMonhoc(int iddoc, int mon);
-    }
-
-    public class BaigiangService:IBaigiangService
+    public class BaigiangService : IBaigiangService
     {
         private readonly LMS_ELibraryContext _context;
         private readonly IMapper _mapper;
@@ -30,13 +18,11 @@ namespace LMS_ELibrary.Services
             _mapper = mapper;
         }
 
-      
-
         public async Task<IEnumerable<Tailieu_Baigiang_Model>> getallbaigigang(int id)
         {
             try
             {
-                var result = await(from baigiang in _context.tailieu_Baigiang_Dbs where baigiang.Type == 1 && baigiang.UserId == id orderby baigiang.Sualancuoi descending select baigiang).ToListAsync();
+                var result = await (from baigiang in _context.tailieu_Baigiang_Dbs where baigiang.Type == 1 && baigiang.UserId == id orderby baigiang.Sualancuoi descending select baigiang).ToListAsync();
                 foreach (var item in result)
                 {
                     var col = _context.Entry(item);
@@ -189,14 +175,14 @@ namespace LMS_ELibrary.Services
             };
         }
 
-        public async Task<IEnumerable<Tailieu_Baigiang_Model>> filterBaigiang(int id,int monId)
+        public async Task<IEnumerable<Tailieu_Baigiang_Model>> filterBaigiang(int id, int monId)
         {
             try
             {
-                var result = await(from baigiang in _context.tailieu_Baigiang_Dbs
-                                   where baigiang.Type == 1 && baigiang.UserId == id && baigiang.MonhocID==monId
-                                   orderby baigiang.Sualancuoi descending
-                                   select baigiang).ToListAsync();
+                var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
+                                    where baigiang.Type == 1 && baigiang.UserId == id && baigiang.MonhocID == monId
+                                    orderby baigiang.Sualancuoi descending
+                                    select baigiang).ToListAsync();
                 foreach (var item in result)
                 {
                     var col = _context.Entry(item);
@@ -311,7 +297,7 @@ namespace LMS_ELibrary.Services
             {
                 KqJson kq = new KqJson();
 
-                var result = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p=>p.DocId==iddoc);
+                var result = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p => p.DocId == iddoc);
                 if (result != null)
                 {
                     result.MonhocID = mon;
@@ -335,9 +321,92 @@ namespace LMS_ELibrary.Services
 
 
                 return kq;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<KqJson> XoaBaigiang(int user_id, int baigiang_id)
+        {
+            /*
+             Xoa duoc cac bai giang trang thai cho duyet (Status=0)
+            Cac bai giang da duyet (Status=1) chi co quan ly (user.Role = 0) moi duoc xoa
+             */
+            try
+            {
+                KqJson kq = new KqJson();
+                if (user_id != null && baigiang_id != null)
+                {
+                    var user = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
+                    if (user != null)
+                    {
+                        var result = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p => p.DocId == baigiang_id);
+                        if (result != null)
+                        {
+                            if (result.Status == 1)
+                            {
+                                if (user.Role == 0)
+                                {
+                                    _context.tailieu_Baigiang_Dbs.Remove(result);
+                                    int row = await _context.SaveChangesAsync();
+                                    if (row > 0)
+                                    {
+                                        kq.Status = true;
+                                        kq.Message = "Xoa thanh cong";
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Xoa that bai");
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception("Khong du quyen thuc hien");
+                                }
+                            }
+                            else
+                            {
+                                _context.tailieu_Baigiang_Dbs.Remove(result);
+                                int row = await _context.SaveChangesAsync();
+                                if (row > 0)
+                                {
+                                    kq.Status = true;
+                                    kq.Message = "Xoa thanh cong";
+                                }
+                                else
+                                {
+                                    throw new Exception("Xoa that bai");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Not found");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Nguoi dung khong ton tai");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+
+
+                return kq;
+
+            }
+            catch (Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
             }
         }
     }

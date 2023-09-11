@@ -11,6 +11,6 @@ namespace LMS_ELibrary.Model
        
         public DateTime? Ngay_tai_len { get; set; }
         public int? UserId { get; set; }
-        public virtual User_Model? User { get; set; }
+        
     }
 }
