@@ -22,7 +22,7 @@ builder.Services.AddScoped<ITailieuService, TailieuService>();
 builder.Services.AddScoped<ILopgiangService, LopgiangService>();
 builder.Services.AddScoped<IBaigiangService, BaigiangService>();
 builder.Services.AddScoped<IDethiService, DethiService>();
-builder.Services.AddScoped<ICauhoiSerivce, CauhoiService>();
+builder.Services.AddScoped<CauhoiSerivce, CauhoiService>();
 builder.Services.AddScoped<IThongbaoService, ThongbaoService>();
 builder.Services.AddScoped<IHotroService, HotroService>();
 

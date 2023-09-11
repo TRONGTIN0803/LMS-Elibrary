@@ -8,9 +8,9 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class ThongbaoController : ControllerBase
     {
-        private readonly IThongbaoService _thongbaoService;
+        private readonly ThongbaoService _thongbaoService;
 
-        public ThongbaoController(IThongbaoService thongbaoService)
+        public ThongbaoController(ThongbaoService thongbaoService)
         {
             _thongbaoService = thongbaoService;
         }

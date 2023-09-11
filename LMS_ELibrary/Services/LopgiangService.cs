@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMS_ELibrary.Services
 {
+    public interface ILopgiangService
+    {
+        Task<IEnumerable<Lopgiangday_Model>> getAllLopgiang();
+
+        Task<Lopgiangday_Model> detailLopgiangday(int id);
+    }
     public class LopgiangService : ILopgiangService
     {
         private readonly LMS_ELibraryContext _context;

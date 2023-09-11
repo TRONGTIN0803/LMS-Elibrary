@@ -9,8 +9,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class CauhoiController : ControllerBase
     {
-        private readonly ICauhoiSerivce _cauhoiSerivce;
-        public CauhoiController(ICauhoiSerivce cauhoiSerivce)
+        private readonly CauhoiService _cauhoiSerivce;
+        public CauhoiController(CauhoiService cauhoiSerivce)
         {
             _cauhoiSerivce = cauhoiSerivce;
         }

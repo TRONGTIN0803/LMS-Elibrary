@@ -9,8 +9,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class BaigiangController : ControllerBase
     {
-        private readonly IBaigiangService _baigiangService;
-        public BaigiangController(IBaigiangService baigiangService)
+        private readonly BaigiangService _baigiangService;
+        public BaigiangController(BaigiangService baigiangService)
         {
             _baigiangService = baigiangService;
         }

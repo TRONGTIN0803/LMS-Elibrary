@@ -8,8 +8,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class LopgiangController : ControllerBase
     {
-        private readonly ILopgiangService _lopgiangservice;
-        public LopgiangController(ILopgiangService lopgiangservice)
+        private readonly LopgiangService _lopgiangservice;
+        public LopgiangController(LopgiangService lopgiangservice)
         {
             _lopgiangservice = lopgiangservice;
         }

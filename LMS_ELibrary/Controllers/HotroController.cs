@@ -8,9 +8,9 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class HotroController : ControllerBase
     {
-        private readonly IHotroService _hotroService;
+        private readonly HotroService _hotroService;
 
-        public HotroController(IHotroService hotroService)
+        public HotroController(HotroService hotroService)
         {
             _hotroService = hotroService;
         }

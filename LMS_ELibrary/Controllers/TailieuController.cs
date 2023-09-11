@@ -10,8 +10,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class TailieuController : ControllerBase
     {
-        private readonly ITailieuService _tailieuService;
-        public TailieuController(ITailieuService tailieuService)
+        private readonly TailieuService _tailieuService;
+        public TailieuController(TailieuService tailieuService)
         {
             _tailieuService = tailieuService;
         }

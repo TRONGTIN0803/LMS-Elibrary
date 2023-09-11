@@ -12,8 +12,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class DethiController : ControllerBase
     {
-        private readonly IDethiService _dethiService;
-        public DethiController(IDethiService dethiService)
+        private readonly DethiService _dethiService;
+        public DethiController(DethiService dethiService)
         {
             _dethiService = dethiService;
         }

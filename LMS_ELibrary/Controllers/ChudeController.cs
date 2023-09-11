@@ -10,8 +10,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class ChudeController : ControllerBase
     {
-        private readonly IChudeService _chudeService;
-        public ChudeController(IChudeService chudeService)
+        private readonly ChudeService _chudeService;
+        public ChudeController(ChudeService chudeService)
         {
             _chudeService = chudeService;
         }

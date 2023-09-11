@@ -8,8 +8,8 @@ namespace LMS_ELibrary.Controllers
     [ApiController]
     public class MonhocController : ControllerBase
     {
-        private readonly IMonhocService _monhocService;
-        public MonhocController(IMonhocService monhocService)
+        private readonly MonhocService _monhocService;
+        public MonhocController(MonhocService monhocService)
         {
             _monhocService = monhocService;
         }
