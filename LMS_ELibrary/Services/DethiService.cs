@@ -453,10 +453,10 @@ namespace LMS_ELibrary.Services
             try
             {
                 KqJson kq = new KqJson();
-                var result = await (from dt in _context.dethi_Dbs where dt.DethiID==iddethi && dt.Status==1 || dt.Status==-1 select dt).SingleOrDefaultAsync();
+                var result = await (from dt in _context.dethi_Dbs where dt.DethiID == iddethi && dt.Status == 1 || dt.Status == -1 select dt).SingleOrDefaultAsync();
                 if (result != null)
                 {
-                    result.Madethi=dethi.Madethi;
+                    result.Madethi = dethi.Madethi;
                     int row = await _context.SaveChangesAsync();
                     if (row > 0)
                     {
@@ -476,7 +476,8 @@ namespace LMS_ELibrary.Services
                 }
 
                 return kq;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
@@ -517,25 +518,27 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> xoaDethi(int iddethi)
+        public async Task<KqJson> deleteDethi(int id)
         {
             try
             {
                 KqJson kq = new KqJson();
-                var result = await _context.dethi_Dbs.SingleOrDefaultAsync(p => p.DethiID == iddethi && p.Status == -1 || p.Status==2);
+                var result = await (from dt in _context.dethi_Dbs 
+                                    where dt.DethiID==id && dt.Status==-1 || dt.DethiID == id && dt.Status == 2
+                                    select dt).SingleOrDefaultAsync();
                 if (result != null)
                 {
                     _context.dethi_Dbs.Remove(result);
-                    int row = await _context.SaveChangesAsync();
+                    int row =await _context.SaveChangesAsync();
                     if (row > 0)
                     {
                         kq.Status = true;
-                        kq.Message = "Xoa de thi Thanh cong!";
+                        kq.Message = "thanh cong";
                     }
                     else
                     {
                         kq.Status = false;
-                        kq.Message = "Xoa That Bai!";
+                        kq.Message = "that bai";
                     }
                 }
                 else
@@ -543,10 +546,8 @@ namespace LMS_ELibrary.Services
                     kq.Status = false;
                     kq.Message = "Khong tim thay";
                 }
-
                 return kq;
-            }
-            catch (Exception e)
+            }catch(Exception e)
             {
                 throw new Exception(e.Message);
             }

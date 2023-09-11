@@ -1,11 +1,54 @@
 {
   "Version": 1,
-  "Hash": "FxHbZBYwwfaNl/GkK6PhIuLPvInWXkLN88w43gXcjpc=",
+  "Hash": "PreuF6lA0TIahqoq17ZMgnczW53OhFlJYaHB1F5VWis=",
   "Source": "LMS_ELibrary",
   "BasePath": "_content/LMS_ELibrary",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "LMS_ELibrary\\wwwroot",
+      "Source": "LMS_ELibrary",
+      "ContentRoot": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\",
+      "BasePath": "_content/LMS_ELibrary",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\Images\\Booking_Seats_ERD.jpg",
+      "SourceId": "LMS_ELibrary",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\",
+      "BasePath": "_content/LMS_ELibrary",
+      "RelativePath": "Images/Booking_Seats_ERD.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Booking_Seats_ERD.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\Images\\Group 23_1.png",
+      "SourceId": "LMS_ELibrary",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\",
+      "BasePath": "_content/LMS_ELibrary",
+      "RelativePath": "Images/Group 23_1.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Group 23_1.png"
+    }
+  ]
 }

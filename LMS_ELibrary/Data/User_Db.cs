@@ -24,7 +24,9 @@ namespace LMS_ELibrary.Data
         [Required]
         public string Sdt { get; set; }
         public string? Diachi { get; set; }
+        public int? AvtId { get; set; }
 
+        public virtual List<Avt_Db>? ListAvt { get; set; }
         public virtual List<Lopgiangday_Db>? ListLopgiangday { get; set; }
         public virtual List<Tailieu_Baigiang_Db>? ListTailieu_Baigiang { get; set; }
         public virtual List<Dethi_Db>? ListDethi { get; set; }

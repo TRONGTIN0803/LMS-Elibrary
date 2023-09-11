@@ -63,3 +63,4 @@ C:\Users\PHUOC TRONG\Documents\GitHub\LMS-Elibrary\LMS_ELibrary\obj\Debug\net6.0
 C:\Users\PHUOC TRONG\Documents\GitHub\LMS-Elibrary\LMS_ELibrary\obj\Debug\net6.0\ref\LMS_ELibrary.dll
 C:\Users\PHUOC TRONG\Documents\GitHub\LMS-Elibrary\LMS_ELibrary\bin\Debug\net6.0\AutoMapper.dll
 C:\Users\PHUOC TRONG\Documents\GitHub\LMS-Elibrary\LMS_ELibrary\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\PHUOC TRONG\Documents\GitHub\LMS-Elibrary\LMS_ELibrary\bin\Debug\net6.0\LMS_ELibrary.staticwebassets.runtime.json

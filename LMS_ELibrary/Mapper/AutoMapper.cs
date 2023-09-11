@@ -18,6 +18,8 @@ namespace LMS_ELibrary.Mapper
             CreateMap<Ex_QA_Db, Ex_QA_Model>();
             CreateMap<QA_Db, QA_Model>();
             CreateMap<Thongbao_Db, Thongbao_Model>();
+            CreateMap<Help_Db, Help_Model>();
+            CreateMap<Avt_Db, Avt_Model>();
 
         }
     }

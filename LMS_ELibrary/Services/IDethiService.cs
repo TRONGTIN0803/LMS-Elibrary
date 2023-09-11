@@ -20,8 +20,8 @@ namespace LMS_ELibrary.Services
         Task<KqJson> doiMadethi(int iddethi, Dethi_Model dethi);
         
         Task<KqJson> guiPheduyet(int iddethi);
-        
-        Task<KqJson> xoaDethi(int iddethi);
+
+        Task<KqJson> deleteDethi(int id);
 
 
 

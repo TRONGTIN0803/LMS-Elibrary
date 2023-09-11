@@ -55,11 +55,11 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _dethiService.chitietDethi(id_dethi));
         }
 
-        //[HttpPut("doiMaDeThi")]
-        //public async Task<IActionResult>changeExamCode(int iddethi,Dethi_Model dethi)
-        //{
-        //    return Ok(await _dethiService.doiMadethi(iddethi, dethi));
-        //}
+        [HttpPut("doiMaDeThi")]
+        public async Task<IActionResult> changeExamCode(int iddethi, Dethi_Model dethi)
+        {
+            return Ok(await _dethiService.doiMadethi(iddethi, dethi));
+        }
 
         [HttpPut("guiPheDuyet/{id_dethi}")]
         public async Task<IActionResult>guiPheduyet(int id_dethi)
@@ -67,10 +67,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _dethiService.guiPheduyet(id_dethi));
         }
 
-        [HttpDelete("xoaDethi/{id_dethi}")]
-        public async Task<IActionResult>xoaDethi(int id_dethi)
+        [HttpDelete("XoaDethi/{id}")]
+        public async Task<IActionResult>deleteDethi(int id)
         {
-            return Ok(await _dethiService.xoaDethi(id_dethi));
+            return Ok(await _dethiService.deleteDethi(id));
         }
     }
 }

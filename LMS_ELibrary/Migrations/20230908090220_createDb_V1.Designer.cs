@@ -4,6 +4,7 @@ using LMS_ELibrary.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_ELibrary.Migrations
 {
     [DbContext(typeof(LMS_ELibraryContext))]
-    partial class LMS_ELibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230908090220_createDb_V1")]
+    partial class createDb_V1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,35 +23,6 @@ namespace LMS_ELibrary.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("LMS_ELibrary.Data.Avt_Db", b =>
-                {
-                    b.Property<int>("AvtID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AvtID"), 1L, 1);
-
-                    b.Property<DateTime>("Ngay_tai_len")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<double>("Size")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AvtID");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Avt");
-                });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Chude_Db", b =>
                 {
@@ -364,9 +337,6 @@ namespace LMS_ELibrary.Migrations
                     b.Property<string>("Avt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AvtId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Diachi")
                         .HasColumnType("nvarchar(max)");
 
@@ -399,17 +369,6 @@ namespace LMS_ELibrary.Migrations
                     b.HasKey("UserID");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("LMS_ELibrary.Data.Avt_Db", b =>
-                {
-                    b.HasOne("LMS_ELibrary.Data.User_Db", "User")
-                        .WithMany("ListAvt")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK_Avt_User");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Dethi_Db", b =>
@@ -549,8 +508,6 @@ namespace LMS_ELibrary.Migrations
 
             modelBuilder.Entity("LMS_ELibrary.Data.User_Db", b =>
                 {
-                    b.Navigation("ListAvt");
-
                     b.Navigation("ListDethi");
 
                     b.Navigation("ListHelp");
