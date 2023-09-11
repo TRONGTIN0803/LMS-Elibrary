@@ -1,3 +1,4 @@
 # LMS-Elibrary
 ERD
-![Biểu đồ không có tiêu đề](https://github.com/TRONGTIN0803/LMS-Elibrary/assets/110965574/b569df97-d11c-49e3-9f0e-bc1b7cd411eb)
+
+![LMS_ELibrary_V2](https://github.com/TRONGTIN0803/LMS-Elibrary/assets/110965574/b30a2c61-afc8-4712-9782-4cb1736f16a4)
