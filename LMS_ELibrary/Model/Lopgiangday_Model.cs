@@ -11,7 +11,7 @@ namespace LMS_ELibrary.Model
        
         public string? TenLop { get; set; }
         
-        public DateTime? Thoigian { get; set; }
+        public DateTime Thoigian { get; set; }
         public DateTime? Truycapgannhat { get; set; }
 
         public virtual User_Model? User { get; set; }

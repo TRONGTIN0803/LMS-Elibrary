@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
+using LMS_ELibrary.Model;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -35,11 +36,40 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _monhocService.locMonhoc(option));
         }
 
+        [HttpGet("Loc_theo_tinh_trang")]
+        public async Task<IActionResult>loctheoTinhTrang(int status)
+        {
+            return Ok(await _monhocService.locMonhoc_theo_Tinhtrang(status));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult>xemChiTietMonHoc(int id)
         {
             var result =await  _monhocService.chitietMonhoc(id);
             return Ok(result);
+        }
+
+        [HttpPut("editMonhoc/{monhoc_id}")]
+        public async Task<IActionResult>editMonhoc(int monhoc_id, Monhoc_Model monhoc)
+        {
+            return Ok(await _monhocService.editMonhoc(monhoc_id, monhoc));
+        }
+        [HttpPut("setTrangThai")]
+        public async Task<IActionResult>setTrangthai([FromQuery]List<int> monhoc_id,int status)
+        {
+            return Ok(await _monhocService.setTrangthai(monhoc_id, status));
+        }
+
+        [HttpPost("addMonhoc")]
+        public async Task<IActionResult>addMonhoc(Monhoc_Model monhoc)
+        {
+            return Ok(await _monhocService.addMonhoc(monhoc));
+        }
+
+        [HttpDelete("xoaMonhoc/{monhoc_id}")]
+        public async Task<IActionResult>deleteMonhoc(int monhoc_id)
+        {
+            return Ok(await _monhocService.deleteMonhoc(monhoc_id));
         }
     }
 }

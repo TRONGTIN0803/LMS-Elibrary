@@ -29,10 +29,16 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.editTailieu(id,tailieu));
         }
 
-        [HttpPost("addTailieu")]
-        public async Task<IActionResult>addTailieu(Tailieu_Baigiang_Model tailieu)
+        [HttpPost("tai_len_Tai_Lieu")]
+        public async Task<IActionResult> tai_len_Tai_Lieu(int user_id, List<IFormFile> files)
         {
-            return Ok(await _tailieuService.addTailieu(tailieu));
+            return Ok(await _tailieuService.tai_len_Tai_Lieu(user_id, files));
+        }
+
+        [HttpPut("them_vao_Monhoc_va_Chude")]
+        public async Task<IActionResult>themvaoMonhocvaChude(int monhoc_id,int chude_id, List<int> tailieu_id)
+        {
+            return Ok(await _tailieuService.them_vao_Monhoc_va_Chude(monhoc_id, chude_id, tailieu_id));
         }
 
         [HttpDelete("delTailieu/{id}")]

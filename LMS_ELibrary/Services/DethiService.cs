@@ -3,6 +3,7 @@ using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace LMS_ELibrary.Services
 {
@@ -551,6 +552,211 @@ namespace LMS_ELibrary.Services
             }catch(Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<KqJson> tai_len_Dethi(int user_id, List<IFormFile> files)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if(user_id!=null && files != null)
+                {
+                    var user = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
+                    if(user != null)
+                    {
+                        long size = 0;
+                        string path = "";
+                        List<File_Dethi_Db> listadd = new List<File_Dethi_Db>();
+                        foreach (var file in files)
+                        {
+                            size = file.Length;
+                            if (size > 0)
+                            {
+                                var fileName = Path.GetFileName(file.FileName);
+                                var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\TaiNguyen\", fileName);
+
+                                using (var stream = System.IO.File.Create(filePath))
+                                {
+                                    await file.CopyToAsync(stream);
+                                    path = filePath;
+                                }
+                                if (path != null)
+                                {
+                                    File_Dethi_Db filedb = new File_Dethi_Db();
+                                    filedb.Path= path;
+                                    filedb.Size = size;
+                                    filedb.User_Id = user_id;
+                                    filedb.NgayTao = DateTime.Now;
+
+                                    listadd.Add(filedb);
+                                }
+                                else
+                                {
+                                    throw new Exception("Tai file len that bai");
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Khong the tai file nay");
+                            }
+                        }
+                        if (listadd.Count == files.Count)
+                        {
+                            await _context.file_Dethi_Db.AddRangeAsync(listadd);
+                            int row = await _context.SaveChangesAsync();
+                            if (row > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Them thanh cong";
+
+                                return kq;
+                            }
+                            else
+                            {
+                                throw new Exception("Them that bai");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Co file khong the tai le");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Nguoi dungn ay khong ton tai!");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> them_File_vao_Dethi(int dethi_id, File_Dethi_Db file)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if(dethi_id!=null && file != null)
+                {
+                    var result = await _context.dethi_Dbs.SingleOrDefaultAsync(p=>p.DethiID==dethi_id);
+                    if (result != null)
+                    {
+                        result.FileId = file.FileId;
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Thanh cong";
+
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Them vao that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> tao_dethi_tructiep(Tao_cauhoi_tructiep_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                
+                
+                if (model!=null)
+                {
+                    List<QA_Model> listcauhoi = model.listcauhoi;
+                    Dethi_Db dt = new Dethi_Db();
+                    dt.Madethi = model.Madethi;
+                    dt.Status = -1;
+                    dt.UserID = model.UserId;
+                    dt.Ngaytao = DateTime.Now;
+                    dt.MonhocID = model.MonhocId;
+
+                    await _context.AddAsync(dt);
+                    await _context.SaveChangesAsync();
+                    int id_dethi = dt.DethiID;
+
+                    List<int> list_idcauhoi = new List<int>();
+                    foreach (QA_Model cauhoi in listcauhoi)
+                    {
+                        QA_Db qa = new QA_Db();
+                        qa.Cauhoi = cauhoi.Cauhoi;
+                        qa.Cautrl = cauhoi.Cautrl;
+                        qa.MonhocID = model.MonhocId;
+                        qa.Lancuoisua = DateTime.Now;
+
+                        await _context.qA_Dbs.AddAsync(qa);
+                        await _context.SaveChangesAsync();
+                        list_idcauhoi.Add(qa.QAID);
+                    }
+
+
+                    List<Ex_QA_Db> list_exqa = new List<Ex_QA_Db>();
+                    
+                    foreach (int id in list_idcauhoi)
+                    {
+                        Ex_QA_Db exqa = new Ex_QA_Db();
+                        exqa.DethiID = id_dethi;
+                        exqa.QAID = id;
+
+                        list_exqa.Add(exqa);
+                    }
+
+                    await _context.ex_QA_Dbs.AddRangeAsync(list_exqa);
+
+
+                    int row = await _context.SaveChangesAsync();
+                    if (row > 0)
+                    {
+                        
+                        
+                        kq.Status = true;
+                        kq.Message = "Thanh cong";
+
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Them that bai");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
             }
         }
     }

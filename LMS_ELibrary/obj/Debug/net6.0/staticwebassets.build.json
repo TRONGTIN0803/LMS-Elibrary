@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "1i0ymC1gBuSNOZxqbtyT+yzbcXh/xaDkfEtpvN63rUA=",
+  "Hash": "VGNXwGqG2ITfuiM7QXzfCnw9CyrXQuMBAXKlZDu1MyM=",
   "Source": "LMS_ELibrary",
   "BasePath": "_content/LMS_ELibrary",
   "Mode": "Default",
@@ -66,6 +66,57 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Images\\trongtin_avt_cv.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\TaiNguyen\\Booking_Seats_ERD.jpg",
+      "SourceId": "LMS_ELibrary",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\",
+      "BasePath": "_content/LMS_ELibrary",
+      "RelativePath": "TaiNguyen/Booking_Seats_ERD.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\TaiNguyen\\Booking_Seats_ERD.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\TaiNguyen\\Group 23_1.png",
+      "SourceId": "LMS_ELibrary",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\",
+      "BasePath": "_content/LMS_ELibrary",
+      "RelativePath": "TaiNguyen/Group 23_1.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\TaiNguyen\\Group 23_1.png"
+    },
+    {
+      "Identity": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\TaiNguyen\\trongtin_avt_cv.jpg",
+      "SourceId": "LMS_ELibrary",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\PHUOC TRONG\\Documents\\GitHub\\LMS-Elibrary\\LMS_ELibrary\\wwwroot\\",
+      "BasePath": "_content/LMS_ELibrary",
+      "RelativePath": "TaiNguyen/trongtin_avt_cv.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\TaiNguyen\\trongtin_avt_cv.jpg"
     }
   ]
 }

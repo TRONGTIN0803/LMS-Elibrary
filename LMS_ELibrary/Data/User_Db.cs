@@ -32,5 +32,6 @@ namespace LMS_ELibrary.Data
         public virtual List<Dethi_Db>? ListDethi { get; set; }
         public virtual List<Thongbao_Db>? ListThongbao { get; set; }
         public virtual List<Help_Db>? ListHelp { get; set; }
+        public virtual List<File_Dethi_Db>? list_File_Dethi { get; set; }
     }
 }

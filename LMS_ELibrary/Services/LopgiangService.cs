@@ -64,7 +64,9 @@ namespace LMS_ELibrary.Services
                 var result = await _context.lopgiangday_Dbs.SingleOrDefaultAsync(p => p.LopgiangdayID == id);
                 if (result != null)
                 {
+                    //cap nhat lai thoi giang truy cap
                     result.Truycapgannhat = DateTime.Now;
+
                     var col = _context.Entry(result);
                     await col.Reference(p => p.User).LoadAsync();
                     User_Db user = new User_Db();
@@ -88,16 +90,7 @@ namespace LMS_ELibrary.Services
                     monhoc.Tinhtrang = result.Monhoc.Tinhtrang;
                     monhoc.TobomonId = result.Monhoc.TobomonId;
 
-                   
-
-
-
                     result.Monhoc = monhoc;
-
-                    
-                    
-
-                   
 
                     Lopgiangday_Model lop = new Lopgiangday_Model();
                     lop = _mapper.Map<Lopgiangday_Model>(result);
@@ -113,6 +106,138 @@ namespace LMS_ELibrary.Services
             }catch(Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<KqJson> addLopgiang(Lopgiangday_Model lopgiangday_Model)
+        {
+            try
+            {
+                if (lopgiangday_Model != null)
+                {
+                    Lopgiangday_Db lopgiangday_Db = new Lopgiangday_Db();
+                    lopgiangday_Db.TenLop = lopgiangday_Model.TenLop;
+                    lopgiangday_Db.UserID=lopgiangday_Model.UserID;
+                    lopgiangday_Db.MonhocID=lopgiangday_Model.MonhocID;
+                    lopgiangday_Db.Thoigian = lopgiangday_Model.Thoigian;
+                    lopgiangday_Db.Truycapgannhat = DateTime.Now;
+
+                    await _context.lopgiangday_Dbs.AddAsync(lopgiangday_Db);
+                    int row = await _context.SaveChangesAsync();
+                    if (row > 0)
+                    {
+                        KqJson kq=new KqJson();
+                        kq.Status = true;
+                        kq.Message = "them thanh cong";
+
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Them thai bai");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request!");
+                }
+            } catch (Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> editLopgiang(int lopgiang_id, Lopgiangday_Model lopgiang)
+        {
+            try
+            {
+                if(lopgiang_id!=null && lopgiang != null)
+                {
+                    var result = await _context.lopgiangday_Dbs.SingleOrDefaultAsync(p=>p.LopgiangdayID==lopgiang_id);
+                    if (result != null)
+                    {
+                        result.TenLop = lopgiang.TenLop != null ? result.TenLop = lopgiang.TenLop : result.TenLop;
+                        result.UserID = lopgiang.UserID != null ? result.UserID = lopgiang.UserID : result.UserID;
+                        result.MonhocID = lopgiang.MonhocID != null ? result.MonhocID = lopgiang.MonhocID : result.MonhocID;
+                        result.Thoigian = lopgiang.Thoigian != null ? result.Thoigian = lopgiang.Thoigian : result.Thoigian;
+
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            KqJson kq = new KqJson();
+                            kq.Status = true;
+                            kq.Message = "Cap nhat thanh cong";
+
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Cap nhat that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> deleteLopgiang(int lopgiang_id)
+        {
+            try
+            {
+                if (lopgiang_id != null)
+                {
+                    var result = await _context.lopgiangday_Dbs.SingleOrDefaultAsync(p=>p.LopgiangdayID==lopgiang_id);
+                    if (result != null)
+                    {
+                        _context.lopgiangday_Dbs.Remove(result);
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            KqJson kq = new KqJson();
+                            kq.Status = true;
+                            kq.Message = "Xoa thanh cong";
+
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Xoa that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Fuond");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
             }
         }
     }

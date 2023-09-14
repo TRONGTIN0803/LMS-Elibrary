@@ -4,6 +4,7 @@ using LMS_ELibrary.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_ELibrary.Migrations
 {
     [DbContext(typeof(LMS_ELibraryContext))]
-    partial class LMS_ELibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230914035546_CreateDb_V3")]
+    partial class CreateDb_V3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

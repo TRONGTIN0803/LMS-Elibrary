@@ -7,5 +7,7 @@ namespace LMS_ELibrary.ServiceInterface
         Task<IEnumerable<Help_Model>> getAlllisthotro();
 
         Task<KqJson> PostHelp(Help_Model help);
+
+        Task<KqJson> addHelp(Help_Model help);
     }
 }

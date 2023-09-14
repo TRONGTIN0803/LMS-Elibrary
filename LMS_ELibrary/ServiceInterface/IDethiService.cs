@@ -1,4 +1,5 @@
-﻿using LMS_ELibrary.Model;
+﻿using LMS_ELibrary.Data;
+using LMS_ELibrary.Model;
 
 namespace LMS_ELibrary.ServiceInterface
 {
@@ -12,6 +13,8 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<KqJson> tao_dethi_nganhangcauhoi(Dethi_Model dethi, List<int> idQues);
 
+        Task<KqJson> tao_dethi_tructiep(Tao_cauhoi_tructiep_Request_DTO model);
+
         Task<IEnumerable<Dethi_Model>> searchDethi(string madethi);
 
         Task<Dethi_Model> chitietDethi(int id);
@@ -22,6 +25,8 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<KqJson> deleteDethi(int id);
 
+        Task<KqJson> tai_len_Dethi(int user_id,List<IFormFile>files);
 
+        Task<KqJson> them_File_vao_Dethi(int dethi_id,File_Dethi_Db file);
     }
 }

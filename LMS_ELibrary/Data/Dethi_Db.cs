@@ -20,8 +20,9 @@ namespace LMS_ELibrary.Data
         public DateTime Ngaytao { get; set; }
         public int? MonhocID { get; set; }
         
-        public string? File_Path { get; set; }
+        public int? FileId { get; set; }
 
+        public virtual File_Dethi_Db? File_Dethi { get; set; }
         public virtual User_Db? User { get; set; }
         public virtual Monhoc_Db? Monhoc { get; set; }
         public virtual List<Ex_QA_Db>? ListExQA { get; set; }

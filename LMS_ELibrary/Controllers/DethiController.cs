@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using LMS_ELibrary.ServiceInterface;
+using LMS_ELibrary.Data;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -44,6 +45,12 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _dethiService.tao_dethi_nganhangcauhoi(dethi,listnew)); 
         }
 
+        [HttpPost("addDethiTructiep")]
+        public async Task<IActionResult> addDethitructiep(Tao_cauhoi_tructiep_Request_DTO model)
+        {
+            return Ok(await _dethiService.tao_dethi_tructiep(model));
+        }
+
         [HttpGet("searchDethi/{madethi}")]
         public async Task<IActionResult>searchDethi(string madethi)
         {
@@ -72,6 +79,18 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>deleteDethi(int id)
         {
             return Ok(await _dethiService.deleteDethi(id));
+        }
+
+        [HttpPost("tai_len_Dethi")]
+        public async Task<IActionResult>tailenDethi(int user_id, List<IFormFile> files)
+        {
+            return Ok(await _dethiService.tai_len_Dethi(user_id, files));
+        }
+
+        [HttpPut("them_File_vao_Dethi/{dethi_id}")]
+        public async Task<IActionResult> themFilevaoDethi(int dethi_id, File_Dethi_Db file)
+        {
+            return Ok(await _dethiService.them_File_vao_Dethi(dethi_id, file));
         }
     }
 }

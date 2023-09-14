@@ -19,7 +19,7 @@ namespace LMS_ELibrary.Services
             _mapper = mapper;
 
         }
-
+        //Status = -1 => luu nhap ; 0 => cho duyet ; 1 => da duyet ; 2 => huy yeu cau
         public async Task<IEnumerable<Monhoc_Model>> getAllMonhoc()
         {
             var monhoc = await (from x in _context.monhoc_Dbs orderby x.TenMonhoc ascending select x).ToListAsync();
@@ -277,6 +277,281 @@ namespace LMS_ELibrary.Services
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<KqJson> editMonhoc(int monhoc_id, Monhoc_Model monhoc)
+        {
+            try
+            {
+                KqJson kq = new KqJson();
+                if(monhoc_id!=null && monhoc != null)
+                {
+                    var result = await _context.monhoc_Dbs.SingleOrDefaultAsync(p => p.MonhocID == monhoc_id);
+                    if (result != null)
+                    {
+                        result.TenMonhoc = monhoc.TenMonhoc != null ? result.TenMonhoc = monhoc.TenMonhoc : result.TenMonhoc;
+                        result.MaMonhoc = monhoc.MaMonhoc != null ? result.MaMonhoc = monhoc.MaMonhoc : result.MaMonhoc;
+                        result.Mota = monhoc.Mota != null ? result.Mota = monhoc.Mota : result.Mota;
+                        result.TobomonId = monhoc.TobomonId != null ? result.TobomonId = monhoc.TobomonId : result.TobomonId;
+
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Thay doi thanh cong";
+                        }
+                        else
+                        {
+                            throw new Exception("Thay doi khong thanh cong");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+
+
+                return kq;
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        //Status = 0 => cho duyet (gui yeu cau) ; 2 => huy yeu cau
+        public async Task<KqJson> setTrangthai(List<int> monhoc_id, int status)
+        {
+            try
+            {
+                if(monhoc_id.Count>0 && status != null)
+                {
+                    if (status > 2 || status < -1)
+                    {
+                        throw new Exception("Request Params not Suitable!");
+                    }
+                    KqJson kq = new KqJson();
+                    foreach(int monoc in monhoc_id)
+                    {
+                        var result = await _context.monhoc_Dbs.SingleOrDefaultAsync(p => p.MonhocID == monoc);
+                        if (result != null)
+                        {
+                            if (status == 0)
+                            {
+                                if (result.Tinhtrang == -1)
+                                {
+                                    result.Tinhtrang = 0;
+                                }
+                                else
+                                {
+                                    throw new Exception("Tinh trang khong phu hop de gui yeu cau");
+                                }
+                            }
+                            else if (status == 2)
+                            {
+                                if (result.Tinhtrang == 0)
+                                {
+                                    result.Tinhtrang = 2;
+                                }
+                                else
+                                {
+                                    throw new Exception("Đang có phần tử không ở trạng thái chờ....");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
+                    }
+                    int row = await _context.SaveChangesAsync();
+                    if (row ==monhoc_id.Count)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Cap nhat trang thai thanh cong";
+                    }
+                    else
+                    {
+                        throw new Exception("Cap nhat trang thai that bai");
+                    }
+
+                    return kq;
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message=e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> addMonhoc(Monhoc_Model monhoc)
+        {
+            try
+            {
+                if (monhoc != null)
+                {
+                    KqJson kq = new KqJson();
+                    Monhoc_Db mh = new Monhoc_Db();
+                    mh.TenMonhoc = monhoc.TenMonhoc;
+                    mh.MaMonhoc = monhoc.MaMonhoc;
+                    mh.Mota = monhoc.Mota;
+                    mh.Tinhtrang = -1;
+                    mh.TobomonId = monhoc.TobomonId;
+
+                    _context.monhoc_Dbs.Add(mh);
+                    int row = await _context.SaveChangesAsync();
+                    if (row > 0)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Them thanh cong";
+                    }
+                    else
+                    {
+                        throw new Exception("Them thai bai");
+                    }
+
+
+                    return kq;
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<object> locMonhoc_theo_Tinhtrang(int status)
+        {
+            try
+            {
+                if (status != null)
+                {
+                    if (status < -1 || status > 2)
+                    {
+                        throw new Exception("Request Params not Suitable!");
+                    }
+                    else
+                    {
+                        List<Monhoc_Model> monhoc = new List<Monhoc_Model>();
+                        var result = await (from mh in _context.monhoc_Dbs where mh.Tinhtrang == status select mh).ToListAsync();
+                        if (result.Count>0)
+                        {
+                            foreach (var tm in result)
+                            {
+                                var col = _context.Entry(tm);
+                                col.Reference(p => p.Tobomon).Load();
+
+                                Tobomon_Db _tbm = new Tobomon_Db();
+                                _tbm.TobomonName = tm.Tobomon.TobomonName;
+
+                                tm.Tobomon = _tbm;
+                            }
+                            monhoc = _mapper.Map<List<Monhoc_Model>>(result);
+                            foreach (var m in monhoc)
+                            {
+                                if (m.Tinhtrang == "0")
+                                {
+                                    m.Tinhtrang = "Cho Duyet";
+                                }else if (m.Tinhtrang == "1")
+                                {
+                                    m.Tinhtrang = "Da Duyet";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
+
+                        return monhoc;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+                
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message=e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> deleteMonhoc(int monhoc_id)
+        {
+            try
+            {
+                if (monhoc_id != null)
+                {
+                    KqJson kq = new KqJson();
+                    var result = await _context.monhoc_Dbs.SingleOrDefaultAsync(p=>p.MonhocID==monhoc_id);
+                    if (result != null)
+                    {
+                        // chi xoa duoc mon co tinhtrang = 0 (nhap) or 2 (huy)
+                        if(result.Tinhtrang==-1 || result.Tinhtrang == 2)
+                        {
+                            _context.monhoc_Dbs.Remove(result);
+                            int row = await _context.SaveChangesAsync();
+                            if (row > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Xoa thanh cong";
+                            }
+                            else
+                            {
+                                throw new Exception("Xoa that bai");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Khong the xoa phan tu nay");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+
+                    return kq;
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
             }
         }
     }

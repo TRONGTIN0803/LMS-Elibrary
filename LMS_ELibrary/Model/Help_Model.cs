@@ -8,7 +8,7 @@ namespace LMS_ELibrary.Model
        
         public string? Noidung { get; set; }
        
-        public DateTime? NgayGui { get; set; }
+        public DateTime NgayGui { get; set; }
         public int? UserID { get; set; }
     }
 }

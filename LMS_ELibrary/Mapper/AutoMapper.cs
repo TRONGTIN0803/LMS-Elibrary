@@ -20,6 +20,7 @@ namespace LMS_ELibrary.Mapper
             CreateMap<Thongbao_Db, Thongbao_Model>();
             CreateMap<Help_Db, Help_Model>();
             CreateMap<Avt_Db, Avt_Model>();
+            CreateMap<Tobomon_Db, Tobomon_Model>();
 
         }
     }
