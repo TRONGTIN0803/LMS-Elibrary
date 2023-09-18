@@ -4,6 +4,7 @@ using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -17,8 +18,8 @@ namespace LMS_ELibrary.Controllers
             _tailieuService = tailieuService;
         }
 
-        [HttpGet("getall/{user_id}")]
-        public async Task<IActionResult> getalltailieu(int user_id)
+        [HttpGet("getall")]
+        public async Task<IActionResult> getalltailieu([FromQuery]int user_id)
         {
             return Ok(await _tailieuService.getAlltailieu(user_id));
         }
@@ -45,6 +46,12 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>delleteTailieu(int id)
         {
             return Ok(await _tailieuService.delTailieu(id));
+        }
+
+        [HttpPost("TestFileBody")]
+        public async Task<IActionResult>testne(Uptailieu_DTOcs tailieu, IFormFile file)
+        {
+            return Ok(await _tailieuService.TestUpfile(tailieu,file));
         }
     }
 }

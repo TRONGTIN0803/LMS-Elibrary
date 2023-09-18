@@ -3,19 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMS_ELibrary.Data
 {
-    [Table("Chude")]
-    public class Chude_Db
+    [Table("MonhocYeuthich_Db")]
+    public class MonhocYeuthich_Db
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ChudeID { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string Tenchude { get; set; }
+        public int MonhocyeuthichID { get; set; }
+        public int? UserId { get; set; }
         public int? MonhocId { get; set; }
-        public int? TailieuId { get; set; }
 
-        public virtual List<Tailieu_Baigiang_Db>? ListTailieu_Baigiang { get; set; }
+        public virtual User_Db? User { get; set; }
         public virtual Monhoc_Db? Monhoc { get; set; }
     }
 }

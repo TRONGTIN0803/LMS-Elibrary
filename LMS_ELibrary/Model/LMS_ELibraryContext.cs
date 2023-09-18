@@ -23,6 +23,11 @@ namespace LMS_ELibrary.Model
         public DbSet<User_Db>user_Dbs { get; set; }
         public DbSet<Avt_Db>avt_Db { get; set; }
         public DbSet<File_Dethi_Db>file_Dethi_Db { get; set; }
+        public DbSet<MonhocYeuthich_Db>monhocYeuthich_Dbs { get; set; }
+        public DbSet<Role_Db>role_Dbs { get; set; }
+        public DbSet<Hoidap_Db>hoidap_Dbs { get; set; }
+        public DbSet<Cautrl_Db>cautrl_Dbs { get; set; }
+        public DbSet<CauhoiYeuthich_Db>cauhoiYeuthich_Dbs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

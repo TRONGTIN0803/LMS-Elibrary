@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using static System.Net.WebRequestMethods;
 
 namespace LMS_ELibrary.Services
 {
@@ -275,6 +278,70 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        
+        public async Task<KqJson> TestUpfile( [FromForm] Uptailieu_DTOcs tailieu,IFormFile file)
+        {
+            try
+            {
+                if (tailieu != null)
+                    
+                {
+                    KqJson kq = new KqJson();
+                    Tailieu_Baigiang_Db listadd = new Tailieu_Baigiang_Db();
+                    
+                        string path = "";
+                        double size = tailieu.File.Length;
+                        var fileName = Path.GetFileName(tailieu.File.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\TaiNguyen\", fileName);
+                        Tailieu_Baigiang_Db _tailieu = new Tailieu_Baigiang_Db();
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            await tailieu.File.CopyToAsync(stream);
+                            path = filePath;
+                        }
+                        if (path != null)
+                        {
+                        //_tailieu.UserId = tailieu.id;
+                        //_tailieu.TenDoc = fileName;
+                        //_tailieu.Sualancuoi = DateTime.Now;
+                        //_tailieu.Status = 0; // status =0 -> dang duyet ; 1 -> da duyet
+                        //_tailieu.Type = 0;  // type = 0 -> tailieu ; 1-> baigiang
+                        //_tailieu.Path = path;
+                        //_tailieu.Kichthuoc = size;
+                        kq.Status = true;
+                        kq.Message = path;
+
+                        }
+                       
+                    
+                    //await _context.tailieu_Baigiang_Dbs.AddAsync(listadd);
+                    //int row = await _context.SaveChangesAsync();
+                    //if (row > 0)
+                    //{
+                    //    kq.Status = true;
+                    //    kq.Message = "Tai len thanh cong";
+                    //}
+                    //else
+                    //{
+                    //    throw new Exception("Tai len that bai!");
+                    //}
+
+
+
+                    return kq;
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }
+            catch (Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
     }
 }

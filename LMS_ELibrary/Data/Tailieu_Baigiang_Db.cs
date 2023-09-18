@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace LMS_ELibrary.Data
 {
-    [Table("Tailieu_Baigiang")]
+    [Table("Tailieu")]
     public class Tailieu_Baigiang_Db
     {
       
@@ -27,6 +27,9 @@ namespace LMS_ELibrary.Data
         public int Status { get; set; }
         [Required]
         public int Type { get; set; }
+        public int? NguoiduyetId { get; set; }
+        public DateTime? Ngayduyet { get; set; }
+        public string? Ghichu { get; set; }
 
         public virtual User_Db? User { get; set; }
         public virtual Monhoc_Db? Monhoc { get; set; }

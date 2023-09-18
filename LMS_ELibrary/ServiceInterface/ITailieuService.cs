@@ -1,4 +1,5 @@
 ﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.ServiceInterface
 {
@@ -12,5 +13,7 @@ namespace LMS_ELibrary.ServiceInterface
         Task<KqJson> delTailieu(int id);
 
         Task<KqJson> them_vao_Monhoc_va_Chude(int monhoc_id, int chude_id, List<int> tailieu_id);
+
+        Task<KqJson> TestUpfile(Uptailieu_DTOcs tailieu,IFormFile file);
     }
 }
