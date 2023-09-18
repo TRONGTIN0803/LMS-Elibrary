@@ -14,7 +14,7 @@ namespace LMS_ELibrary.Data
         [Required]
         public string Password { get; set; }
         [Required]
-        public int Role { get; set; }
+        public int? Role { get; set; }
         public string? Avt { get; set; }
         [Required]
         public string UserFullname { get; set; }
@@ -25,6 +25,7 @@ namespace LMS_ELibrary.Data
         public string Sdt { get; set; }
         public string? Diachi { get; set; }
         public int? AvtId { get; set; }
+        //public int? RoleId { get; set; }
 
         public virtual List<Avt_Db>? ListAvt { get; set; }
         public virtual List<Lopgiangday_Db>? ListLopgiangday { get; set; }
@@ -37,5 +38,7 @@ namespace LMS_ELibrary.Data
         public virtual List<CauhoiVandap_Db>? list_CauhoiVandap { get; set; }
         public virtual List<Cautrl_Db>? list_Cautrl { get; set; }
         public virtual List<CauhoiYeuthich_Db>? list_Cauhoiyeuthich { get; set; }
+
+        public virtual Role_Db? RoleDb { get; set; }
     }
 }

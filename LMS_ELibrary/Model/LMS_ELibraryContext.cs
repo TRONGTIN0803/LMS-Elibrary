@@ -135,16 +135,16 @@ namespace LMS_ELibrary.Model
                         .HasConstraintName("FK_cauhoiyeuthcih_user");
 
             });
-            //modelBuilder.Entity<CauhoiYeuthich_Db>(entity =>
-            //{
-            //    // Thiết lập cho bảng CauhoiVandap
-            //    entity.HasOne(e => e.Cauhoi)
-            //            .WithMany(user => user.list_Cauhoiyeuthich)
-            //            .HasForeignKey("CauhoiId")
-            //            .OnDelete(DeleteBehavior.Cascade)
-            //            .HasConstraintName("FK_cauhoiyeuthcih_cauhoi");
+            modelBuilder.Entity<User_Db>(entity =>
+            {
+                // Thiết lập cho bảng CauhoiVandap
+                entity.HasOne(e => e.RoleDb)
+                        .WithMany(user => user.listUser)
+                        .HasForeignKey("Role")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_user_role");
 
-            //});
+            });
 
         }
     }
