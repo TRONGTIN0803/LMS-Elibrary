@@ -8,11 +8,11 @@ namespace LMS_ELibrary.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int WishQuesID { get; set; }
+        public int CauhoiYeuthichID { get; set; }
         public int? UserId { get; set; }
         public int? CauhoiId { get; set; }
 
         public virtual User_Db? User { get; set; }
-        public virtual Hoidap_Db? Cauhoi { get; set; }
+        public virtual CauhoiVandap_Db? Cauhoi { get; set; }
     }
 }

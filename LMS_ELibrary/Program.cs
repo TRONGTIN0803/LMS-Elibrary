@@ -26,6 +26,7 @@ builder.Services.AddScoped<IDethiService, DethiService>();
 builder.Services.AddScoped<ICauhoiService, CauhoiService>();
 builder.Services.AddScoped<IThongbaoService, ThongbaoService>();
 builder.Services.AddScoped<IHotroService, HotroService>();
+builder.Services.AddScoped<IHoidapService, HoidapService>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

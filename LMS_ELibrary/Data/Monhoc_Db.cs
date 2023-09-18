@@ -20,13 +20,12 @@ namespace LMS_ELibrary.Data
         public int Tinhtrang { get; set; }
         public int? TobomonId { get; set; }
         public virtual Tobomon_Db Tobomon { get; set; }
-        public int? TeacherId { get; set; }
 
         public virtual List<Lopgiangday_Db> ListLopgiangday { get; set; }
         public virtual List<Tailieu_Baigiang_Db> ListTailieu_Baigiang { get; set; }
         public virtual List<Dethi_Db> ListDethi { get; set; }
         public virtual List<QA_Db> ListCauhoi { get; set; }
-        public virtual User_Db? User { get; set; }
+        public virtual List<MonhocYeuthich_Db>? List_Monhocyeuthich { get; set; }
 
     }
 }

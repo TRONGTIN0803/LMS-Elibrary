@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMS_ELibrary.Data
 {
-    [Table("CauTrl")]
+    [Table("Cautrl")]
     public class Cautrl_Db
     {
         [Key]
@@ -14,7 +14,7 @@ namespace LMS_ELibrary.Data
         public int? UserId { get; set; }
         public int? CauhoiId { get; set; }
 
-        public virtual Hoidap_Db? Cauhoi { get; set; }
         public virtual User_Db? User { get; set; }
+        public virtual CauhoiVandap_Db? Cauhoi { get; set; }
     }
 }

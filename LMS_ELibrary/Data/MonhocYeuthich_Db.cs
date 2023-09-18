@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMS_ELibrary.Data
 {
-    [Table("MonhocYeuthich_Db")]
+    [Table("MonhocYeuthich")]
     public class MonhocYeuthich_Db
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int MonhocyeuthichID { get; set; }
+        public int MonhocYeuthichID { get; set; }
         public int? UserId { get; set; }
         public int? MonhocId { get; set; }
 
