@@ -5,6 +5,7 @@ namespace LMS_ELibrary.Model
 {
     public class Monhoc_Model
     {
+        public int? MonhocID { get; set; }
         public string? TenMonhoc { get; set; }
         
         public string? MaMonhoc { get; set; }
@@ -12,6 +13,7 @@ namespace LMS_ELibrary.Model
         public string? Mota { get; set; }
         public string? Tinhtrang { get; set; }
         public int? TobomonId { get; set; }
+        public string? TrangthaiYeuthich { get; set; }
 
         public virtual Tobomon_Model? Tobomon { get; set; }
 

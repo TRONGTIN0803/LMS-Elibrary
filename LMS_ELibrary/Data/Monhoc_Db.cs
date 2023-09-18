@@ -25,6 +25,7 @@ namespace LMS_ELibrary.Data
         public virtual List<Tailieu_Baigiang_Db> ListTailieu_Baigiang { get; set; }
         public virtual List<Dethi_Db> ListDethi { get; set; }
         public virtual List<QA_Db> ListCauhoi { get; set; }
+        public virtual List<MonhocYeuthich_Db>? List_Monhocyeuthich { get; set; }
 
     }
 }

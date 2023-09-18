@@ -17,9 +17,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpGet("getAllMonhoc")]
-        public async Task<IActionResult> getAllMonhoc()
+        public async Task<IActionResult> getAllMonhoc([FromQuery]int userid)
         {
-            var result=await _monhocService.getAllMonhoc();
+            var result=await _monhocService.getAllMonhoc(userid);
             return Ok(result);
         }
 
@@ -42,10 +42,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _monhocService.locMonhoc_theo_Tinhtrang(status));
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult>xemChiTietMonHoc(int id)
+        [HttpGet("chitiet")]
+        public async Task<IActionResult>xemChiTietMonHoc([FromQuery]int id,[FromQuery]int user_id)
         {
-            var result =await  _monhocService.chitietMonhoc(id);
+            var result =await  _monhocService.chitietMonhoc(id,user_id);
             return Ok(result);
         }
 
@@ -70,6 +70,17 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>deleteMonhoc(int monhoc_id)
         {
             return Ok(await _monhocService.deleteMonhoc(monhoc_id));
+        }
+
+        [HttpPost("ThemYeuthich")]
+        public async Task<IActionResult>themyeuthich(MonhocYeuthich_Model model)
+        {
+            return Ok(await _monhocService.ThemYeuthichMonhoc(model));
+        }
+        [HttpPost("HuyYeuthich")]
+        public async Task<IActionResult> Huyyeuthich(MonhocYeuthich_Model model)
+        {
+            return Ok(await _monhocService.HuyYeuthichMonhoc(model));
         }
     }
 }

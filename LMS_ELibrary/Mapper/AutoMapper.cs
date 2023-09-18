@@ -21,6 +21,8 @@ namespace LMS_ELibrary.Mapper
             CreateMap<Help_Db, Help_Model>();
             CreateMap<Avt_Db, Avt_Model>();
             CreateMap<Tobomon_Db, Tobomon_Model>();
+            CreateMap<CauhoiVandap_Db, CauhoiVandap_Model>();
+            CreateMap<Cautrl_Db, Cautrl_Model>();
 
         }
     }

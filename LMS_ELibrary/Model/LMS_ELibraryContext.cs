@@ -23,6 +23,10 @@ namespace LMS_ELibrary.Model
         public DbSet<User_Db>user_Dbs { get; set; }
         public DbSet<Avt_Db>avt_Db { get; set; }
         public DbSet<File_Dethi_Db>file_Dethi_Db { get; set; }
+        public DbSet<MonhocYeuthich_Db>monhocYeuthich_Dbs { get; set; }
+        public DbSet<CauhoiVandap_Db>cauhoiVandap_Dbs { get; set; }
+        public DbSet<Cautrl_Db>cautrl_Dbs { get; set; }
+        public DbSet<CauhoiYeuthich_Db>cauhoiYeuthich_Dbs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -66,7 +70,81 @@ namespace LMS_ELibrary.Model
                         .HasConstraintName("FK_File_User"); 
 
             });
+            modelBuilder.Entity<MonhocYeuthich_Db>(entity => {
+                // Thiết lập cho bảng File_Dethi
+                entity.HasOne(e => e.User)
+                        .WithMany(user => user.list_Monhocyeuthich)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_MonYeuthich_User");
 
+            });
+            //modelBuilder.Entity<MonhocYeuthich_Db>(entity => {
+            //    // Thiết lập cho bảng MonhocYeuthich
+            //    entity.HasOne(e => e.Monhoc)
+            //            .WithMany(user => user.List_Monhocyeuthich)
+            //            .HasForeignKey("MonhocId")
+            //            .OnDelete(DeleteBehavior.SetNull)
+            //            .HasConstraintName("FK_MonYeuthich_monhoc");
+
+            //});
+            modelBuilder.Entity<CauhoiVandap_Db>(entity => {
+                // Thiết lập cho bảng CauhoiVandap
+                entity.HasOne(e => e.User)
+                        .WithMany(user => user.list_CauhoiVandap)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Cauhoicandap_user");
+
+            });
+            //modelBuilder.Entity<CauhoiVandap_Db>(entity => {
+            //    // Thiết lập cho bảng CauhoiVandap
+            //    entity.HasOne(e => e.Tailieu)
+            //            .WithMany(user => user.list_Cauhoivandap)
+            //            .HasForeignKey("TailieuId")
+            //            .OnDelete(DeleteBehavior.SetNull)
+            //            .HasConstraintName("FK_Cauhoicandap_tailieu");
+
+            //});
+            modelBuilder.Entity<Cautrl_Db>(entity =>
+            {
+                // Thiết lập cho bảng CauhoiVandap
+                entity.HasOne(e => e.User)
+                        .WithMany(user => user.list_Cautrl)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Cautrl_user");
+
+            });
+            //modelBuilder.Entity<Cautrl_Db>(entity => {
+            //    // Thiết lập cho bảng CauhoiVandap
+            //    entity.HasOne(e => e.Cauhoi)
+            //            .WithMany(user => user.list_Cautrl)
+            //            .HasForeignKey("CauhoiId")
+            //            .OnDelete(DeleteBehavior.Cascade)
+            //            .HasConstraintName("FK_Cautrl_cauhoi");
+
+            //});
+            modelBuilder.Entity<CauhoiYeuthich_Db>(entity =>
+            {
+                // Thiết lập cho bảng CauhoiVandap
+                entity.HasOne(e => e.User)
+                        .WithMany(user => user.list_Cauhoiyeuthich)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_cauhoiyeuthcih_user");
+
+            });
+            //modelBuilder.Entity<CauhoiYeuthich_Db>(entity =>
+            //{
+            //    // Thiết lập cho bảng CauhoiVandap
+            //    entity.HasOne(e => e.Cauhoi)
+            //            .WithMany(user => user.list_Cauhoiyeuthich)
+            //            .HasForeignKey("CauhoiId")
+            //            .OnDelete(DeleteBehavior.Cascade)
+            //            .HasConstraintName("FK_cauhoiyeuthcih_cauhoi");
+
+            //});
 
         }
     }
