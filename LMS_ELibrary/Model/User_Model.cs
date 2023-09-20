@@ -13,12 +13,14 @@ namespace LMS_ELibrary.Model
         public User_Model()
         {
         }
-
+        public int? UserID { get; set; }
+        public string? MaUser { get; set; }
         public string? UserName { get; set; }
      
         public string? Password { get; set; }
 
         public string? Role { get; set; }
+        public string? Phanquyen { get; set; }
         public string? Avt { get; set; }
      
         public string? UserFullname { get; set; }
@@ -28,5 +30,6 @@ namespace LMS_ELibrary.Model
       
         public string? Sdt { get; set; }
         public string? Diachi { get; set; }
+
     }
 }

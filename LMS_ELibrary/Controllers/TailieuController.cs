@@ -23,6 +23,18 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.getAlltailieu(user_id));
         }
 
+        [HttpGet("search/{key}")]
+        public async Task<IActionResult> searchBaigiang(int user_id, string key)
+        {
+            return Ok(await _tailieuService.searchBaigiang(user_id, key));
+        }
+
+        [HttpGet("Filter/{Monhoc_Id}")]
+        public async Task<IActionResult> filterBaigiang(int user_id, int Monhoc_Id)
+        {
+            return Ok(await _tailieuService.filterBaigiang(user_id, Monhoc_Id));
+        }
+
         [HttpPut("updateTailieu/{id}")]
         public async Task<IActionResult> updateTailieu(int id,Tailieu_Baigiang_Model tailieu)
         {

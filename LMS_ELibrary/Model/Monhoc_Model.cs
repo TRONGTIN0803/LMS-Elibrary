@@ -14,6 +14,7 @@ namespace LMS_ELibrary.Model
         public string? Tinhtrang { get; set; }
         public int? TobomonId { get; set; }
         public string? TrangthaiYeuthich { get; set; }
+        public string? TailieuPheduyet { get; set; }
 
         public virtual Tobomon_Model? Tobomon { get; set; }
 

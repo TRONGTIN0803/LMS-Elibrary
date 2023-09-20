@@ -35,8 +35,7 @@ namespace LMS_ELibrary.Services
                 List<Lopgiangday_Db>listlop=new List<Lopgiangday_Db>();
                 mon.ListTailieu_Baigiang.ForEach(e =>
                 {
-                    if (e.Status == 1)
-                    {
+                   
                         Tailieu_Baigiang_Db tailieu = new Tailieu_Baigiang_Db();
                         tailieu.UserId = e.UserId;
                         tailieu.TenDoc = e.TenDoc;
@@ -47,7 +46,7 @@ namespace LMS_ELibrary.Services
                         tailieu.Kichthuoc = e.Kichthuoc;
                         tailieu.ChudeID = e.ChudeID;
                         list.Add(tailieu);
-                    }
+                    
 
 
                 });
@@ -68,11 +67,22 @@ namespace LMS_ELibrary.Services
 
             foreach (Monhoc_Model model in modelmh)
             {
+                int tongtailieu = model.ListTailieu_Baigiang.Count;
+                int tailieudaduyet = 0;
 
                 foreach (var x1 in model.ListTailieu_Baigiang)
                 {
-                    x1.Status = "Da duyet";
+                    if (x1.Status == "1")
+                    {
+                        x1.Status = "Da duyet";
+                        tailieudaduyet++;
+                    }else if (x1.Status == "0")
+                    {
+                        x1.Status = "Cho duyet";
+                    }
+                    
                 }
+                model.TailieuPheduyet = tailieudaduyet + "/" + tongtailieu;
                 var check = await (from c in _context.monhocYeuthich_Dbs
                                    where c.MonhocId == model.MonhocID && c.UserId == user_id
                                    select c).ToListAsync();

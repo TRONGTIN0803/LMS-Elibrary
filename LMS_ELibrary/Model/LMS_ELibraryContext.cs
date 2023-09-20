@@ -141,8 +141,41 @@ namespace LMS_ELibrary.Model
                 entity.HasOne(e => e.RoleDb)
                         .WithMany(user => user.listUser)
                         .HasForeignKey("Role")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_user_role");
+
+            });
+
+            modelBuilder.Entity<Monhoc_Db>(entity =>
+            {
+                // Thiết lập cho bảng MOnhoc
+                entity.HasOne(e => e.GiangVien)
+                        .WithMany(GiangVien => GiangVien.list_Mongiangday)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Monhoc_user");
+
+            });
+
+            modelBuilder.Entity<Chude_Db>(entity =>
+            {
+                // Thiết lập cho bảng Chude
+                entity.HasOne(e => e.Monhoc)
+                        .WithMany(Monhoc => Monhoc.list_Chude)
+                        .HasForeignKey("Monhoc_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_chude_Monhoc");
+
+            });
+
+            modelBuilder.Entity<Lopgiangday_Db>(entity =>
+            {
+                // Thiết lập cho bảng Lop
+                entity.HasOne(e => e.Monhoc)
+                        .WithMany(Monhoc => Monhoc.ListLopgiangday)
+                        .HasForeignKey("MonhocID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_lop_Monhoc");
 
             });
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_ELibrary.Migrations
 {
     [DbContext(typeof(LMS_ELibraryContext))]
-    [Migration("20230918073846_createDb_V5")]
-    partial class createDb_V5
+    [Migration("20230920170628_createDb_V8")]
+    partial class createDb_V8
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -151,12 +151,17 @@ namespace LMS_ELibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChudeID"), 1L, 1);
 
+                    b.Property<int?>("Monhoc_Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("Tenchude")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ChudeID");
+
+                    b.HasIndex("Monhoc_Id");
 
                     b.ToTable("Chude");
                 });
@@ -180,8 +185,14 @@ namespace LMS_ELibrary.Migrations
                     b.Property<int?>("MonhocID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("Ngayduyet")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("Ngaytao")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("Nguoiduyet")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -288,6 +299,9 @@ namespace LMS_ELibrary.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LopgiangdayID"), 1L, 1);
 
+                    b.Property<string>("Malop")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MonhocID")
                         .HasColumnType("int");
 
@@ -341,9 +355,14 @@ namespace LMS_ELibrary.Migrations
                     b.Property<int?>("TobomonId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("MonhocID");
 
                     b.HasIndex("TobomonId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Monhoc");
                 });
@@ -361,6 +380,9 @@ namespace LMS_ELibrary.Migrations
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<bool?>("Yeuthich")
+                        .HasColumnType("bit");
 
                     b.HasKey("MonhocYeuthichID");
 
@@ -434,10 +456,19 @@ namespace LMS_ELibrary.Migrations
                     b.Property<int?>("ChudeID")
                         .HasColumnType("int");
 
+                    b.Property<string>("Ghichu")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double?>("Kichthuoc")
                         .HasColumnType("float");
 
                     b.Property<int?>("MonhocID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("NgayDuyet")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Nguoiduyet")
                         .HasColumnType("int");
 
                     b.Property<string>("Path")
@@ -543,12 +574,17 @@ namespace LMS_ELibrary.Migrations
                     b.Property<bool?>("Gioitinh")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Nganh")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Ngaysuadoi")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Role")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Sdt")
@@ -632,6 +668,17 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LMS_ELibrary.Data.Chude_Db", b =>
+                {
+                    b.HasOne("LMS_ELibrary.Data.Monhoc_Db", "Monhoc")
+                        .WithMany("list_Chude")
+                        .HasForeignKey("Monhoc_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_chude_Monhoc");
+
+                    b.Navigation("Monhoc");
+                });
+
             modelBuilder.Entity("LMS_ELibrary.Data.Dethi_Db", b =>
                 {
                     b.HasOne("LMS_ELibrary.Data.File_Dethi_Db", "File_Dethi")
@@ -696,7 +743,9 @@ namespace LMS_ELibrary.Migrations
                 {
                     b.HasOne("LMS_ELibrary.Data.Monhoc_Db", "Monhoc")
                         .WithMany("ListLopgiangday")
-                        .HasForeignKey("MonhocID");
+                        .HasForeignKey("MonhocID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_lop_Monhoc");
 
                     b.HasOne("LMS_ELibrary.Data.User_Db", "User")
                         .WithMany("ListLopgiangday")
@@ -712,6 +761,14 @@ namespace LMS_ELibrary.Migrations
                     b.HasOne("LMS_ELibrary.Data.Tobomon_Db", "Tobomon")
                         .WithMany("ListMonhoc")
                         .HasForeignKey("TobomonId");
+
+                    b.HasOne("LMS_ELibrary.Data.User_Db", "GiangVien")
+                        .WithMany("list_Mongiangday")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Monhoc_user");
+
+                    b.Navigation("GiangVien");
 
                     b.Navigation("Tobomon");
                 });
@@ -777,8 +834,7 @@ namespace LMS_ELibrary.Migrations
                     b.HasOne("LMS_ELibrary.Data.Role_Db", "RoleDb")
                         .WithMany("listUser")
                         .HasForeignKey("Role")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired()
+                        .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_user_role");
 
                     b.Navigation("RoleDb");
@@ -817,6 +873,8 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("ListTailieu_Baigiang");
 
                     b.Navigation("List_Monhocyeuthich");
+
+                    b.Navigation("list_Chude");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.QA_Db", b =>
@@ -860,6 +918,8 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("list_Cautrl");
 
                     b.Navigation("list_File_Dethi");
+
+                    b.Navigation("list_Mongiangday");
 
                     b.Navigation("list_Monhocyeuthich");
                 });

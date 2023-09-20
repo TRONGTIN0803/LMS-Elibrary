@@ -5,6 +5,7 @@ using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace LMS_ELibrary.Services
@@ -179,57 +180,103 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<User_Model> Login(User_Model _user)
+        public async Task<object> Login(User_Model _user)
         {
+            KqJson kq = new KqJson();
             try
             {
-                string username = _user.UserName;
-                string pass = _user.Password;
-                var result = await _context.user_Dbs.SingleOrDefaultAsync(u => u.UserName == username && u.Password == pass);
-                if (result != null)
+                
+                if (_user != null)
                 {
-                    User_Model user = new User_Model();
-                    user = _mapper.Map<User_Model>(result);
-                    user.Password = "***";
-                    if (result.Gioitinh == true)
+                    int role =int.Parse(_user.Role);
+                    string username = _user.UserName;
+                    string pass = _user.Password;
+                    var result = await _context.user_Dbs.SingleOrDefaultAsync(u => u.UserName == username && u.Password == pass);
+                    if (result != null)
                     {
-                        user.Gioitinh = "Nam";
+                        if (result.Role == role)
+                        {
+                            User_Model user = new User_Model();
+                            user = _mapper.Map<User_Model>(result);
+                            user.Password = "***";
+                            
+                            if (result.Gioitinh == true)
+                            {
+                                user.Gioitinh = "Nam";
+                            }
+                            else
+                            {
+                                user.Gioitinh = "Nu";
+                            }
+
+                            if (user.Avt == null)
+                            {
+                                user.Avt = "Khong co Anh dai dien";
+                            }
+
+                            if (result.Role == 0)
+                            {
+                                user.Phanquyen = "Quan ly";
+                                if (user.UserID < 10)
+                                {
+                                    user.MaUser="AD0"+user.UserID;
+                                }
+                                else
+                                {
+                                    user.MaUser = "AD" + user.UserID;
+                                }
+                            }
+                            else if (result.Role == 1)
+                            {
+                                user.Phanquyen = "Giao vien";
+                                
+                                if (user.UserID < 10)
+                                {
+                                    user.MaUser = "GV0" + user.UserID;
+                                }
+                                else
+                                {
+                                    user.MaUser = "GV" + user.UserID;
+                                }
+                            }
+                            else
+                            {
+                                user.Phanquyen = "Hoc sinh";
+                                
+                                if (user.UserID < 10)
+                                {
+                                    user.MaUser = "HV0" + user.UserID;
+                                }
+                                else
+                                {
+                                    user.MaUser = "HV" + user.UserID;
+                                }
+                            }
+
+                            return user;
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
+                        
                     }
                     else
                     {
-                        user.Gioitinh = "Nu";
+                        throw new Exception("Not Found");
                     }
-
-                    if (user.Avt == null)
-                    {
-                        user.Avt = "Khong co Anh dai dien";
-                    }
-
-                    if (result.Role == 0)
-                    {
-                        user.Role = "Quan ly";
-                    }
-                    else if (result.Role == 1)
-                    {
-                        user.Role = "Giao vien";
-                    }
-                    else
-                    {
-                        user.Role = "Hoc sinh";
-                    }
-
-                    return user;
                 }
                 else
                 {
-                    throw new Exception("Not Found");
+                    throw new Exception("Bad request");
                 }
-
-
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message=e.Message;
+
+                return kq;
 
             }
 

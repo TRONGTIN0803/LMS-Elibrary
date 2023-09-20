@@ -15,7 +15,7 @@ namespace LMS_ELibrary.Controllers
             _userService = userService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("loginne")]
         
         public async Task<IActionResult> Login(User_Model user)
         {

@@ -8,6 +8,20 @@ namespace LMS_ELibrary.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<int>(
+                name: "Role",
+                table: "User",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
+            migrationBuilder.AddColumn<int>(
+                name: "RoleDbRoleId",
+                table: "User",
+                type: "int",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
@@ -24,31 +38,44 @@ namespace LMS_ELibrary.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_Role",
+                name: "IX_User_RoleDbRoleId",
                 table: "User",
-                column: "Role");
+                column: "RoleDbRoleId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_user_role",
+                name: "FK_User_Role_RoleDbRoleId",
                 table: "User",
-                column: "Role",
+                column: "RoleDbRoleId",
                 principalTable: "Role",
-                principalColumn: "RoleId",
-                onDelete: ReferentialAction.SetNull);
+                principalColumn: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_user_role",
+                name: "FK_User_Role_RoleDbRoleId",
                 table: "User");
 
             migrationBuilder.DropTable(
                 name: "Role");
 
             migrationBuilder.DropIndex(
-                name: "IX_User_Role",
+                name: "IX_User_RoleDbRoleId",
                 table: "User");
+
+            migrationBuilder.DropColumn(
+                name: "RoleDbRoleId",
+                table: "User");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Role",
+                table: "User",
+                type: "int",
+                nullable: false,
+                defaultValue: 0,
+                oldClrType: typeof(int),
+                oldType: "int",
+                oldNullable: true);
         }
     }
 }

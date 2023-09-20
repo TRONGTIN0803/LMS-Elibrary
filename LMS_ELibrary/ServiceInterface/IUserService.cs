@@ -4,7 +4,7 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface IUserService
     {
-        Task<User_Model> Login(User_Model user);
+        Task<object> Login(User_Model user);
 
         Task<object> checkInfor(int user_id);
 

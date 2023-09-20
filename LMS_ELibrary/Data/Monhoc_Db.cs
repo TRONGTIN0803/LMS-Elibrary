@@ -19,6 +19,7 @@ namespace LMS_ELibrary.Data
         public string Mota { get; set; }
         public int Tinhtrang { get; set; }
         public int? TobomonId { get; set; }
+        public int? UserId { get; set; }
         public virtual Tobomon_Db Tobomon { get; set; }
 
         public virtual List<Lopgiangday_Db> ListLopgiangday { get; set; }
@@ -26,6 +27,8 @@ namespace LMS_ELibrary.Data
         public virtual List<Dethi_Db> ListDethi { get; set; }
         public virtual List<QA_Db> ListCauhoi { get; set; }
         public virtual List<MonhocYeuthich_Db>? List_Monhocyeuthich { get; set; }
+        public virtual User_Db? GiangVien { get; set; }
+        public virtual List<Chude_Db>? list_Chude { get; set; }
 
     }
 }

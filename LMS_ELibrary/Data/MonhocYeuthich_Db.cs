@@ -11,7 +11,7 @@ namespace LMS_ELibrary.Data
         public int MonhocYeuthichID { get; set; }
         public int? UserId { get; set; }
         public int? MonhocId { get; set; }
-
+        public bool? Yeuthich { get; set; }
         public virtual User_Db? User { get; set; }
         public virtual Monhoc_Db? Monhoc { get; set; }
     }

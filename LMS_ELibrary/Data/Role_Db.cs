@@ -13,6 +13,6 @@ namespace LMS_ELibrary.Data
         public string? Mota { get; set; }
         public int? Phanquyen { get; set; }
 
-        public virtual List<User_Db> listUser { get; set; }
+        public virtual List<User_Db>? listUser { get; set; }
     }
 }
