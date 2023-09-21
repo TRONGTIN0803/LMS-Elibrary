@@ -54,9 +54,9 @@ namespace LMS_ELibrary.Services
             return kq;
         }
 
-        public async Task<IEnumerable<Chude_Model>> getAllchude()
+        public async Task<IEnumerable<Chude_Model>> getAllchude(int monhoc_id)
         {
-            var result = await _context.chude_Dbs.ToListAsync();
+            var result = await (from cd in _context.chude_Dbs where cd.Monhoc_Id==monhoc_id select cd).ToListAsync();
             List<Chude_Model> kq = new List<Chude_Model>();
            
             foreach(var chude in result)

@@ -4,6 +4,7 @@ using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -41,16 +42,22 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.editTailieu(id,tailieu));
         }
 
-        [HttpPost("tai_len_Tai_Lieu")]
+        [HttpPost("tai_len_Tai_Nguyen")]
         public async Task<IActionResult> tai_len_Tai_Lieu(int user_id, List<IFormFile> files)
         {
-            return Ok(await _tailieuService.tai_len_Tai_Lieu(user_id, files));
+            return Ok(await _tailieuService.tai_len_Tai_Nguyen(user_id, files));
+        }
+
+        [HttpPost("tai_len_Bai_Giang")]
+        public async Task<IActionResult> tai_len_Bai_Giang(int user_id, List<IFormFile> files)
+        {
+            return Ok(await _tailieuService.tai_len_Bai_Giang(user_id, files));
         }
 
         [HttpPut("them_vao_Monhoc_va_Chude")]
-        public async Task<IActionResult>themvaoMonhocvaChude(int monhoc_id,int chude_id, List<int> tailieu_id)
+        public async Task<IActionResult>themvaoMonhocvaChude(Gui_pheduyet_tailieu_Request_DTO model)
         {
-            return Ok(await _tailieuService.them_vao_Monhoc_va_Chude(monhoc_id, chude_id, tailieu_id));
+            return Ok(await _tailieuService.them_vao_Monhoc_va_Chude(model));
         }
 
         [HttpDelete("delTailieu/{id}")]

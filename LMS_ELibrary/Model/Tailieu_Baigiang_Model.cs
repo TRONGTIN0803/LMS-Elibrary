@@ -18,8 +18,11 @@ namespace LMS_ELibrary.Model
         public string? Status { get; set; }
        
         public string? Type { get; set; }
+        public int? Nguoiduyet { get; set; }
+        public DateTime? NgayDuyet { get; set; }
+        public string? Ghichu { get; set; }
 
         public virtual User_Model? User { get; set; }
-        public virtual Monhoc_Model? Monhoc { get; set; }
+        public virtual Chude_Model? Chude { get; set; }
     }
 }

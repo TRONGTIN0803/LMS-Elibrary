@@ -13,6 +13,8 @@ namespace LMS_ELibrary.Model
         public string? Mota { get; set; }
         public string? Tinhtrang { get; set; }
         public int? TobomonId { get; set; }
+        public int? UserId { get; set; }
+        public string? Giangvien { get; set; }
         public string? TrangthaiYeuthich { get; set; }
         public string? TailieuPheduyet { get; set; }
 

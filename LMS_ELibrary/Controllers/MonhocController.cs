@@ -31,15 +31,15 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpGet("Loc")]//0=>theo ten ; 1=>theo lan truy cap gan nhat
-        public async Task<IActionResult>locMonhoc(int option)
+        public async Task<IActionResult>locMonhoc(int option, int user_id)
         {
-            return Ok(await _monhocService.locMonhoc(option));
+            return Ok(await _monhocService.locMonhoc(option,user_id));
         }
 
         [HttpGet("Loc_theo_tinh_trang")]
-        public async Task<IActionResult>loctheoTinhTrang(int status)
+        public async Task<IActionResult>loctheoTinhTrang(int status,int giangvien_id)
         {
-            return Ok(await _monhocService.locMonhoc_theo_Tinhtrang(status));
+            return Ok(await _monhocService.locMonhoc_theo_Tinhtrang(status, giangvien_id));
         }
 
         [HttpGet("chitiet")]

@@ -41,5 +41,6 @@ namespace LMS_ELibrary.Data
         public virtual List<CauhoiYeuthich_Db>? list_Cauhoiyeuthich { get; set; }
         public virtual List<Monhoc_Db>? list_Mongiangday { get; set; }
         public virtual Role_Db? RoleDb { get; set; }
+        public virtual List<Hocvien_Lop_Db>? list_HocvienLop { get; set; }
     }
 }

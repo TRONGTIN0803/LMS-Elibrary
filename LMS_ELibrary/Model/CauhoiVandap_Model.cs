@@ -12,6 +12,7 @@ namespace LMS_ELibrary.Model
         public int? TailieuId { get; set; }
         public int? LopgiangId { get; set; }
         public int? ChudeId { get; set; }
+        public int? TongsoCautrl { get; set; }
 
         public virtual User_Model? User { get; set; }
         public virtual Tailieu_Baigiang_Model? Tailieu { get; set; }

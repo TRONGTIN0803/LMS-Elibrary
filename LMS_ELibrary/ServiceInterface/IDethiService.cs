@@ -1,5 +1,6 @@
 ﻿using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.ServiceInterface
 {

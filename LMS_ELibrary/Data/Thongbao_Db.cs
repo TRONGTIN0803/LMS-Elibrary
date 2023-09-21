@@ -18,7 +18,9 @@ namespace LMS_ELibrary.Data
         public int? UserID { get; set; }
         [Required]
         public int Status { get; set; }
+        
 
         public virtual User_Db? User { get; set; }
+        public virtual List<ThongbaoLop_Db>? List_ThongbaoLop { get; set; }
     }
 }

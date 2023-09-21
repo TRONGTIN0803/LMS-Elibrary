@@ -9,8 +9,8 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<Monhoc_Model> chitietMonhoc(int id,int user_id);
 
-        Task<IEnumerable<Monhoc_Model>> locMonhoc(int option);
-        Task<object> locMonhoc_theo_Tinhtrang(int status);
+        Task<IEnumerable<Monhoc_Model>> locMonhoc(int option,int user_id);
+        Task<object> locMonhoc_theo_Tinhtrang(int status,int giangvien_id);
 
         Task<KqJson> editMonhoc(int monhoc_id,Monhoc_Model monhoc);
         Task<KqJson> setTrangthai(List<int> monhoc_id,int status);

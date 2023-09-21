@@ -21,6 +21,12 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _hoidapServicce.XemhoidapBaigiang(baigiangId));
         }
 
+        [HttpGet("listCauhoiYeuthich")]
+        public async Task<IActionResult> cauhoityeuthich(int user_id)
+        {
+            return Ok(await _hoidapServicce.XemcauhoiYeuthich(user_id));
+        }
+
         [HttpPost("DatcauhoichoBaigiang")]
         public async Task<IActionResult>datcauhoi(CauhoiVandap_Model model)
         {
@@ -31,6 +37,24 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>Trlcauhoi(Cautrl_Model model)
         {
             return Ok(await _hoidapServicce.TrlCauhoi(model));
+        }
+
+        [HttpPut("ChinhsuaCautrl")]
+        public async Task<IActionResult> SuaCautrl(Cautrl_Model model)
+        {
+            return Ok(await _hoidapServicce.ChinhsuaCautrl(model));
+        }
+
+        [HttpPut("themCauhoiYeuthich")]
+        public async Task<IActionResult> themCauhoiYeuthich(CauhoiVandap_Model model)
+        {
+            return Ok(await _hoidapServicce.ThemCauhoiYeuthich(model));
+        }
+
+        [HttpDelete("xoaCautrl")]
+        public async Task<IActionResult> xoaCautrl(Cautrl_Model model)
+        {
+            return Ok(await _hoidapServicce.Xoacautrl(model));
         }
     }
 }

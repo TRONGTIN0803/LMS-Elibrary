@@ -1,4 +1,4 @@
-﻿namespace LMS_ELibrary.Model
+﻿namespace LMS_ELibrary.Model.DTO
 {
     public class Tao_cauhoi_tructiep_Request_DTO
     {

@@ -14,6 +14,7 @@ namespace LMS_ELibrary.Model
         
         public int? Status { get; set; }
 
-        //public virtual User_Db? User { get; set; }
+        public List<int>? list_Nguoinhan { get; set; }
+        public List<int>? list_Lopgiang { get; set; }
     }
 }

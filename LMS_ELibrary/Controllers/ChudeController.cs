@@ -16,10 +16,10 @@ namespace LMS_ELibrary.Controllers
         {
             _chudeService = chudeService;
         }
-        [HttpGet("Getall")]
-        public async Task<IActionResult> getAllChude()
+        [HttpGet("Getall/{monhoc_id}")]
+        public async Task<IActionResult> getAllChude(int monhoc_id)
         {
-            return Ok(await _chudeService.getAllchude());
+            return Ok(await _chudeService.getAllchude(monhoc_id));
         }
 
         [HttpPost("add")]

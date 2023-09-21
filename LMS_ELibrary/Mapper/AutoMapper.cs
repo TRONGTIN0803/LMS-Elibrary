@@ -23,6 +23,7 @@ namespace LMS_ELibrary.Mapper
             CreateMap<Tobomon_Db, Tobomon_Model>();
             CreateMap<CauhoiVandap_Db, CauhoiVandap_Model>();
             CreateMap<Cautrl_Db, Cautrl_Model>();
+            CreateMap<CauhoiYeuthich_Db, CauhoiYeuthich_Model>();
 
         }
     }

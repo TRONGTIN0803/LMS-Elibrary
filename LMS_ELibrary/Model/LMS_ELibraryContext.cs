@@ -27,6 +27,8 @@ namespace LMS_ELibrary.Model
         public DbSet<CauhoiVandap_Db>cauhoiVandap_Dbs { get; set; }
         public DbSet<Cautrl_Db>cautrl_Dbs { get; set; }
         public DbSet<CauhoiYeuthich_Db>cauhoiYeuthich_Dbs { get; set; }
+        public DbSet<Hocvien_Lop_Db>hocvien_Lop_Dbs { get; set; }
+        public DbSet<ThongbaoLop_Db>thongbaoLop_Dbs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -176,6 +178,28 @@ namespace LMS_ELibrary.Model
                         .HasForeignKey("MonhocID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_lop_Monhoc");
+
+            });
+
+            modelBuilder.Entity<ThongbaoLop_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Thongbao)
+                        .WithMany(Thongbao => Thongbao.List_ThongbaoLop)
+                        .HasForeignKey("Thongbao_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_thongbaolop_thongbao");
+
+            });
+
+            modelBuilder.Entity<Hocvien_Lop_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.User)
+                        .WithMany(User => User.list_HocvienLop)
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_hocvienlop_user");
 
             });
 

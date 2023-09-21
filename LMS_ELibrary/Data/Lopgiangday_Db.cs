@@ -20,5 +20,8 @@ namespace LMS_ELibrary.Data
         public DateTime Thoigian { get; set; }
         public DateTime? Truycapgannhat { get; set; }
 
+        public virtual List<ThongbaoLop_Db>? list_ThongbaoLop { get; set; }
+        public virtual List<Hocvien_Lop_Db>? List_HocvienLop { get; set; }
+
     }
 }

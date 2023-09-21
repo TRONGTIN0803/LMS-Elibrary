@@ -16,5 +16,7 @@ namespace LMS_ELibrary.ServiceInterface
         Task<object> locThongBao(int user_id, int status);
 
         Task<KqJson> danhDauThongBao(int thongbao_id, int status);
+
+       // Task<KqJson> Taothongbao(Thongbao_Model model);
     }
 }

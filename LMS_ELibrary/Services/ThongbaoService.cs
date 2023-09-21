@@ -170,6 +170,38 @@ namespace LMS_ELibrary.Services
             }
         }
 
+        //public Task<KqJson> Taothongbao(Thongbao_Model model)
+        //{
+        //    KqJson kq = new KqJson();
+        //    try
+        //    {
+        //        if (model != null)
+        //        {
+        //            Thongbao_Db tb = new Thongbao_Db();
+        //            tb.Tieude = model.Tieude;
+        //            tb.Noidung = model.Noidung;
+        //            tb.Thoigian = DateTime.Now;
+        //            tb.UserID = model.UserID;
+        //            tb.Status = 0;
+        //            foreach (var lop in model.list_Lopgiang)
+        //            {
+
+        //            }
+        //        }
+        //        else
+        //        {
+        //            throw new Exception("Bad Request");
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        kq.Status = false;
+        //        kq.Message = e.Message;
+
+        //        return kq;
+        //    }
+        //}
+
         public async Task<KqJson> xoaThongbao(List<int> listid)
         {
             try

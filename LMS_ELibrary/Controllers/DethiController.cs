@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using LMS_ELibrary.ServiceInterface;
 using LMS_ELibrary.Data;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class DethiController : ControllerBase

@@ -1,4 +1,5 @@
 ﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.ServiceInterface
 {
@@ -10,10 +11,11 @@ namespace LMS_ELibrary.ServiceInterface
         Task<IEnumerable<Tailieu_Baigiang_Model>> filterBaigiang(int id, int monId);
         Task<KqJson> editTailieu(int id, Tailieu_Baigiang_Model tailieu);
 
-        Task<KqJson> tai_len_Tai_Lieu(int user_id,List<IFormFile> files);
+        Task<KqJson> tai_len_Tai_Nguyen(int user_id,List<IFormFile> files);
+        Task<KqJson> tai_len_Bai_Giang(int user_id, List<IFormFile> files);
 
         Task<KqJson> delTailieu(int id);
 
-        Task<KqJson> them_vao_Monhoc_va_Chude(int monhoc_id, int chude_id, List<int> tailieu_id);
+        Task<object> them_vao_Monhoc_va_Chude(Gui_pheduyet_tailieu_Request_DTO model);
     }
 }
