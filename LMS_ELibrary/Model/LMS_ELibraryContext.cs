@@ -29,6 +29,8 @@ namespace LMS_ELibrary.Model
         public DbSet<CauhoiYeuthich_Db>cauhoiYeuthich_Dbs { get; set; }
         public DbSet<Hocvien_Lop_Db>hocvien_Lop_Dbs { get; set; }
         public DbSet<ThongbaoLop_Db>thongbaoLop_Dbs { get; set; }
+        public DbSet<Tongquan_Db>tongquan_Dbs { get; set; }
+        public DbSet<Role_Db> role_Dbs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -192,6 +194,27 @@ namespace LMS_ELibrary.Model
 
             });
 
+            modelBuilder.Entity<ThongbaoLop_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.User)
+                        .WithMany(User => User.list_Thongbao)
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_thongbaolop_user");
+
+            });
+            modelBuilder.Entity<ThongbaoLop_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Lopgiang)
+                        .WithMany(Lopgiang => Lopgiang.list_ThongbaoLop)
+                        .HasForeignKey("Lopgiang_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_thongbaolop_lop");
+
+            });
+
             modelBuilder.Entity<Hocvien_Lop_Db>(entity =>
             {
                 // Thiết lập cho bảng thongbao
@@ -200,6 +223,16 @@ namespace LMS_ELibrary.Model
                         .HasForeignKey("User_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_hocvienlop_user");
+
+            });
+            modelBuilder.Entity<Tongquan_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Monhoc)
+                        .WithMany(Monhoc => Monhoc.list_Tongquan)
+                        .HasForeignKey("Monhoc_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_tongquan_monhoc");
 
             });
 

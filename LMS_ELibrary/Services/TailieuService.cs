@@ -39,11 +39,6 @@ namespace LMS_ELibrary.Services
                     user.Diachi = item.User.Diachi;
 
                     item.User = user;
-
-
-
-
-
                 }
                 List<Tailieu_Baigiang_Model> listtialieu = new List<Tailieu_Baigiang_Model>();
                 listtialieu = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
@@ -522,6 +517,137 @@ namespace LMS_ELibrary.Services
             }
         }
 
+        public async Task<object> XemTailieutheoTrangthai(int status)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (status == -1 || status==0 || status == 1)
+                {
+                    var result = await (from tl in _context.tailieu_Baigiang_Dbs
+                                        where tl.Status == status
+                                        select tl).ToListAsync();
+                    if (result.Count > 0)
+                    {
+                        foreach (var item in result)
+                        {
+                            var col = _context.Entry(item);
+                            await col.Reference(p => p.User).LoadAsync();
+                            User_Db user = new User_Db();
+                            user.UserFullname = item.User.UserFullname;
+                            user.UserName = item.User.UserName;
+                            user.Password = "***";
+                            user.Email = item.User.Email;
+                            user.Role = item.User.Role;
+                            user.Avt = item.User.Avt;
+                            user.Gioitinh = item.User.Gioitinh;
+                            user.Sdt = item.User.Sdt;
+                            user.Diachi = item.User.Diachi;
 
+                            item.User = user;
+                        }
+                        List<Tailieu_Baigiang_Model> listtialieu = new List<Tailieu_Baigiang_Model>();
+                        listtialieu = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
+                        foreach (var item in listtialieu)
+                        {
+
+
+
+                            if (item.Type == "0")
+                            {
+                                item.Type = "Tai Nguyen";
+                            }
+                            else if (item.Type == "1")
+                            {
+                                item.Type = "Bai Giang";
+                            }
+
+                            if (item.Status == "0")
+                            {
+                                item.Status = "Cho Duyet";
+                            }
+                            else if (item.Status == "1")
+                            {
+                                item.Status = "Da duyet";
+                            }
+                            else if (item.Status == "-1")
+                            {
+                                item.Status = "Chua duyet"; //chua gui phe duyet
+                            }
+                            
+                            if (item.User.Gioitinh == "True")
+                            {
+                                item.User.Gioitinh = "Nam";
+                            }
+                            else
+                            {
+                                item.User.Gioitinh = "Nu";
+                            }
+                        }
+
+                        return listtialieu;
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> XetDuyetTaiLieu(Xetduyet_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (model.Status == -1 || model.Status == 1 && model.ID_Canduyet != null)
+                {
+                    var result = await (from tl in _context.tailieu_Baigiang_Dbs
+                                        where tl.DocId == model.ID_Canduyet && tl.Status == 0
+                                        select tl).SingleOrDefaultAsync();
+                    if (result != null)
+                    {
+                        result.Status=model.Status;
+                        if (model.Status == 1)
+                        {
+                            result.NgayDuyet = DateTime.Now;
+                        }
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Xet duyet thanh cong";
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Xet duyet that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
     }
 }

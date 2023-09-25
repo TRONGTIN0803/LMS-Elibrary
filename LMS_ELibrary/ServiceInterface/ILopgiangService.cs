@@ -1,4 +1,5 @@
 ﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.ServiceInterface
 {
@@ -13,5 +14,11 @@ namespace LMS_ELibrary.ServiceInterface
         Task<KqJson> editLopgiang(int lopgiang_id,Lopgiangday_Model lopgiang);
         
         Task<KqJson> deleteLopgiang(int lopgiang_id);
+
+        Task<KqJson> xepLopChoHocVien(Hocvien_Lop_Model model);
+
+        Task<object> lopDangTheoHoc(int user_id);
+        Task<KqJson> themHocvienVaolop(them_Hocvien_vao_Lop_Request_DTO model);
+
     }
 }

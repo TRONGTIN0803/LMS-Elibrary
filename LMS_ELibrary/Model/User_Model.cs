@@ -27,7 +27,7 @@ namespace LMS_ELibrary.Model
         public string? Gioitinh { get; set; }
        
         public string? Email { get; set; }
-      
+        public string? Nganh { get; set; }
         public string? Sdt { get; set; }
         public string? Diachi { get; set; }
 

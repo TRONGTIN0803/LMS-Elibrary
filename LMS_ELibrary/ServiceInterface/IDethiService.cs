@@ -29,5 +29,9 @@ namespace LMS_ELibrary.ServiceInterface
         Task<KqJson> tai_len_Dethi(int user_id,List<IFormFile>files);
 
         Task<KqJson> them_File_vao_Dethi(int dethi_id,File_Dethi_Db file);
+
+        Task<object> xemDeThitheoTrangThai(int status);
+
+        Task<KqJson> xetDuyetDeThi(Xetduyet_Request_DTO model);
     }
 }

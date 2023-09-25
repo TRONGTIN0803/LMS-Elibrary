@@ -5,6 +5,7 @@ using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Xml;
 
 namespace LMS_ELibrary.Services
 {
@@ -405,7 +406,7 @@ namespace LMS_ELibrary.Services
                 KqJson kq = new KqJson();
                 Dethi_Db _dethi = new Dethi_Db();
                 _dethi.Madethi = dethi.Madethi;
-                _dethi.Status = 0;  // 0 -> cho duyet ; 1 -> da duyet
+                _dethi.Status = -1;  //-1 -> chua gui yeu cau ; 0 -> cho duyet ; 1 -> da duyet
                 _dethi.UserID = dethi.UserID;
                 _dethi.Ngaytao = DateTime.Now;
                 _dethi.MonhocID = dethi.MonhocID;
@@ -757,6 +758,148 @@ namespace LMS_ELibrary.Services
                 kq.Status = false;
                 kq.Message = e.Message;
 
+                return kq;
+            }
+        }
+
+        public async Task<object> xemDeThitheoTrangThai(int status)
+        {
+            try
+            {
+                if(status==-1 || status==0 || status == 1)
+                {
+                    var result = await (from dt in _context.dethi_Dbs
+                                        where dt.Status == status
+                                        select dt).ToListAsync();
+                    if (result.Count > 0)
+                    {
+                        foreach (var item in result)
+                        {
+                            var col = _context.Entry(item);
+                            await col.Reference(p => p.User).LoadAsync();
+                            User_Db user = new User_Db();
+                            user.UserFullname = item.User.UserFullname;
+                            user.UserName = item.User.UserName;
+                            user.Password = "***";
+                            user.Email = item.User.Email;
+                            user.Role = item.User.Role;
+                            user.Avt = item.User.Avt;
+                            user.Gioitinh = item.User.Gioitinh;
+                            user.Sdt = item.User.Sdt;
+                            user.Diachi = item.User.Diachi;
+
+                            item.User = user;
+
+                            await col.Reference(q => q.Monhoc).LoadAsync();
+                            Monhoc_Db monhoc = new Monhoc_Db();
+                            monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
+                            monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
+                            monhoc.Mota = item.Monhoc.Mota;
+                            monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
+                            monhoc.TobomonId = item.Monhoc.TobomonId;
+
+                            item.Monhoc = monhoc;
+
+                            await col.Collection(x => x.ListExQA).LoadAsync();
+                            List<Ex_QA_Db> listcauhoi = new List<Ex_QA_Db>();
+                            foreach (var collec in item.ListExQA)
+                            {
+
+                                Ex_QA_Db model = new Ex_QA_Db();
+
+                                model.QAID = collec.QAID;
+                                model.DethiID = collec.DethiID;
+
+                                listcauhoi.Add(model);
+
+                            }
+                            item.ListExQA = listcauhoi;
+                        }
+                        List<Dethi_Model> listdethi = new List<Dethi_Model>();
+                        listdethi = _mapper.Map<List<Dethi_Model>>(result);
+                        foreach (Dethi_Model dethi in listdethi)
+                        {
+                            if (dethi.Status == "0")
+                            {
+                                dethi.Status = "Cho Duyet";
+                            }
+                            else if (dethi.Status == "1")
+                            {
+                                dethi.Status = "Da Duyet";
+                            }
+
+                            foreach (var cauhoi in dethi.ListExQA)
+                            {
+                                var qa = await _context.qA_Dbs.SingleOrDefaultAsync(p => p.QAID == cauhoi.QAID);
+                                cauhoi.Cauhoi = qa.Cauhoi;
+                                cauhoi.DapAn = qa.Cautrl;
+
+                            }
+                        }
+
+                        return listdethi;
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> xetDuyetDeThi(Xetduyet_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if(model.ID_Canduyet!=null && model.Status==-1 || model.Status == 1)
+                {
+                    var result = await (from dt in _context.dethi_Dbs
+                                        where dt.DethiID == model.ID_Canduyet && dt.Status == 0
+                                        select dt).SingleOrDefaultAsync();
+                    if (result != null)
+                    {
+                        result.Status= model.Status;
+                        if (model.Status == 1)
+                        {
+                            result.Ngayduyet = DateTime.Now;
+                        }
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Xet duyet thanh cong";
+
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Xet duyet that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
                 return kq;
             }
         }

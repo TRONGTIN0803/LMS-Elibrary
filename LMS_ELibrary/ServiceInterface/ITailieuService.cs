@@ -17,5 +17,8 @@ namespace LMS_ELibrary.ServiceInterface
         Task<KqJson> delTailieu(int id);
 
         Task<object> them_vao_Monhoc_va_Chude(Gui_pheduyet_tailieu_Request_DTO model);
+
+        Task<object> XemTailieutheoTrangthai(int status);
+        Task<KqJson> XetDuyetTaiLieu(Xetduyet_Request_DTO model);
     }
 }

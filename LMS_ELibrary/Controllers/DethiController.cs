@@ -93,5 +93,17 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _dethiService.them_File_vao_Dethi(dethi_id, file));
         }
+
+        [HttpGet("xemDeThiTheoTrangThai")]
+        public async Task<IActionResult>xemDethitheotrangthai(int status)
+        {
+            return Ok(await _dethiService.xemDeThitheoTrangThai(status));
+        }
+
+        [HttpPut("xetDuyetDeThi")]
+        public async Task<IActionResult>xetDuyetDeThi(Xetduyet_Request_DTO model)
+        {
+            return Ok(await _dethiService.xetDuyetDeThi(model));
+        }
     }
 }

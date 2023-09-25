@@ -65,5 +65,18 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _tailieuService.delTailieu(id));
         }
+
+        [HttpGet("XemTailieutheoTrangthai")]
+        public async Task<IActionResult>xemTaiLieuTheoTrangThai(int status)
+        {
+            return Ok(await _tailieuService.XemTailieutheoTrangthai(status));
+        }
+
+        [HttpPut("XetDuyetTaiLieu")]
+        public async Task<IActionResult> xetDuyetTaiLieu(Xetduyet_Request_DTO model)
+        {
+            return Ok(await _tailieuService.XetDuyetTaiLieu(model));
+        }
+
     }
 }

@@ -5,8 +5,8 @@ namespace LMS_ELibrary.Model
 {
     public class Tailieu_Baigiang_Model
     {
-        
-       
+
+        public int? DocId { get; set; }
         public string? TenDoc { get; set; }
         public int? MonhocID { get; set; }      
         public int? UserID { get; set; }      

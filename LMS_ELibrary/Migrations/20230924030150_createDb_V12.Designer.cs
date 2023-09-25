@@ -4,6 +4,7 @@ using LMS_ELibrary.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS_ELibrary.Migrations
 {
     [DbContext(typeof(LMS_ELibraryContext))]
-    partial class LMS_ELibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230924030150_createDb_V12")]
+    partial class createDb_V12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -605,30 +607,6 @@ namespace LMS_ELibrary.Migrations
                     b.ToTable("Tobomon");
                 });
 
-            modelBuilder.Entity("LMS_ELibrary.Data.Tongquan_Db", b =>
-                {
-                    b.Property<int>("TongquanID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TongquanID"), 1L, 1);
-
-                    b.Property<int?>("Monhoc_Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Noidung")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tieude")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TongquanID");
-
-                    b.HasIndex("Monhoc_Id");
-
-                    b.ToTable("Tongquan");
-                });
-
             modelBuilder.Entity("LMS_ELibrary.Data.User_Db", b =>
                 {
                     b.Property<int>("UserID")
@@ -955,17 +933,6 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("LMS_ELibrary.Data.Tongquan_Db", b =>
-                {
-                    b.HasOne("LMS_ELibrary.Data.Monhoc_Db", "Monhoc")
-                        .WithMany("list_Tongquan")
-                        .HasForeignKey("Monhoc_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("FK_tongquan_monhoc");
-
-                    b.Navigation("Monhoc");
-                });
-
             modelBuilder.Entity("LMS_ELibrary.Data.User_Db", b =>
                 {
                     b.HasOne("LMS_ELibrary.Data.Role_Db", "RoleDb")
@@ -1019,8 +986,6 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("List_Monhocyeuthich");
 
                     b.Navigation("list_Chude");
-
-                    b.Navigation("list_Tongquan");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.QA_Db", b =>

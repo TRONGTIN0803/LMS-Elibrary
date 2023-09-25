@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,115 @@ namespace LMS_ELibrary.Services
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public async Task<KqJson> add_Account_Hocvien(Register_User_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if(model != null)
+                {
+                    User_Db account = new User_Db();
+                    account.UserName = model.UserName;
+                    account.Password = model.Password;
+                    account.UserFullname = model.UserFullname;
+                    account.Gioitinh = model.Gioitinh;
+                    account.Role = 3;
+                    account.Email = model.Email;
+                    account.Sdt = model.Sdt;
+                    account.Diachi = model.Diachi;
+                    account.Nganh = model.Nganh;
+                    account.Ngaysuadoi = DateTime.Now;
+
+                    await _context.user_Dbs.AddAsync(account);
+                    if (account.UserID < 10)
+                    {
+                        account.MaUser = "HV0"+account.UserID;
+                    }
+                    else
+                    {
+                        account.MaUser = "HV" + account.UserID;
+                    }
+                    int row = await _context.SaveChangesAsync();
+                    if (row > 0)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Thanh cong";
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Them that bai");
+                    }
+                    
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message=e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> add_Account_Giangvien(Register_User_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (model != null)
+                {
+                    User_Db account = new User_Db();
+                    account.UserName = model.UserName;
+                    account.Password = model.Password;
+                    account.UserFullname = model.UserFullname;
+                    account.Gioitinh = model.Gioitinh;
+                    account.Role = 2;
+                    account.Email = model.Email;
+                    account.Sdt = model.Sdt;
+                    account.Diachi = model.Diachi;
+                    account.Nganh = model.Nganh;
+                    account.Ngaysuadoi = DateTime.Now;
+
+                    await _context.user_Dbs.AddAsync(account);
+                    if (account.UserID < 10)
+                    {
+                        account.MaUser = "GV0" + account.UserID;
+                    }
+                    else
+                    {
+                        account.MaUser = "GV" + account.UserID;
+                    }
+                    int row = await _context.SaveChangesAsync();
+                    if (row > 0)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Thanh cong";
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Them that bai");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }
+            catch (Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
         }
 
         public async Task<IEnumerable<Avt_Model>> Avt_da_tai_len(int user_id)
@@ -214,9 +324,9 @@ namespace LMS_ELibrary.Services
                                 user.Avt = "Khong co Anh dai dien";
                             }
 
-                            if (result.Role == 0)
+                            if (result.Role == 1)
                             {
-                                user.Phanquyen = "Quan ly";
+                                user.Phanquyen = "Quan Ly";
                                 if (user.UserID < 10)
                                 {
                                     user.MaUser="AD0"+user.UserID;
@@ -228,29 +338,11 @@ namespace LMS_ELibrary.Services
                             }
                             else if (result.Role == 1)
                             {
-                                user.Phanquyen = "Giao vien";
-                                
-                                if (user.UserID < 10)
-                                {
-                                    user.MaUser = "GV0" + user.UserID;
-                                }
-                                else
-                                {
-                                    user.MaUser = "GV" + user.UserID;
-                                }
+                                user.Phanquyen = "Giang Vien";
                             }
                             else
                             {
-                                user.Phanquyen = "Hoc sinh";
-                                
-                                if (user.UserID < 10)
-                                {
-                                    user.MaUser = "HV0" + user.UserID;
-                                }
-                                else
-                                {
-                                    user.MaUser = "HV" + user.UserID;
-                                }
+                                user.Phanquyen = "Hoc Vien";
                             }
 
                             return user;
@@ -365,6 +457,92 @@ namespace LMS_ELibrary.Services
             }
 
             
+        }
+
+        public async Task<KqJson> xoaAccount(User_Model model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (model.UserID != null)
+                {
+                    var result = await _context.user_Dbs.SingleOrDefaultAsync(p=>p.UserID==model.UserID);
+                    if (result != null)
+                    {
+                        if (result.Role == 1)
+                        {
+                            throw new Exception("Khong the xoa tai khoan ADMIN");
+                        }
+                        else
+                        {
+                            _context.user_Dbs.Remove(result);
+                            int row = await _context.SaveChangesAsync();
+                            if (row > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Thanh cong";
+
+                                return kq;
+                            }
+                            else
+                            {
+                                throw new Exception("Xoa that bai");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message= e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> ThemRole(Role_Model model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (model.Tenvaitro != null && model.Mota !=null)
+                {
+                    Role_Db role = new Role_Db();
+                    role.Tenvaitro=model.Tenvaitro;
+                    role.Mota=model.Mota;
+                    role.Phanquyen = model.Phanquyen;
+
+                    await _context.role_Dbs.AddAsync(role);
+                    int row = await _context.SaveChangesAsync();
+                    if (row > 0)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Them thanh cong";
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Them that bai");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
         }
     }
 }

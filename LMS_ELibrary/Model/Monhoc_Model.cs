@@ -15,6 +15,7 @@ namespace LMS_ELibrary.Model
         public int? TobomonId { get; set; }
         public int? UserId { get; set; }
         public string? Giangvien { get; set; }
+        public DateTime? Truycapgannhat { get; set; }
         public string? TrangthaiYeuthich { get; set; }
         public string? TailieuPheduyet { get; set; }
 
@@ -22,6 +23,7 @@ namespace LMS_ELibrary.Model
 
         public virtual List<Tailieu_Baigiang_Model>? ListTailieu_Baigiang { get; set; }
         public virtual List<Lopgiangday_Model>? ListLopgiangday { get; set; }
+        public virtual List<Tongquan_Model> list_Tongquan { get; set; }
 
     }
 }

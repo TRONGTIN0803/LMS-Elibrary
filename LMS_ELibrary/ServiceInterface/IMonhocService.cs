@@ -1,16 +1,17 @@
 ﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.ServiceInterface
 {
     public interface IMonhocService
     {
-        Task<IEnumerable<Monhoc_Model>> getAllMonhoc(int user_id);
+        Task<IEnumerable<Monhoc_Model>> getAllMonhoc(int user_id);  //giang vien xem duoc list mon hoc ban than da tao
         Task<Monhoc_Model> searchMonhoc(string key);
 
-        Task<Monhoc_Model> chitietMonhoc(int id,int user_id);
+        Task<object> chitietMonhoc(int id,int user_id);
 
         Task<IEnumerable<Monhoc_Model>> locMonhoc(int option,int user_id);
-        Task<object> locMonhoc_theo_Tinhtrang(int status,int giangvien_id);
+        Task<object> locMonhoc_theo_Tinhtrang(int status,int giangvien_id); //chi co giangvien va admin duoc xem
 
         Task<KqJson> editMonhoc(int monhoc_id,Monhoc_Model monhoc);
         Task<KqJson> setTrangthai(List<int> monhoc_id,int status);
@@ -20,6 +21,13 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<KqJson> ThemYeuthichMonhoc(MonhocYeuthich_Model model);
         Task<KqJson> HuyYeuthichMonhoc(MonhocYeuthich_Model model);
+
+        Task<object> xemMonhocDanghoc(int hocvien_id);  //hoc vien xem list mon hoc cua ban than
+
+        Task<KqJson> themTongquanMonhoc(List<Them_Tongquan_Monhoc_Request_DTO> list_model);
+
+        Task<KqJson> xetduyetMonhoc(Xetduyet_Request_DTO model);
+        
 
     }
 }

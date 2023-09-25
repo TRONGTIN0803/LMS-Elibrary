@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -82,5 +83,24 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _monhocService.HuyYeuthichMonhoc(model));
         }
+
+        [HttpGet("Hocvien/Mondanghoc")]
+        public async Task<IActionResult>xemmondanghoc(int user_id)
+        {
+            return Ok(await _monhocService.xemMonhocDanghoc(user_id));
+        }
+
+        [HttpPost("ThemtongquanMonhoc")]
+        public async Task<IActionResult>themTongquanmonhoc(List<Them_Tongquan_Monhoc_Request_DTO> listmodel)
+        {
+            return Ok(await _monhocService.themTongquanMonhoc(listmodel));
+        }
+
+        [HttpPut("XetduyetMOnhoc")]
+        public async Task<IActionResult>xetDuyetMonHoc(Xetduyet_Request_DTO model)
+        {
+            return Ok(await _monhocService.xetduyetMonhoc(model));
+        }
+        
     }
 }

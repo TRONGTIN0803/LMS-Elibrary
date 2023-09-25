@@ -3,11 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
 using LMS_ELibrary.Model;
+using Microsoft.AspNetCore.Authorization;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+    
     public class LopgiangController : ControllerBase
     {
         private readonly ILopgiangService _lopgiangservice;
@@ -21,7 +25,13 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _lopgiangservice.getAllLopgiang());
         }
 
-        [HttpGet("detailLopgiangday/{id}")]
+        [HttpGet("Hocvien/Lopdangtheohoc")]
+        public async Task<IActionResult> Lopdangtheohoc(int hocvien_id)
+        {
+            return Ok(await _lopgiangservice.lopDangTheoHoc(hocvien_id));
+        }
+
+        [HttpGet("detailLopgiangday")]
         public async Task<IActionResult>detailop(int id)
         {
             return Ok(await _lopgiangservice.detailLopgiangday(id));
@@ -31,6 +41,17 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult> addLopgiang(Lopgiangday_Model lopgiang)
         {
             return Ok(await _lopgiangservice.addLopgiang(lopgiang));
+        }
+
+        [HttpPost("Hocvien/Xeplopchohocvien")]
+        public async Task<IActionResult>xepLopchoHocvien(Hocvien_Lop_Model model)
+        {
+            return Ok(await _lopgiangservice.xepLopChoHocVien(model));
+        }
+        [HttpPost("Themhocvienvaolop")]
+        public async Task<IActionResult>themhocvienvaolop(them_Hocvien_vao_Lop_Request_DTO model)
+        {
+            return Ok(await _lopgiangservice.themHocvienVaolop(model));
         }
 
         [HttpPut("editLopgiang/{lopgiang_id}")]

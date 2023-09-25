@@ -24,7 +24,8 @@ namespace LMS_ELibrary.Mapper
             CreateMap<CauhoiVandap_Db, CauhoiVandap_Model>();
             CreateMap<Cautrl_Db, Cautrl_Model>();
             CreateMap<CauhoiYeuthich_Db, CauhoiYeuthich_Model>();
-
+            CreateMap<Tongquan_Db, Tongquan_Model>();
+            CreateMap<Role_Db, Role_Model>();
         }
     }
 }

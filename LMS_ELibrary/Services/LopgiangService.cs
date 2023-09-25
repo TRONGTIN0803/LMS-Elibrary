@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
 
@@ -119,7 +120,8 @@ namespace LMS_ELibrary.Services
                     lopgiangday_Db.TenLop = lopgiangday_Model.TenLop;
                     lopgiangday_Db.UserID=lopgiangday_Model.UserID;
                     lopgiangday_Db.MonhocID=lopgiangday_Model.MonhocID;
-                    lopgiangday_Db.Thoigian = lopgiangday_Model.Thoigian;
+                    lopgiangday_Db.Malop = lopgiangday_Model.Malop;
+                    lopgiangday_Db.Thoigian = DateTime.Now; //ngay tao
                     lopgiangday_Db.Truycapgannhat = DateTime.Now;
 
                     await _context.lopgiangday_Dbs.AddAsync(lopgiangday_Db);
@@ -163,7 +165,8 @@ namespace LMS_ELibrary.Services
                         result.TenLop = lopgiang.TenLop != null ? result.TenLop = lopgiang.TenLop : result.TenLop;
                         result.UserID = lopgiang.UserID != null ? result.UserID = lopgiang.UserID : result.UserID;
                         result.MonhocID = lopgiang.MonhocID != null ? result.MonhocID = lopgiang.MonhocID : result.MonhocID;
-                        result.Thoigian = lopgiang.Thoigian != null ? result.Thoigian = lopgiang.Thoigian : result.Thoigian;
+                        result.Malop = lopgiang.Malop != null ? result.Malop = lopgiang.Malop : result.Malop;
+                        result.Thoigian = DateTime.Now;
 
                         int row = await _context.SaveChangesAsync();
                         if (row > 0)
@@ -237,6 +240,138 @@ namespace LMS_ELibrary.Services
                 kq.Status = false;
                 kq.Message = e.Message;
 
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> xepLopChoHocVien(Hocvien_Lop_Model model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (model.list_Hocvien_Id.Count > 0 && model.Lopgiang_Id!=null)
+                {
+                    int row = 0;
+                    foreach (var hocvien_id in model.list_Hocvien_Id)
+                    {
+                        Hocvien_Lop_Db hv = new Hocvien_Lop_Db();
+                        hv.Lopgiang_Id = model.Lopgiang_Id;
+                        hv.User_Id = hocvien_id;
+
+                        await _context.hocvien_Lop_Dbs.AddAsync(hv);
+                    }
+                    row = await _context.SaveChangesAsync();
+                    if (row == model.list_Hocvien_Id.Count)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Thanh cong";
+
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Co hoc vien khong the xep lop");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message=e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<object> lopDangTheoHoc(int user_id)
+        {
+            try
+            {
+                if (user_id != null)
+                {
+                    var result = await (from lop in _context.lopgiangday_Dbs
+                                        join hvlop in _context.hocvien_Lop_Dbs
+                                      on lop.LopgiangdayID equals hvlop.Lopgiang_Id
+                                        where hvlop.User_Id == user_id
+                                        select lop).ToListAsync();
+                    if (result.Count > 0)
+                    {
+                        List<Lopgiangday_Model> list_lop = new List<Lopgiangday_Model>();
+                        list_lop = _mapper.Map<List<Lopgiangday_Model>>(result);
+                        return list_lop;
+                    }
+                    else
+                    {
+                        throw new Exception("Khong tim thay lop");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> themHocvienVaolop(them_Hocvien_vao_Lop_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                int lopgiang_id =(int) model.Lopgiang_Id;
+                if(model.Lopgiang_Id!=null && model.list_Hocvien_Id.Count > 0)
+                {
+                    List<Hocvien_Lop_Db> list_hocvien_lop = new List<Hocvien_Lop_Db>();
+                    foreach(var hocvien_id in model.list_Hocvien_Id)
+                    {
+                        //hoc vien da co trong lop thi khong the them
+                        var result = await (from _hvl in _context.hocvien_Lop_Dbs
+                                            where _hvl.Lopgiang_Id == lopgiang_id && _hvl.User_Id == hocvien_id
+                                            select _hvl).SingleOrDefaultAsync();
+                        if (result == null)
+                        {
+                            Hocvien_Lop_Db hvl = new Hocvien_Lop_Db();
+                            hvl.Lopgiang_Id = lopgiang_id;
+                            hvl.User_Id = hocvien_id;
+                            list_hocvien_lop.Add(hvl);
+                        }
+                        else
+                        {
+                            throw new Exception("Co hoc vien da o trong lop");
+                        }
+                        
+                    }
+                    await _context.hocvien_Lop_Dbs.AddRangeAsync(list_hocvien_lop);
+                    int row = await _context.SaveChangesAsync();
+                    if (row == model.list_Hocvien_Id.Count)
+                    {
+                        kq.Status = true;
+                        kq.Message = "Thanh cong";
+                        return kq;
+                    }
+                    else
+                    {
+                        throw new Exception("Co hoc vien da o trong lop");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
                 return kq;
             }
         }
