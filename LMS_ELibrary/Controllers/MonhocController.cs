@@ -55,7 +55,7 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _monhocService.editMonhoc(monhoc_id, monhoc));
         }
-        [HttpPut("setTrangThai")]
+        [HttpPut("Gui-xetduyet-Huy-xetduyet")]
         public async Task<IActionResult>setTrangthai([FromQuery]List<int> monhoc_id,int status)
         {
             return Ok(await _monhocService.setTrangthai(monhoc_id, status));
@@ -96,7 +96,7 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _monhocService.themTongquanMonhoc(listmodel));
         }
 
-        [HttpPut("XetduyetMOnhoc")]
+        [HttpPut("XetduyetMonhoc")]
         public async Task<IActionResult>xetDuyetMonHoc(Xetduyet_Request_DTO model)
         {
             return Ok(await _monhocService.xetduyetMonhoc(model));

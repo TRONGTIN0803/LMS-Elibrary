@@ -869,6 +869,16 @@ namespace LMS_ELibrary.Services
                                         select dt).SingleOrDefaultAsync();
                     if (result != null)
                     {
+                        if (model.Ghichu != "")
+                        {
+                            result.Ghichu = model.Ghichu;
+                        }
+                        result.Status = model.Status;
+                        if (model.Status == 1 && model.ID_Nguoiduyet != 0)
+                        {
+                            result.Ngayduyet = DateTime.Now;
+                            result.Nguoiduyet = model.ID_Nguoiduyet;
+                        }
                         result.Status= model.Status;
                         if (model.Status == 1)
                         {

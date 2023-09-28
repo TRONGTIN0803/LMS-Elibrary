@@ -22,6 +22,9 @@ namespace LMS_ELibrary.Data
         public int? UserId { get; set; }
         public DateTime? Truycapgannhat { get; set; }
         public virtual Tobomon_Db Tobomon { get; set; }
+        public int? Nguoiduyet { get; set; }
+        public DateTime? Ngayduyet { get; set; }
+        public string? Ghichu { get; set; }
 
         public virtual List<Lopgiangday_Db> ListLopgiangday { get; set; }
         public virtual List<Tailieu_Baigiang_Db> ListTailieu_Baigiang { get; set; }

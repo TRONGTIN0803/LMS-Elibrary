@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -30,9 +31,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpGet("ChitietThongbao/{idthongbao}")]
-        public async Task<IActionResult>chitietThongbao(int idthongbao)
+        public async Task<IActionResult>chitietThongbao(int idthongbao,int user_id)
         {
-            return Ok(await _thongbaoService.chitietThongbao(idthongbao));
+            return Ok(await _thongbaoService.chitietThongbao(idthongbao,user_id));
         }
 
         [HttpDelete("xoaThongbao")]
@@ -52,10 +53,10 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _thongbaoService.danhDauThongBao(thongbao_id,status));
         }
-        //[HttpPost("Taothongbao")]
-        //public async Task<IActionResult>Taothongbao(Thongbao_Model model)
-        //{
-        //    return Ok(await _thongbaoService.Taothongbao(model));
-        //}
+        [HttpPost("Taothongbao")]
+        public async Task<IActionResult> Taothongbao(Gui_Thongbao_Request_DTO model)
+        {
+            return Ok(await _thongbaoService.Taothongbao(model));
+        }
     }
 }

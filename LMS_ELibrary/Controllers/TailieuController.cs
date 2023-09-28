@@ -18,10 +18,16 @@ namespace LMS_ELibrary.Controllers
             _tailieuService = tailieuService;
         }
 
-        [HttpGet("getall/{user_id}")]
-        public async Task<IActionResult> getalltailieu(int user_id)
+        [HttpGet("Getall")]
+        public async Task<IActionResult> getAll()
         {
-            return Ok(await _tailieuService.getAlltailieu(user_id));
+            return Ok(await _tailieuService.GetAlltailieu());  
+        }
+
+        [HttpGet("/Giangvien/Tailieucuatoi")]
+        public async Task<IActionResult> Tailieucuatoi(int user_id)
+        {
+            return Ok(await _tailieuService.Tailieucuatoi(user_id));
         }
 
         [HttpGet("search/{key}")]
@@ -30,10 +36,28 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.searchBaigiang(user_id, key));
         }
 
-        [HttpGet("Filter/{Monhoc_Id}")]
-        public async Task<IActionResult> filterBaigiang(int user_id, int Monhoc_Id)
+        [HttpGet("TailieuMonhoc")]
+        public async Task<IActionResult> listTailieuMonhoc(int monId, string? status, string? type)
         {
-            return Ok(await _tailieuService.filterBaigiang(user_id, Monhoc_Id));
+            if(status!=null && type != null){
+                return Ok(await _tailieuService.list_Tailieu_Monhoc(monId, status, type));
+            }
+            else if(status==null && type == null)
+            {
+                return Ok(await _tailieuService.list_Tailieu_Monhoc(monId));
+            }else if (status!=null)
+            {
+                return Ok(await _tailieuService.list_Tailieu_Monhoc_status(monId, status));
+            }
+            else if (type != null)
+            {
+                return Ok(await _tailieuService.list_Tailieu_Monhoc(monId, type));
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
         }
 
         [HttpPut("updateTailieu/{id}")]

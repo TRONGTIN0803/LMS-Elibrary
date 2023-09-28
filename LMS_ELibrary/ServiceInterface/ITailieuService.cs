@@ -5,10 +5,14 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface ITailieuService
     {
-        Task<IEnumerable<Tailieu_Baigiang_Model>> getAlltailieu(int id);
+        Task<object> GetAlltailieu();
+        Task<IEnumerable<Tailieu_Baigiang_Model>> Tailieucuatoi(int id);
         Task<IEnumerable<Tailieu_Baigiang_Model>> searchBaigiang(int id, string key);
 
-        Task<IEnumerable<Tailieu_Baigiang_Model>> filterBaigiang(int id, int monId);
+        Task<object> list_Tailieu_Monhoc(int monId,string? status,string? type);
+        Task<object> list_Tailieu_Monhoc(int monId, string? type);
+        Task<object> list_Tailieu_Monhoc_status(int monId, string? status);
+        Task<object> list_Tailieu_Monhoc(int monId);
         Task<KqJson> editTailieu(int id, Tailieu_Baigiang_Model tailieu);
 
         Task<KqJson> tai_len_Tai_Nguyen(int user_id,List<IFormFile> files);

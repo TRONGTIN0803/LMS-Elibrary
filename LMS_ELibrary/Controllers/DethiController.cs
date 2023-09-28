@@ -10,7 +10,7 @@ using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
-
+    
     [Route("api/[controller]")]
     [ApiController]
     public class DethiController : ControllerBase

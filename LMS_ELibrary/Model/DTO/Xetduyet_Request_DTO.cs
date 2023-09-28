@@ -4,5 +4,7 @@
     {
         public int ID_Canduyet { get; set; }
         public int Status { get; set; }
+        public string? Ghichu { get; set; }
+        public int? ID_Nguoiduyet { get; set; }
     }
 }

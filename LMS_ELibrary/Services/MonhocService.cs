@@ -85,7 +85,19 @@ namespace LMS_ELibrary.Services
                 model.Giangvien = gv.UserFullname;
                 int tongtailieu = model.ListTailieu_Baigiang.Count;
                 int tailieudaduyet = 0;
-
+                if (model.Tinhtrang == "-1")
+                {
+                    model.Tinhtrang = "Luu Nhap";
+                }else if (model.Tinhtrang == "0")
+                {
+                    model.Tinhtrang = "Cho Duyet";
+                }else if (model.Tinhtrang == "1")
+                {
+                    model.Tinhtrang = "Da Duyet";
+                }else if (model.Tinhtrang == "2")
+                {
+                    model.Tinhtrang = "Bi tu choi duyet";
+                }
                 foreach (var x1 in model.ListTailieu_Baigiang)
                 {
                     if (x1.Status == "1")
@@ -427,14 +439,14 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        //Status = 0 => cho duyet (gui yeu cau) ; 2 => huy yeu cau
+        //Status = 0 => gui yeu cau (cho duyet) ; -1 => huy yeu cau (tro lai luu nhap)
         public async Task<KqJson> setTrangthai(List<int> monhoc_id, int status)
         {
             try
             {
-                if (monhoc_id.Count > 0 && status >= 0)
+                if (monhoc_id.Count > 0 && status == 0 || status==-1)
                 {
-                    if (status == 0 || status == 2)
+                    if (status == 0 || status == -1)
                     {
                         KqJson kq = new KqJson();
                         foreach (int monoc in monhoc_id)
@@ -444,7 +456,7 @@ namespace LMS_ELibrary.Services
                             {
                                 if (status == 0)
                                 {
-                                    if (result.Tinhtrang == -1)
+                                    if (result.Tinhtrang == -1||result.Tinhtrang==2)
                                     {
                                         result.Tinhtrang = 0;
                                     }
@@ -453,7 +465,7 @@ namespace LMS_ELibrary.Services
                                         throw new Exception("Tinh trang khong phu hop de gui yeu cau");
                                     }
                                 }
-                                else if (status == 2)
+                                else if (status == -1)
                                 {
                                     if (result.Tinhtrang == 0)
                                     {
@@ -975,15 +987,25 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                //duyet -> 1 ; khong duyet -> -1 (ve trangthai nhap cho giangvien)
-                if (model.Status == -1 || model.Status == 1 && model.ID_Canduyet != null)
+                //duyet -> 1 ; khong duyet -> 2 
+                if (model.Status == 1 || model.Status == 2 && model.ID_Canduyet != null)
                 {
                     var result = await (from mh in _context.monhoc_Dbs
                                         where mh.MonhocID == model.ID_Canduyet && mh.Tinhtrang == 0
                                         select mh).SingleOrDefaultAsync();
                     if (result != null)
                     {
+                        if (model.Ghichu != "")
+                        {
+                            result.Ghichu = model.Ghichu;
+                        }
                         result.Tinhtrang = model.Status;
+                        if (model.Status == 1 && model.ID_Nguoiduyet != 0)
+                        {
+                            result.Ngayduyet = DateTime.Now;
+                            result.Nguoiduyet = model.ID_Nguoiduyet;
+                        }
+                        
                         int row = await _context.SaveChangesAsync();
                         if (row > 0)
                         {

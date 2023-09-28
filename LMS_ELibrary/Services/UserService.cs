@@ -43,6 +43,7 @@ namespace LMS_ELibrary.Services
                     account.Ngaysuadoi = DateTime.Now;
 
                     await _context.user_Dbs.AddAsync(account);
+                    await _context.SaveChangesAsync();
                     if (account.UserID < 10)
                     {
                         account.MaUser = "HV0"+account.UserID;

@@ -12,6 +12,7 @@ namespace LMS_ELibrary.Data
         public int? Thongbao_Id { get; set; }
         public int? Lopgiang_Id { get; set; }
         public int? User_Id { get; set; }
+        public int? Status { get; set; }
 
         public virtual Thongbao_Db? Thongbao { get; set; }
         public virtual Lopgiangday_Db? Lopgiang { get; set; }

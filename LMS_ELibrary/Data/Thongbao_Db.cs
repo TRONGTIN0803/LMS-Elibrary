@@ -16,8 +16,7 @@ namespace LMS_ELibrary.Data
         [Required]
         public DateTime Thoigian { get; set; }
         public int? UserID { get; set; }
-        [Required]
-        public int Status { get; set; }
+        
         
 
         public virtual User_Db? User { get; set; }

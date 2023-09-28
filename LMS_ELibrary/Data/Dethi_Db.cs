@@ -23,6 +23,7 @@ namespace LMS_ELibrary.Data
         public int? FileId { get; set; }
         public int? Nguoiduyet { get; set; }
         public DateTime? Ngayduyet { get; set; }
+        public string? Ghichu { get; set; }
 
         public virtual File_Dethi_Db? File_Dethi { get; set; }
         public virtual User_Db? User { get; set; }
