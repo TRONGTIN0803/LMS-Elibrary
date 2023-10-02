@@ -6,7 +6,7 @@ namespace LMS_ELibrary.ServiceInterface
     public interface IMonhocService
     {
         Task<IEnumerable<Monhoc_Model>> getAllMonhoc(int user_id);  //giang vien xem duoc list mon hoc ban than da tao
-        Task<Monhoc_Model> searchMonhoc(string key);
+        Task<object> searchMonhoc(string key);
 
         Task<object> chitietMonhoc(int id,int user_id);
 
@@ -19,14 +19,16 @@ namespace LMS_ELibrary.ServiceInterface
         Task<KqJson> addMonhoc(Monhoc_Model monhoc);
         Task<KqJson> deleteMonhoc(int monhoc_id);
 
-        Task<KqJson> ThemYeuthichMonhoc(MonhocYeuthich_Model model);
-        Task<KqJson> HuyYeuthichMonhoc(MonhocYeuthich_Model model);
+        Task<KqJson> YeuthichMonhoc(Yeuthich_Request_DTO model);
+        Task<object> Xem_List_monhoc_Yeuthich(int hocvien_id, int option);
 
         Task<object> xemMonhocDanghoc(int hocvien_id);  //hoc vien xem list mon hoc cua ban than
 
         Task<KqJson> themTongquanMonhoc(List<Them_Tongquan_Monhoc_Request_DTO> list_model);
 
         Task<KqJson> xetduyetMonhoc(Xetduyet_Request_DTO model);
+
+        Task<object> Mondangday(int giangvien_Id);
         
 
     }

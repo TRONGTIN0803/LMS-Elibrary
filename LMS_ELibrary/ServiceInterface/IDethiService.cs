@@ -6,13 +6,13 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface IDethiService
     {
-        Task<IEnumerable<Dethi_Model>> getalldethi();
+        Task<object> getalldethi(int user_id);
 
         Task<IEnumerable<Dethi_Model>> filterDethitheoMon(int id);
 
         Task<IEnumerable<Dethi_Model>> filterDethitheoTohomon(int id);
 
-        Task<KqJson> tao_dethi_nganhangcauhoi(Dethi_Model dethi, List<int> idQues);
+        Task<KqJson> tao_dethi_nganhangcauhoi(Tao_dethi_tu_nganhangcauhoi_Request_DTO model);
 
         Task<KqJson> tao_dethi_tructiep(Tao_cauhoi_tructiep_Request_DTO model);
 

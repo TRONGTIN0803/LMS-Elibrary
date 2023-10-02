@@ -2,6 +2,7 @@ using LMS_ELibrary.Model;
 using LMS_ELibrary.Services;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //conect db
-builder.Services.AddDbContext<LMS_ELibraryContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("strConnect")));
+builder.Services.AddDbContext<LMS_ELibraryContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("strConnect"));
+
+}
+
+); ;
 
 //register service
 builder.Services.AddScoped<IUserService, UserService>();
@@ -27,6 +34,7 @@ builder.Services.AddScoped<ICauhoiService, CauhoiService>();
 builder.Services.AddScoped<IThongbaoService, ThongbaoService>();
 builder.Services.AddScoped<IHotroService, HotroService>();
 builder.Services.AddScoped<IHoidapService, HoidapService>();
+builder.Services.AddScoped<ITobomonService, TobomonService>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

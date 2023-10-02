@@ -125,7 +125,7 @@ namespace LMS_ELibrary.Services
                                     select tb).ToListAsync();
                 List<Thongbao_Model> thongbao = new List<Thongbao_Model>();
                 thongbao = _mapper.Map<List<Thongbao_Model>>(result);
-                
+
                 return thongbao;
             }catch(Exception e)
             {

@@ -16,7 +16,7 @@ namespace LMS_ELibrary.Model
 
         public virtual User_Model? User { get; set; }
         public virtual Tailieu_Baigiang_Model? Tailieu { get; set; }
-        public virtual List<Cautrl_Db>? list_Cautrl { get; set; }
-        public virtual List<CauhoiYeuthich_Db>? list_Cauhoiyeuthich { get; set; }
+        public virtual List<Cautrl_Model>? list_Cautrl { get; set; }
+       // public virtual List<CauhoiYeuthich_Db>? list_Cauhoiyeuthich { get; set; }
     }
 }

@@ -22,9 +22,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpGet("getalldethi")]
-        public async Task<IActionResult> getall()
+        public async Task<IActionResult> getall(int user_id)
         {
-            return Ok(await _dethiService.getalldethi());
+            return Ok(await _dethiService.getalldethi(user_id));
         }
 
         [HttpGet("FilterDethi_theo_Monhoc/{Monhoc_id}")]
@@ -40,10 +40,10 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpPost("addDethi_ngan_hang_cau_hoi")]
-        public async Task<IActionResult> adddethi_nganhangcauhoi([FromBody]Dethi_Model dethi,[FromQuery]List<int>idQues)
+        public async Task<IActionResult> adddethi_nganhangcauhoi(Tao_dethi_tu_nganhangcauhoi_Request_DTO model)
         {
-            List<int> listnew = idQues;
-            return Ok(await _dethiService.tao_dethi_nganhangcauhoi(dethi,listnew)); 
+
+            return Ok(await _dethiService.tao_dethi_nganhangcauhoi(model)); 
         }
 
         [HttpPost("addDethiTructiep")]
@@ -70,8 +70,8 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _dethiService.doiMadethi(iddethi, dethi));
         }
 
-        [HttpPut("guiPheDuyet/{id_dethi}")]
-        public async Task<IActionResult>guiPheduyet(int id_dethi)
+        [HttpPut("guiPheDuyet")]
+        public async Task<IActionResult>guiPheduyet([FromBody]int id_dethi)
         {
             return Ok(await _dethiService.guiPheduyet(id_dethi));
         }

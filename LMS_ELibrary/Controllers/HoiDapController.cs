@@ -1,4 +1,5 @@
 ﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,10 @@ namespace LMS_ELibrary.Controllers
         {
             _hoidapServicce = hoidapServicce;
         }
-        [HttpGet("HoidapBaigiang")]
-        public async Task<IActionResult> CauhoiBaigiang([FromQuery]int baigiangId)
+        [HttpGet("List_Cauhoi_Baigiang")]
+        public async Task<IActionResult> List_Cauhoi_Baigiang(int user_id, int baigiangId, int lop_Id, int typeCauhoi, int filt)
         {
-            return Ok(await _hoidapServicce.XemhoidapBaigiang(baigiangId));
+            return Ok(await _hoidapServicce.XemhoidapBaigiang(user_id, baigiangId,lop_Id, typeCauhoi, filt));
         }
 
         [HttpGet("listCauhoiYeuthich")]
@@ -28,7 +29,7 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpPost("DatcauhoichoBaigiang")]
-        public async Task<IActionResult>datcauhoi(CauhoiVandap_Model model)
+        public async Task<IActionResult>datcauhoi(Datcauhoitronglop_Request_DTO model)
         {
             return Ok(await _hoidapServicce.DatcauhoiBaigang(model));
         }
@@ -45,10 +46,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _hoidapServicce.ChinhsuaCautrl(model));
         }
 
-        [HttpPut("themCauhoiYeuthich")]
-        public async Task<IActionResult> themCauhoiYeuthich(CauhoiVandap_Model model)
+        [HttpPut("Yeuthichcauhoi")]
+        public async Task<IActionResult> Yeuthichcauhoi(Yeuthich_Request_DTO model)
         {
-            return Ok(await _hoidapServicce.ThemCauhoiYeuthich(model));
+            return Ok(await _hoidapServicce.YeuthichCauhoi(model));
         }
 
         [HttpDelete("xoaCautrl")]

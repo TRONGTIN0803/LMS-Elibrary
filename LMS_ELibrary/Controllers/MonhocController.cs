@@ -73,15 +73,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _monhocService.deleteMonhoc(monhoc_id));
         }
 
-        [HttpPost("ThemYeuthich")]
-        public async Task<IActionResult>themyeuthich(MonhocYeuthich_Model model)
+        [HttpPost("Yeuthichmonhoc")]
+        public async Task<IActionResult>Yeuthichmonhoc(Yeuthich_Request_DTO model)
         {
-            return Ok(await _monhocService.ThemYeuthichMonhoc(model));
-        }
-        [HttpPost("HuyYeuthich")]
-        public async Task<IActionResult> Huyyeuthich(MonhocYeuthich_Model model)
-        {
-            return Ok(await _monhocService.HuyYeuthichMonhoc(model));
+            return Ok(await _monhocService.YeuthichMonhoc(model));
         }
 
         [HttpGet("Hocvien/Mondanghoc")]
@@ -100,6 +95,18 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>xetDuyetMonHoc(Xetduyet_Request_DTO model)
         {
             return Ok(await _monhocService.xetduyetMonhoc(model));
+        }
+
+        [HttpGet("Mondangday")]
+        public async Task<IActionResult>MOndangady(int giangvien_Id)
+        {
+            return Ok(await _monhocService.Mondangday(giangvien_Id));
+        }
+
+        [HttpGet("Xem_Monhoc_Gansao")]
+        public async Task<IActionResult>Xemmonhocgansao(int hocvien_id, int option)
+        {
+            return Ok(await _monhocService.Xem_List_monhoc_Yeuthich(hocvien_id, option));
         }
         
     }

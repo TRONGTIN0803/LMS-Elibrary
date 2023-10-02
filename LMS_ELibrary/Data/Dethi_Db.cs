@@ -19,7 +19,8 @@ namespace LMS_ELibrary.Data
         [Required]
         public DateTime Ngaytao { get; set; }
         public int? MonhocID { get; set; }
-        
+        public int? Dokho { get; set; }
+        public int? Thoiluong { get; set; }
         public int? FileId { get; set; }
         public int? Nguoiduyet { get; set; }
         public DateTime? Ngayduyet { get; set; }

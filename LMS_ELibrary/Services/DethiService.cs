@@ -244,80 +244,121 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<IEnumerable<Dethi_Model>> getalldethi()
+        public async Task<object> getalldethi(int user_id)
         {
             try
             {
-                var result = await (from dethi in _context.dethi_Dbs orderby dethi.Ngaytao descending select dethi).ToListAsync();
-                foreach (var item in result)
+                if (user_id > 0)
                 {
-                    var col = _context.Entry(item);
-                    await col.Reference(p => p.User).LoadAsync();
-                    User_Db user = new User_Db();
-                    user.UserFullname = item.User.UserFullname;
-                    user.UserName = item.User.UserName;
-                    user.Password = "***";
-                    user.Email = item.User.Email;
-                    user.Role = item.User.Role;
-                    user.Avt = item.User.Avt;
-                    user.Gioitinh = item.User.Gioitinh;
-                    user.Sdt = item.User.Sdt;
-                    user.Diachi = item.User.Diachi;
-
-                    item.User = user;
-
-                    await col.Reference(q => q.Monhoc).LoadAsync();
-                    Monhoc_Db monhoc = new Monhoc_Db();
-                    monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                    monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                    monhoc.Mota = item.Monhoc.Mota;
-                    monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                    monhoc.TobomonId = item.Monhoc.TobomonId;
-
-                    item.Monhoc = monhoc;
-
-                    await col.Collection(x => x.ListExQA).LoadAsync();
-                    List<Ex_QA_Db> listcauhoi = new List<Ex_QA_Db>();
-                    foreach (var collec in item.ListExQA)
+                    var check_user=await _context.user_Dbs.SingleOrDefaultAsync(p=>p.UserID==user_id);
+                    if (check_user != null)
                     {
+                        var quyen = await (from user in _context.user_Dbs
+                                               join role in _context.role_Dbs
+                                               on user.Role equals role.RoleId
+                                               where user.UserID == user_id
+                                               select role).SingleOrDefaultAsync();
+                        List<Dethi_Db> result = new List<Dethi_Db>();
+                        if (quyen.Phanquyen == 1)
+                        {
+                            result = await (from dethi in _context.dethi_Dbs orderby dethi.Ngaytao descending select dethi).ToListAsync();
+                           
+                        }
+                        else if (quyen.Phanquyen == 2)
+                        {
+                            result = await (from dethi in _context.dethi_Dbs
+                                            where dethi.UserID==user_id
+                                            orderby dethi.Ngaytao descending 
+                                            select dethi).ToListAsync();
+                            
+                        }
+                        else if (quyen.Phanquyen == 3)
+                        {
+                            throw new Exception("Ban khong du quyen de thuc hien");
+                        }
+                        foreach (var item in result)
+                        {
+                            var col = _context.Entry(item);
+                            await col.Reference(p => p.User).LoadAsync();
+                            User_Db user = new User_Db();
+                            user.UserFullname = item.User.UserFullname;
+                            user.UserName = item.User.UserName;
+                            user.Password = "***";
+                            user.Email = item.User.Email;
+                            user.Role = item.User.Role;
+                            user.Avt = item.User.Avt;
+                            user.Gioitinh = item.User.Gioitinh;
+                            user.Sdt = item.User.Sdt;
+                            user.Diachi = item.User.Diachi;
 
-                        Ex_QA_Db model = new Ex_QA_Db();
+                            item.User = user;
 
-                        model.QAID = collec.QAID;
-                        model.DethiID = collec.DethiID;
+                            await col.Reference(q => q.Monhoc).LoadAsync();
+                            Monhoc_Db monhoc = new Monhoc_Db();
+                            monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
+                            monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
+                            monhoc.Mota = item.Monhoc.Mota;
+                            monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
+                            monhoc.TobomonId = item.Monhoc.TobomonId;
 
-                        listcauhoi.Add(model);
+                            item.Monhoc = monhoc;
 
+                            await col.Collection(x => x.ListExQA).LoadAsync();
+                            List<Ex_QA_Db> listcauhoi = new List<Ex_QA_Db>();
+                            foreach (var collec in item.ListExQA)
+                            {
+
+                                Ex_QA_Db model = new Ex_QA_Db();
+
+                                model.QAID = collec.QAID;
+                                model.DethiID = collec.DethiID;
+
+                                listcauhoi.Add(model);
+
+                            }
+                            item.ListExQA = listcauhoi;
+                        }
+                        List<Dethi_Model> listdethi = new List<Dethi_Model>();
+                        listdethi = _mapper.Map<List<Dethi_Model>>(result);
+                        foreach (Dethi_Model dethi in listdethi)
+                        {
+                            if (dethi.Status == "0")
+                            {
+                                dethi.Status = "Cho Duyet";
+                            }
+                            else if (dethi.Status == "1")
+                            {
+                                dethi.Status = "Da Duyet";
+                            }
+
+                            foreach (var cauhoi in dethi.ListExQA)
+                            {
+                                var qa = await _context.qA_Dbs.SingleOrDefaultAsync(p => p.QAID == cauhoi.QAID);
+                                cauhoi.Cauhoi = qa.Cauhoi;
+                                cauhoi.DapAn = qa.Cautrl;
+
+                            }
+                        }
+
+                        return listdethi;
                     }
-                    item.ListExQA = listcauhoi;
+                    else
+                    {
+                        throw new Exception("Khong tim thay NGUOI DUNG nay");
+                    }
                 }
-                List<Dethi_Model> listdethi = new List<Dethi_Model>();
-                listdethi = _mapper.Map<List<Dethi_Model>>(result);
-                foreach (Dethi_Model dethi in listdethi)
+                else
                 {
-                    if (dethi.Status == "0")
-                    {
-                        dethi.Status = "Cho Duyet";
-                    }
-                    else if (dethi.Status == "1")
-                    {
-                        dethi.Status = "Da Duyet";
-                    }
-
-                    foreach (var cauhoi in dethi.ListExQA)
-                    {
-                        var qa = await _context.qA_Dbs.SingleOrDefaultAsync(p => p.QAID == cauhoi.QAID);
-                        cauhoi.Cauhoi = qa.Cauhoi;
-                        cauhoi.DapAn = qa.Cautrl;
-
-                    }
+                    throw new Exception("Bad Request");
                 }
-
-                return listdethi;
+                
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
@@ -399,17 +440,17 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> tao_dethi_nganhangcauhoi(Dethi_Model dethi, List<int> idQues)
+        public async Task<KqJson> tao_dethi_nganhangcauhoi(Tao_dethi_tu_nganhangcauhoi_Request_DTO model)
         {
             try
             {
                 KqJson kq = new KqJson();
                 Dethi_Db _dethi = new Dethi_Db();
-                _dethi.Madethi = dethi.Madethi;
+                _dethi.Madethi = model.Madethi;
                 _dethi.Status = -1;  //-1 -> chua gui yeu cau ; 0 -> cho duyet ; 1 -> da duyet
-                _dethi.UserID = dethi.UserID;
+                _dethi.UserID = model.UserID;
                 _dethi.Ngaytao = DateTime.Now;
-                _dethi.MonhocID = dethi.MonhocID;
+                _dethi.MonhocID = model.MonhocID;
 
                 _context.dethi_Dbs.Add(_dethi);
                 await _context.SaveChangesAsync();
@@ -417,7 +458,7 @@ namespace LMS_ELibrary.Services
 
                 List<Ex_QA_Db> listadd = new List<Ex_QA_Db>();
 
-                foreach (int id in idQues)
+                foreach (int id in model.List_Cauhoi_Id)
                 {
                     Ex_QA_Db QA = new Ex_QA_Db();
 
@@ -492,7 +533,7 @@ namespace LMS_ELibrary.Services
             try
             {
                 KqJson kq = new KqJson();
-                var result = await _context.dethi_Dbs.SingleOrDefaultAsync(p => p.DethiID == iddethi && p.Status == -1);
+                var result = await _context.dethi_Dbs.SingleOrDefaultAsync(p => p.DethiID == iddethi && p.Status == -1 || p.Status == 2);
                 if (result != null)
                 {
                     result.Status = 0;
@@ -862,7 +903,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if(model.ID_Canduyet!=null && model.Status==-1 || model.Status == 1)
+                if(model.ID_Canduyet>0 && model.Status==2 || model.Status == 1)
                 {
                     var result = await (from dt in _context.dethi_Dbs
                                         where dt.DethiID == model.ID_Canduyet && dt.Status == 0
@@ -879,11 +920,7 @@ namespace LMS_ELibrary.Services
                             result.Ngayduyet = DateTime.Now;
                             result.Nguoiduyet = model.ID_Nguoiduyet;
                         }
-                        result.Status= model.Status;
-                        if (model.Status == 1)
-                        {
-                            result.Ngayduyet = DateTime.Now;
-                        }
+                        
                         int row = await _context.SaveChangesAsync();
                         if (row > 0)
                         {
