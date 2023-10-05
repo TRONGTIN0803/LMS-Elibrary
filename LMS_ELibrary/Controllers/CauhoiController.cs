@@ -3,6 +3,7 @@ using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -41,9 +42,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpPost("addCauhoi")]
-        public async Task<IActionResult>addCauhoi(QA_Model cauhoi)
+        public async Task<IActionResult>addCauhoi(Taocauhoi_Request_DTO model)
         {
-            return Ok(await _cauhoiSerivce.addCauhoi(cauhoi));
+            return Ok(await _cauhoiSerivce.addCauhoi(model));
         }
 
         [HttpPut("editCauhoi/{idcauhoi}")]

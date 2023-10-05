@@ -1,4 +1,5 @@
 ﻿using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.ServiceInterface
 {
@@ -16,6 +17,6 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<KqJson> xoaCauhoi(int idcauhoi);
 
-        Task<KqJson> addCauhoi(QA_Model cauhoi);
+        Task<KqJson> addCauhoi(Taocauhoi_Request_DTO model);
     }
 }

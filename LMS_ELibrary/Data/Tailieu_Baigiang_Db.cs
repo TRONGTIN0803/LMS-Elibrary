@@ -19,14 +19,12 @@ namespace LMS_ELibrary.Data
         public int? MonhocID { get; set; }
         
         public int? ChudeID { get; set; }
-       
+        public int? File_Baigiang_Id { get; set; }
         public DateTime? Sualancuoi { get; set; }
-        public double? Kichthuoc { get; set; }
-        public string? Path { get; set; }
+        public string? Mota { get; set; }
         [Required]
         public int Status { get; set; }
-        [Required]
-        public int Type { get; set; }
+
         public int? Nguoiduyet { get; set; }
         public DateTime? NgayDuyet { get; set; }
         public string? Ghichu { get; set; }
@@ -35,5 +33,7 @@ namespace LMS_ELibrary.Data
         public virtual Monhoc_Db? Monhoc { get; set; }
         public virtual Chude_Db? Chude { get; set; }
         public virtual List<CauhoiVandap_Db>? list_Cauhoivandap { get; set; }
+        public virtual File_Tailen_Db? File_Baigiang { get; set; }
+        public virtual List<Tainguyen_Db>? list_Tainguyen { get; set; }
     }
 }

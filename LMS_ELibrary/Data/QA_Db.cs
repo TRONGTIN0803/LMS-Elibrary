@@ -17,7 +17,12 @@ namespace LMS_ELibrary.Data
         public int? MonhocID { get; set; }
         public virtual Monhoc_Db? Monhoc { get; set; }
         public DateTime? Lancuoisua { get; set; }
+        public int? Dokho { get; set; }
+        public string? Macauhoi { get; set; }
+        public int? Nguoitao_Id { get; set; }
+        public DateTime? Ngaytao { get; set; }
 
         public virtual List<Ex_QA_Db>? ListExQA { get; set; }
+        public virtual User_Db? Nguoitao { get; set; }
     }
 }

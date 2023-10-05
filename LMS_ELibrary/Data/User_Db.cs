@@ -44,5 +44,9 @@ namespace LMS_ELibrary.Data
         public virtual Role_Db? RoleDb { get; set; }
         public virtual List<Hocvien_Lop_Db>? list_HocvienLop { get; set; }
         public virtual List<ThongbaoLop_Db>? list_Thongbao { get; set; }
+        public virtual List<QA_Db>? list_Cauhoi_Datao { get; set; }
+        public virtual List<File_Tailen_Db>? list_File_Tailen { get; set; }
+        public virtual List<Tainguyen_Db>? list_Tainguyen { get; set; }
+
     }
 }

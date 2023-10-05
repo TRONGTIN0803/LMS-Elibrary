@@ -21,6 +21,7 @@ namespace LMS_ELibrary.Data
         public int? MonhocID { get; set; }
         public int? Dokho { get; set; }
         public int? Thoiluong { get; set; }
+        public bool? Hinhthuc { get; set; }
         public int? FileId { get; set; }
         public int? Nguoiduyet { get; set; }
         public DateTime? Ngayduyet { get; set; }

@@ -22,115 +22,130 @@ namespace LMS_ELibrary.Services
 
         }
         //Status = -1 => luu nhap ; 0 => cho duyet ; 1 => da duyet ; 2 => huy yeu cau
-        public async Task<IEnumerable<Monhoc_Model>> getAllMonhoc(int user_id)
+        public async Task<object> getAllMonhoc(int user_id)
         {
-            var monhoc = await (from x in _context.monhoc_Dbs orderby x.TenMonhoc ascending select x).ToListAsync();
-            List<Monhoc_Model> modelmh = new List<Monhoc_Model>();
-
-            foreach (var mon in monhoc)
+            try
             {
+                if (user_id > 0)
+                {
+                    var monhoc = await (from x in _context.monhoc_Dbs orderby x.TenMonhoc ascending select x).ToListAsync();
+                    List<Monhoc_Model> modelmh = new List<Monhoc_Model>();
 
-                var col = _context.Entry(mon);
-                col.Collection(m => m.ListTailieu_Baigiang).Load();
-                col.Collection(n => n.ListLopgiangday).Load();
-                col.Collection(p => p.list_Tongquan).Load();
-                List<Tailieu_Baigiang_Db> list = new List<Tailieu_Baigiang_Db>();
-                List<Lopgiangday_Db> listlop = new List<Lopgiangday_Db>();
-                List<Tongquan_Db> listtongquan = new List<Tongquan_Db>();
-                mon.ListTailieu_Baigiang.ForEach(e =>
-                {
-
-                    Tailieu_Baigiang_Db tailieu = new Tailieu_Baigiang_Db();
-                    tailieu.UserId = e.UserId;
-                    tailieu.TenDoc = e.TenDoc;
-                    tailieu.Status = e.Status;
-                    tailieu.MonhocID = e.MonhocID;
-                    tailieu.Sualancuoi = e.Sualancuoi;
-                    tailieu.Path = e.Path;
-                    tailieu.Kichthuoc = e.Kichthuoc;
-                    tailieu.ChudeID = e.ChudeID;
-                    list.Add(tailieu);
-
-
-
-                });
-                mon.ListLopgiangday.ForEach(e =>
-                {
-                    Lopgiangday_Db lopgiangday = new Lopgiangday_Db();
-                    lopgiangday.TenLop = e.TenLop;
-                    lopgiangday.Thoigian = e.Thoigian;
-                    lopgiangday.Truycapgannhat = e.Truycapgannhat;
-                    lopgiangday.UserID = e.UserID;
-                    lopgiangday.MonhocID = e.MonhocID;
-                    listlop.Add(lopgiangday);
-                });
-                mon.list_Tongquan.ForEach(e =>
-                {
-                    Tongquan_Db tongquan = new Tongquan_Db();
-                    tongquan.Tieude = e.Tieude;
-                    tongquan.Noidung = e.Noidung;
-                    tongquan.Monhoc_Id = e.Monhoc_Id;
-                    tongquan.TongquanID = e.TongquanID;
-                    listtongquan.Add(tongquan);
-                });
-                mon.ListTailieu_Baigiang = list;
-                mon.ListLopgiangday = listlop;
-                mon.list_Tongquan = listtongquan;
-            }
-            modelmh = _mapper.Map<List<Monhoc_Model>>(monhoc);
-
-            foreach (Monhoc_Model model in modelmh)
-            {
-                var gv = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == model.UserId);
-                model.Giangvien = gv.UserFullname;
-                int tongtailieu = model.ListTailieu_Baigiang.Count;
-                int tailieudaduyet = 0;
-                if (model.Tinhtrang == "-1")
-                {
-                    model.Tinhtrang = "Luu Nhap";
-                }
-                else if (model.Tinhtrang == "0")
-                {
-                    model.Tinhtrang = "Cho Duyet";
-                }
-                else if (model.Tinhtrang == "1")
-                {
-                    model.Tinhtrang = "Da Duyet";
-                }
-                else if (model.Tinhtrang == "2")
-                {
-                    model.Tinhtrang = "Bi tu choi duyet";
-                }
-                foreach (var x1 in model.ListTailieu_Baigiang)
-                {
-                    if (x1.Status == "1")
+                    foreach (var mon in monhoc)
                     {
-                        x1.Status = "Da duyet";
-                        tailieudaduyet++;
+
+                        var col = _context.Entry(mon);
+                        col.Collection(m => m.ListTailieu_Baigiang).Load();
+                        col.Collection(n => n.ListLopgiangday).Load();
+                        col.Collection(p => p.list_Tongquan).Load();
+                        List<Tailieu_Baigiang_Db> list = new List<Tailieu_Baigiang_Db>();
+                        List<Lopgiangday_Db> listlop = new List<Lopgiangday_Db>();
+                        List<Tongquan_Db> listtongquan = new List<Tongquan_Db>();
+                        mon.ListTailieu_Baigiang.ForEach(e =>
+                        {
+
+                            Tailieu_Baigiang_Db tailieu = new Tailieu_Baigiang_Db();
+                            tailieu.UserId = e.UserId;
+                            tailieu.TenDoc = e.TenDoc;
+                            tailieu.Status = e.Status;
+                            tailieu.MonhocID = e.MonhocID;
+                            tailieu.Sualancuoi = e.Sualancuoi;
+                            //tailieu.Path = e.Path;
+                            //tailieu.Kichthuoc = e.Kichthuoc;
+                            tailieu.ChudeID = e.ChudeID;
+                            list.Add(tailieu);
+
+
+
+                        });
+                        mon.ListLopgiangday.ForEach(e =>
+                        {
+                            Lopgiangday_Db lopgiangday = new Lopgiangday_Db();
+                            lopgiangday.TenLop = e.TenLop;
+                            lopgiangday.Thoigian = e.Thoigian;
+                            lopgiangday.Truycapgannhat = e.Truycapgannhat;
+                            lopgiangday.UserID = e.UserID;
+                            lopgiangday.MonhocID = e.MonhocID;
+                            listlop.Add(lopgiangday);
+                        });
+                        mon.list_Tongquan.ForEach(e =>
+                        {
+                            Tongquan_Db tongquan = new Tongquan_Db();
+                            tongquan.Tieude = e.Tieude;
+                            tongquan.Noidung = e.Noidung;
+                            tongquan.Monhoc_Id = e.Monhoc_Id;
+                            tongquan.TongquanID = e.TongquanID;
+                            listtongquan.Add(tongquan);
+                        });
+                        mon.ListTailieu_Baigiang = list;
+                        mon.ListLopgiangday = listlop;
+                        mon.list_Tongquan = listtongquan;
                     }
-                    else if (x1.Status == "0")
+                    modelmh = _mapper.Map<List<Monhoc_Model>>(monhoc);
+
+                    foreach (Monhoc_Model model in modelmh)
                     {
-                        x1.Status = "Cho duyet";
+                        var gv = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == model.UserId);
+                        model.Giangvien = gv.UserFullname;
+                        int tongtailieu = model.ListTailieu_Baigiang.Count;
+                        int tailieudaduyet = 0;
+                        if (model.Tinhtrang == "-1")
+                        {
+                            model.Tinhtrang = "Luu Nhap";
+                        }
+                        else if (model.Tinhtrang == "0")
+                        {
+                            model.Tinhtrang = "Cho Duyet";
+                        }
+                        else if (model.Tinhtrang == "1")
+                        {
+                            model.Tinhtrang = "Da Duyet";
+                        }
+                        else if (model.Tinhtrang == "2")
+                        {
+                            model.Tinhtrang = "Bi tu choi duyet";
+                        }
+                        foreach (var x1 in model.ListTailieu_Baigiang)
+                        {
+                            if (x1.Status == "1")
+                            {
+                                x1.Status = "Da duyet";
+                                tailieudaduyet++;
+                            }
+                            else if (x1.Status == "0")
+                            {
+                                x1.Status = "Cho duyet";
+                            }
+
+                        }
+                        model.TailieuPheduyet = tailieudaduyet + "/" + tongtailieu;
+                        var check = await (from c in _context.monhocYeuthich_Dbs
+                                           where c.MonhocId == model.MonhocID && c.UserId == user_id
+                                           select c).ToListAsync();
+                        if (check.Count > 0)
+                        {
+                            model.TrangthaiYeuthich = "Yeu thich";
+                        }
+                        else
+                        {
+                            model.TrangthaiYeuthich = null;
+                        }
                     }
 
-                }
-                model.TailieuPheduyet = tailieudaduyet + "/" + tongtailieu;
-                var check = await (from c in _context.monhocYeuthich_Dbs
-                                   where c.MonhocId == model.MonhocID && c.UserId == user_id
-                                   select c).ToListAsync();
-                if (check.Count > 0)
-                {
-                    model.TrangthaiYeuthich = "Yeu thich";
+
+                    return modelmh;
                 }
                 else
                 {
-                    model.TrangthaiYeuthich = null;
+                    throw new Exception("Khong tim thay hoc vien dang truy cap");
                 }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
-
-
-            return modelmh;
-
         }
 
         public async Task<object> searchMonhoc(string key)
@@ -166,8 +181,8 @@ namespace LMS_ELibrary.Services
                                 tailieu.Status = e.Status;
                                 tailieu.MonhocID = e.MonhocID;
                                 tailieu.Sualancuoi = e.Sualancuoi;
-                                tailieu.Path = e.Path;
-                                tailieu.Kichthuoc = e.Kichthuoc;
+                                //tailieu.Path = e.Path;
+                                //tailieu.Kichthuoc = e.Kichthuoc;
                                 tailieu.ChudeID = e.ChudeID;
                                 list.Add(tailieu);
                             });
@@ -267,8 +282,8 @@ namespace LMS_ELibrary.Services
                         tailieu.Status = e.Status;
                         tailieu.MonhocID = e.MonhocID;
                         tailieu.Sualancuoi = e.Sualancuoi;
-                        tailieu.Path = e.Path;
-                        tailieu.Kichthuoc = e.Kichthuoc;
+                        //tailieu.Path = e.Path;
+                        //tailieu.Kichthuoc = e.Kichthuoc;
                         tailieu.ChudeID = e.ChudeID;
                         list.Add(tailieu);
                     });
@@ -359,8 +374,8 @@ namespace LMS_ELibrary.Services
                             tailieu.Status = e.Status;
                             tailieu.MonhocID = e.MonhocID;
                             tailieu.Sualancuoi = e.Sualancuoi;
-                            tailieu.Path = e.Path;
-                            tailieu.Kichthuoc = e.Kichthuoc;
+                            //tailieu.Path = e.Path;
+                            //tailieu.Kichthuoc = e.Kichthuoc;
                             tailieu.ChudeID = e.ChudeID;
                             list.Add(tailieu);
                         });
@@ -658,8 +673,8 @@ namespace LMS_ELibrary.Services
                                             tailieu.Status = e.Status;
                                             tailieu.MonhocID = e.MonhocID;
                                             tailieu.Sualancuoi = e.Sualancuoi;
-                                            tailieu.Path = e.Path;
-                                            tailieu.Kichthuoc = e.Kichthuoc;
+                                            //tailieu.Path = e.Path;
+                                            //tailieu.Kichthuoc = e.Kichthuoc;
                                             tailieu.ChudeID = e.ChudeID;
                                             list.Add(tailieu);
                                         });
@@ -884,8 +899,8 @@ namespace LMS_ELibrary.Services
                                 tailieu.Status = e.Status;
                                 tailieu.MonhocID = e.MonhocID;
                                 tailieu.Sualancuoi = e.Sualancuoi;
-                                tailieu.Path = e.Path;
-                                tailieu.Kichthuoc = e.Kichthuoc;
+                                //tailieu.Path = e.Path;
+                                //tailieu.Kichthuoc = e.Kichthuoc;
                                 tailieu.ChudeID = e.ChudeID;
                                 list.Add(tailieu);
 
@@ -1121,8 +1136,8 @@ namespace LMS_ELibrary.Services
                                     tailieu.Status = e.Status;
                                     tailieu.MonhocID = e.MonhocID;
                                     tailieu.Sualancuoi = e.Sualancuoi;
-                                    tailieu.Path = e.Path;
-                                    tailieu.Kichthuoc = e.Kichthuoc;
+                                    //tailieu.Path = e.Path;
+                                    //tailieu.Kichthuoc = e.Kichthuoc;
                                     tailieu.ChudeID = e.ChudeID;
                                     list.Add(tailieu);
 
@@ -1273,8 +1288,8 @@ namespace LMS_ELibrary.Services
                                 tailieu.Status = e.Status;
                                 tailieu.MonhocID = e.MonhocID;
                                 tailieu.Sualancuoi = e.Sualancuoi;
-                                tailieu.Path = e.Path;
-                                tailieu.Kichthuoc = e.Kichthuoc;
+                                //tailieu.Path = e.Path;
+                                //tailieu.Kichthuoc = e.Kichthuoc;
                                 tailieu.ChudeID = e.ChudeID;
                                 list.Add(tailieu);
 

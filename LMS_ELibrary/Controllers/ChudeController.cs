@@ -40,7 +40,11 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _chudeService.deletetChude(id));
         }
 
-       
+        [HttpGet("Xem_Chude_trong_Monhoc")]
+        public async Task<IActionResult> Xem_Chude_trong_Monhoc(int monhoc_id)
+        {
+            return Ok(await _chudeService.Xem_Chude_Monhoc(monhoc_id));
+        }
 
     }
 }

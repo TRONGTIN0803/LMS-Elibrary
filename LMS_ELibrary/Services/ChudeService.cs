@@ -69,19 +69,19 @@ namespace LMS_ELibrary.Services
                     List<Tailieu_Baigiang_Db> listtailieu = new List<Tailieu_Baigiang_Db>();
                     foreach (var item in chude.ListTailieu_Baigiang)
                     {
-                        if (item.Type==1)
-                        {
-                            Tailieu_Baigiang_Db tailieu = new Tailieu_Baigiang_Db();
-                            tailieu.UserId = item.UserId;
-                            tailieu.TenDoc = item.TenDoc;
-                            tailieu.Status = item.Status;
-                            tailieu.MonhocID = item.MonhocID;
-                            tailieu.Sualancuoi = item.Sualancuoi;
-                            tailieu.Path = item.Path;
-                            tailieu.Kichthuoc = item.Kichthuoc;
-                            tailieu.ChudeID = item.ChudeID;
-                            listtailieu.Add(tailieu);
-                        }
+                        //if (item.Type==1)
+                        //{
+                        //    Tailieu_Baigiang_Db tailieu = new Tailieu_Baigiang_Db();
+                        //    tailieu.UserId = item.UserId;
+                        //    tailieu.TenDoc = item.TenDoc;
+                        //    tailieu.Status = item.Status;
+                        //    tailieu.MonhocID = item.MonhocID;
+                        //    tailieu.Sualancuoi = item.Sualancuoi;
+                        //    tailieu.Path = item.Path;
+                        //    tailieu.Kichthuoc = item.Kichthuoc;
+                        //    tailieu.ChudeID = item.ChudeID;
+                        //    listtailieu.Add(tailieu);
+                        //}
                     }
                     chude.ListTailieu_Baigiang = listtailieu;
                 }
@@ -132,6 +132,37 @@ namespace LMS_ELibrary.Services
             return kq;
         }
 
-        
+        public async Task<object> Xem_Chude_Monhoc(int monhoc_id)
+        {
+            try
+            {
+                if (monhoc_id > 0)
+                {
+                    var result = await (from cd in _context.chude_Dbs 
+                                        where cd.Monhoc_Id == monhoc_id 
+                                        select cd).ToListAsync();
+                    if (result.Count > 0)
+                    {
+                        List<Chude_Model> list_chude = new List<Chude_Model>();
+                        list_chude = _mapper.Map<List<Chude_Model>>(result);
+                        return list_chude;
+                    }
+                    else
+                    {
+                        throw new Exception("Mon hoc nay khong co chu de nao");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Khong co mon hoc nay");
+                }
+            }catch(Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
     }
 }

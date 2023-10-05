@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LMS_ELibrary.Data;
 using LMS_ELibrary.Model;
+using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,34 +19,51 @@ namespace LMS_ELibrary.Services
             _mapper = mapper;
         }
 
-        public async Task<KqJson> addCauhoi(QA_Model cauhoi)
+        public async Task<KqJson> addCauhoi(Taocauhoi_Request_DTO model)
         {
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                QA_Db ch = new QA_Db();
-                ch.Cauhoi = cauhoi.Cauhoi;
-                ch.Cautrl = cauhoi.Cautrl;
-                ch.MonhocID=cauhoi.MonhocID;
-                ch.Lancuoisua = DateTime.Now;
-
-                _context.qA_Dbs.Add(ch);
-                int row =await _context.SaveChangesAsync();
-                if (row > 0)
+                if (model.Nguoitao_Id > 0 && model.MonhocID > 0 && model.Cauhoi != "" & model.CauTrl != "" && model.Macauhoi != "")
                 {
-                    kq.Status = true;
-                    kq.Message = "Them thanh cong!";
+                    if (model.Dokho == 1 || model.Dokho == 2 || model.Dokho == 3)
+                    {
+                        QA_Db ch = new QA_Db();
+                        ch.Cauhoi = model.Cauhoi;
+                        ch.Cautrl = model.CauTrl;
+                        ch.MonhocID = model.MonhocID;
+                        ch.Nguoitao_Id = model.Nguoitao_Id;
+                        ch.Dokho = model.Dokho;
+                        ch.Macauhoi = model.Macauhoi;
+                        ch.Lancuoisua = DateTime.Now;
+
+                        _context.qA_Dbs.Add(ch);
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Them thanh cong!";
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Them that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Do kho khong phu hop");
+                    }
                 }
                 else
                 {
-                    kq.Status = false;
-                    kq.Message = "Them that bai!";
+                    throw new Exception("Bad Request");
                 }
-
-                return kq;
             }catch(Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 

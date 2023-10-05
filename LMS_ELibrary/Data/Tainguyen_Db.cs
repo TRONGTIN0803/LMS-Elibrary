@@ -1,0 +1,26 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace LMS_ELibrary.Data
+{
+    [Table("Tainguyen")]
+    public class Tainguyen_Db
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Tainguyen_Id { get; set; }
+        public int? Nguoitao_Id { get; set; }
+        public DateTime? Ngaytao { get; set; }
+        public int? Status { get; set; }
+        public int? File_Tainguyen_Id { get; set; }
+        public int? Baigiang_Id { get; set; }
+        public DateTime? Sualancuoi { get; set; }
+        public int? Nguoiduyet_Id { get; set; }
+        public DateTime? Ngayduyet { get; set; }
+        public string? Ghichu { get; set; }
+
+        public virtual User_Db? Nguoitailen { get; set; }
+        public virtual Tailieu_Baigiang_Db? Baigiang { get; set; }
+        public virtual File_Tailen_Db? File_Tainguyen { get; set; }
+    }
+}

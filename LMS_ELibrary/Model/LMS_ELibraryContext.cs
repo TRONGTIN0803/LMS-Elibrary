@@ -31,6 +31,8 @@ namespace LMS_ELibrary.Model
         public DbSet<ThongbaoLop_Db>thongbaoLop_Dbs { get; set; }
         public DbSet<Tongquan_Db>tongquan_Dbs { get; set; }
         public DbSet<Role_Db> role_Dbs { get; set; }
+        public DbSet<File_Tailen_Db> file_Tailen_Dbs { get; set; }
+        public DbSet<Tainguyen_Db> tainguyen_Dbs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -233,6 +235,66 @@ namespace LMS_ELibrary.Model
                         .HasForeignKey("Monhoc_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_tongquan_monhoc");
+
+            });
+            modelBuilder.Entity<Tainguyen_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Baigiang)
+                        .WithMany(Baigiang => Baigiang.list_Tainguyen)
+                        .HasForeignKey("Baigiang_Id")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_tainguyen_baigiang");
+
+            });
+            modelBuilder.Entity<Tainguyen_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Nguoitailen)
+                        .WithMany(user=>user.list_Tainguyen)
+                        .HasForeignKey("Nguoitao_Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("FK_tainguyen_user");
+
+            });
+            modelBuilder.Entity<Tainguyen_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.File_Tainguyen)
+                        .WithMany(file => file.list_Tainguyen)
+                        .HasForeignKey("File_Tainguyen_Id")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_tainguyen_filetainguyen");
+
+            });
+            modelBuilder.Entity<Tailieu_Baigiang_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.File_Baigiang)
+                        .WithMany(file=>file.list_Baigiang)
+                        .HasForeignKey("File_Baigiang_Id")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_baigiang_file");
+
+            });
+            modelBuilder.Entity<File_Tailen_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Nguoitailen)
+                        .WithMany(user=>user.list_File_Tailen)
+                        .HasForeignKey("Nguoitailen_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_filebaigiang_user");
+
+            });
+            modelBuilder.Entity<QA_Db>(entity =>
+            {
+                // Thiết lập cho bảng thongbao
+                entity.HasOne(e => e.Nguoitao)
+                        .WithMany(user => user.list_Cauhoi_Datao)
+                        .HasForeignKey("Nguoitao_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_cauhoi_user");
 
             });
 

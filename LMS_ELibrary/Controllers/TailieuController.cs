@@ -60,6 +60,18 @@ namespace LMS_ELibrary.Controllers
             
         }
 
+        [HttpPost("Themmoibaigiang")]
+        public async Task<IActionResult> Themmoibaigiang(Taomoi_Baigiang_Request_DTO model)
+        {
+            return Ok(await _tailieuService.TaomoiBaigiang(model));
+        }
+
+        [HttpPost("Them_Tainguyen_cho_baigiang")]
+        public async Task<IActionResult> Them_Tainguyen_cho_baigiang(Taotainguyen_Baigiang_Request_DTO model)
+        {
+            return Ok(await _tailieuService.Taotainguyen_cho_Baigiang(model));
+        }
+
         [HttpPut("updateTailieu/{id}")]
         public async Task<IActionResult> updateTailieu(int id,Tailieu_Baigiang_Model tailieu)
         {
@@ -84,10 +96,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.them_vao_Monhoc_va_Chude(model));
         }
 
-        [HttpDelete("delTailieu/{id}")]
-        public async Task<IActionResult>delleteTailieu(int id)
+        [HttpDelete("delTailieu")]
+        public async Task<IActionResult>delleteTailieu(Delete_Entity_Request_DTO model)
         {
-            return Ok(await _tailieuService.delTailieu(id));
+            return Ok(await _tailieuService.delTailieu(model));
         }
 
         [HttpGet("XemTailieutheoTrangthai")]
@@ -96,10 +108,22 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.XemTailieutheoTrangthai(status));
         }
 
+        [HttpGet("Xem_File_theo_Monhoc")]
+        public async Task<IActionResult> Xem_File_theo_Monhoc(int monhoc_id)
+        {
+            return Ok(await _tailieuService.Xem_File_theo_Mon(monhoc_id));
+        }
+
         [HttpPut("XetDuyetTaiLieu")]
         public async Task<IActionResult> xetDuyetTaiLieu(Xetduyet_Request_DTO model)
         {
             return Ok(await _tailieuService.XetDuyetTaiLieu(model));
+        }
+
+        [HttpPut("XetDuyetFile")]
+        public async Task<IActionResult> XetDuyetFile(Xetduyet_Request_DTO model)
+        {
+            return Ok(await _tailieuService.XetduyetFile(model));
         }
 
     }

@@ -181,6 +181,9 @@ namespace LMS_ELibrary.Migrations
                     b.Property<string>("Ghichu")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("Hinhthuc")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Madethi")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -266,6 +269,51 @@ namespace LMS_ELibrary.Migrations
                     b.HasIndex("User_Id");
 
                     b.ToTable("FileDethi");
+                });
+
+            modelBuilder.Entity("LMS_ELibrary.Data.File_Tailen_Db", b =>
+                {
+                    b.Property<int>("File_Tailen_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("File_Tailen_Id"), 1L, 1);
+
+                    b.Property<string>("Ghichu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Ngayduyet")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Ngaytailen")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Nguoiduyet_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Nguoitailen_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Size")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tenfile")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("File_Tailen_Id");
+
+                    b.HasIndex("Nguoitailen_Id");
+
+                    b.ToTable("File_Tailen");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Help_Db", b =>
@@ -455,15 +503,29 @@ namespace LMS_ELibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Dokho")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("Lancuoisua")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Macauhoi")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MonhocID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Ngaytao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Nguoitao_Id")
                         .HasColumnType("int");
 
                     b.HasKey("QAID");
 
                     b.HasIndex("MonhocID");
+
+                    b.HasIndex("Nguoitao_Id");
 
                     b.ToTable("QA");
                 });
@@ -501,23 +563,23 @@ namespace LMS_ELibrary.Migrations
                     b.Property<int?>("ChudeID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("File_Baigiang_Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("Ghichu")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Kichthuoc")
-                        .HasColumnType("float");
-
                     b.Property<int?>("MonhocID")
                         .HasColumnType("int");
+
+                    b.Property<string>("Mota")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("NgayDuyet")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("Nguoiduyet")
                         .HasColumnType("int");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -529,9 +591,6 @@ namespace LMS_ELibrary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
@@ -539,11 +598,59 @@ namespace LMS_ELibrary.Migrations
 
                     b.HasIndex("ChudeID");
 
+                    b.HasIndex("File_Baigiang_Id");
+
                     b.HasIndex("MonhocID");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Tailieu_Baigiang");
+                });
+
+            modelBuilder.Entity("LMS_ELibrary.Data.Tainguyen_Db", b =>
+                {
+                    b.Property<int>("Tainguyen_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Tainguyen_Id"), 1L, 1);
+
+                    b.Property<int?>("Baigiang_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("File_Tainguyen_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ghichu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Ngayduyet")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Ngaytao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Nguoiduyet_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Nguoitao_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Sualancuoi")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Tainguyen_Id");
+
+                    b.HasIndex("Baigiang_Id");
+
+                    b.HasIndex("File_Tainguyen_Id");
+
+                    b.HasIndex("Nguoitao_Id");
+
+                    b.ToTable("Tainguyen");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Thongbao_Db", b =>
@@ -830,6 +937,17 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LMS_ELibrary.Data.File_Tailen_Db", b =>
+                {
+                    b.HasOne("LMS_ELibrary.Data.User_Db", "Nguoitailen")
+                        .WithMany("list_File_Tailen")
+                        .HasForeignKey("Nguoitailen_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_filebaigiang_user");
+
+                    b.Navigation("Nguoitailen");
+                });
+
             modelBuilder.Entity("LMS_ELibrary.Data.Help_Db", b =>
                 {
                     b.HasOne("LMS_ELibrary.Data.User_Db", "User")
@@ -913,7 +1031,15 @@ namespace LMS_ELibrary.Migrations
                         .WithMany("ListCauhoi")
                         .HasForeignKey("MonhocID");
 
+                    b.HasOne("LMS_ELibrary.Data.User_Db", "Nguoitao")
+                        .WithMany("list_Cauhoi_Datao")
+                        .HasForeignKey("Nguoitao_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_cauhoi_user");
+
                     b.Navigation("Monhoc");
+
+                    b.Navigation("Nguoitao");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Tailieu_Baigiang_Db", b =>
@@ -921,6 +1047,12 @@ namespace LMS_ELibrary.Migrations
                     b.HasOne("LMS_ELibrary.Data.Chude_Db", "Chude")
                         .WithMany("ListTailieu_Baigiang")
                         .HasForeignKey("ChudeID");
+
+                    b.HasOne("LMS_ELibrary.Data.File_Tailen_Db", "File_Baigiang")
+                        .WithMany("list_Baigiang")
+                        .HasForeignKey("File_Baigiang_Id")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_baigiang_file");
 
                     b.HasOne("LMS_ELibrary.Data.Monhoc_Db", "Monhoc")
                         .WithMany("ListTailieu_Baigiang")
@@ -932,9 +1064,38 @@ namespace LMS_ELibrary.Migrations
 
                     b.Navigation("Chude");
 
+                    b.Navigation("File_Baigiang");
+
                     b.Navigation("Monhoc");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LMS_ELibrary.Data.Tainguyen_Db", b =>
+                {
+                    b.HasOne("LMS_ELibrary.Data.Tailieu_Baigiang_Db", "Baigiang")
+                        .WithMany("list_Tainguyen")
+                        .HasForeignKey("Baigiang_Id")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_tainguyen_baigiang");
+
+                    b.HasOne("LMS_ELibrary.Data.File_Tailen_Db", "File_Tainguyen")
+                        .WithMany("list_Tainguyen")
+                        .HasForeignKey("File_Tainguyen_Id")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_tainguyen_filetainguyen");
+
+                    b.HasOne("LMS_ELibrary.Data.User_Db", "Nguoitailen")
+                        .WithMany("list_Tainguyen")
+                        .HasForeignKey("Nguoitao_Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("FK_tainguyen_user");
+
+                    b.Navigation("Baigiang");
+
+                    b.Navigation("File_Tainguyen");
+
+                    b.Navigation("Nguoitailen");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Thongbao_Db", b =>
@@ -1017,6 +1178,13 @@ namespace LMS_ELibrary.Migrations
                     b.Navigation("listDethi");
                 });
 
+            modelBuilder.Entity("LMS_ELibrary.Data.File_Tailen_Db", b =>
+                {
+                    b.Navigation("list_Baigiang");
+
+                    b.Navigation("list_Tainguyen");
+                });
+
             modelBuilder.Entity("LMS_ELibrary.Data.Lopgiangday_Db", b =>
                 {
                     b.Navigation("List_HocvienLop");
@@ -1054,6 +1222,8 @@ namespace LMS_ELibrary.Migrations
             modelBuilder.Entity("LMS_ELibrary.Data.Tailieu_Baigiang_Db", b =>
                 {
                     b.Navigation("list_Cauhoivandap");
+
+                    b.Navigation("list_Tainguyen");
                 });
 
             modelBuilder.Entity("LMS_ELibrary.Data.Thongbao_Db", b =>
@@ -1082,17 +1252,23 @@ namespace LMS_ELibrary.Migrations
 
                     b.Navigation("list_CauhoiVandap");
 
+                    b.Navigation("list_Cauhoi_Datao");
+
                     b.Navigation("list_Cauhoiyeuthich");
 
                     b.Navigation("list_Cautrl");
 
                     b.Navigation("list_File_Dethi");
 
+                    b.Navigation("list_File_Tailen");
+
                     b.Navigation("list_HocvienLop");
 
                     b.Navigation("list_Mongiangday");
 
                     b.Navigation("list_Monhocyeuthich");
+
+                    b.Navigation("list_Tainguyen");
 
                     b.Navigation("list_Thongbao");
                 });

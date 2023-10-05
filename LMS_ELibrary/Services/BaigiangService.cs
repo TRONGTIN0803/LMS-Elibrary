@@ -22,7 +22,7 @@ namespace LMS_ELibrary.Services
         {
             try
             {
-                var result = await (from baigiang in _context.tailieu_Baigiang_Dbs where baigiang.Type == 1 && baigiang.UserId == id orderby baigiang.Sualancuoi descending select baigiang).ToListAsync();
+                var result = await (from baigiang in _context.tailieu_Baigiang_Dbs where baigiang.UserId == id orderby baigiang.Sualancuoi descending select baigiang).ToListAsync();
                 foreach (var item in result)
                 {
                     var col = _context.Entry(item);
@@ -99,7 +99,7 @@ namespace LMS_ELibrary.Services
             try
             {
                 var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                    where baigiang.Type == 1 && baigiang.UserId == id && baigiang.TenDoc.Contains(key)
+                                    where baigiang.UserId == id && baigiang.TenDoc.Contains(key)
                                     orderby baigiang.Sualancuoi descending
                                     select baigiang).ToListAsync();
                 foreach (var item in result)
@@ -180,7 +180,7 @@ namespace LMS_ELibrary.Services
             try
             {
                 var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                    where baigiang.Type == 1 && baigiang.UserId == id && baigiang.MonhocID == monId
+                                    where baigiang.UserId == id && baigiang.MonhocID == monId
                                     orderby baigiang.Sualancuoi descending
                                     select baigiang).ToListAsync();
                 foreach (var item in result)
@@ -267,7 +267,7 @@ namespace LMS_ELibrary.Services
                 addhbaigiang.MonhocID = baigiang.MonhocID;
                 addhbaigiang.Sualancuoi = DateTime.Now;
                 addhbaigiang.Status = 0;
-                addhbaigiang.Type = 1;
+                //addhbaigiang.Type = 1;
                 await _context.tailieu_Baigiang_Dbs.AddAsync(addhbaigiang);
                 int row = await _context.SaveChangesAsync();
                 KqJson kq = new KqJson();

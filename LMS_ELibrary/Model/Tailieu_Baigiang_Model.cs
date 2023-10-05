@@ -25,5 +25,7 @@ namespace LMS_ELibrary.Model
         public virtual User_Model? User { get; set; }
         public virtual Monhoc_Model? Monhoc { get; set; }
         public virtual Chude_Model? Chude { get; set; }
+        public virtual File_Tailen_Model? File_Baigiang { get; set; }
+        public virtual List<Tainguyen_Model>? List_File_Tainguyen { get; set; }
     }
 }

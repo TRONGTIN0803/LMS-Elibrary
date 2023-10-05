@@ -5,7 +5,7 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface IMonhocService
     {
-        Task<IEnumerable<Monhoc_Model>> getAllMonhoc(int user_id);  //giang vien xem duoc list mon hoc ban than da tao
+        Task<object> getAllMonhoc(int user_id);  //giang vien xem duoc list mon hoc ban than da tao
         Task<object> searchMonhoc(string key);
 
         Task<object> chitietMonhoc(int id,int user_id);
