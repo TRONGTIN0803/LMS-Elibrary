@@ -17,18 +17,25 @@ namespace LMS_ELibrary.Services
             _context = context;
             _mapper = mapper;
         }
-
-        public async Task<object> GetAlltailieu()
+        /*
+         * Trang thai duyet
+         * 1 -> Luu nhap (Chua gui yeu cau duyet)
+         * 2 -> Cho duyet (Da gui yeu cau duyet)
+         * 3 -> Da duyet
+         * 4 -> Tu choi duyet (Admin khong duyet)
+         */
+        public async Task<object> GetAllBaigiang()
         {
             try
             {
-                var result = await _context.tailieu_Baigiang_Dbs.ToListAsync();
+                var result = await _context.tailieu_Baigiang_Dbs.OrderByDescending(p => p.Sualancuoi).ToListAsync();
                 if (result.Count > 0)
                 {
                     foreach (var item in result)
                     {
                         var col = _context.Entry(item);
                         await col.Reference(p => p.User).LoadAsync();
+                        await col.Collection(p => p.list_Tainguyen).LoadAsync();
                         User_Db user = new User_Db();
                         user.UserFullname = item.User.UserFullname;
                         user.UserName = item.User.UserName;
@@ -41,46 +48,42 @@ namespace LMS_ELibrary.Services
                         user.Diachi = item.User.Diachi;
 
                         item.User = user;
+                        List<Tainguyen_Db> listtn = new List<Tainguyen_Db>();
+                        foreach (var tn in item.list_Tainguyen)
+                        {
+
+                            Tainguyen_Db tainguyen = new Tainguyen_Db();
+                            tainguyen.Baigiang_Id = tn.Baigiang_Id;
+                            tainguyen.Ngaytao = tn.Ngaytao;
+                            tainguyen.Status = tn.Status;
+                            tainguyen.Nguoitao_Id = tn.Nguoitao_Id;
+                            tainguyen.File_Tainguyen_Id = tn.File_Tainguyen_Id;
+                            tainguyen.Nguoiduyet_Id = tn.Nguoiduyet_Id;
+                            tainguyen.Ngayduyet = tn.Ngayduyet;
+                            tainguyen.Ghichu = tn.Ghichu;
+                            listtn.Add(tainguyen);
+                        }
+                        item.list_Tainguyen = listtn;
                     }
                     List<Tailieu_Baigiang_Model> listtialieu = new List<Tailieu_Baigiang_Model>();
                     listtialieu = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
                     foreach (var item in listtialieu)
                     {
-
-
-
-                        if (item.Type == "0")
-                        {
-                            item.Type = "Tai Nguyen";
-                        }
-                        else if (item.Type == "1")
-                        {
-                            item.Type = "Bai Giang";
-                        }
-
-                        if (item.Status == "0")
+                        if (item.Status == "2")
                         {
                             item.Status = "Cho Duyet";
                         }
-                        else if (item.Status == "1")
+                        else if (item.Status == "3")
                         {
                             item.Status = "Da duyet";
                         }
-                        else if (item.Status == "-1")
+                        else if (item.Status == "1")
                         {
                             item.Status = "Chua duyet"; //chua gui phe duyet
                         }
-                        if (item.User.Role == "0")
+                        else if (item.Status == "4")
                         {
-                            item.User.Role = "Quan ly";
-                        }
-                        else if (item.User.Role == "1")
-                        {
-                            item.User.Role = "Giao vien";
-                        }
-                        else
-                        {
-                            item.User.Role = "Hoc sinh";
+                            item.Status = "Tu choi"; //Admin khong duyet
                         }
                         if (item.User.Gioitinh == "True")
                         {
@@ -108,180 +111,81 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<IEnumerable<Tailieu_Baigiang_Model>> Tailieucuatoi(int id)
+        public async Task<object> Tailieucuatoi(int id)
         {
             try
             {
-                var result = await (from tailieu in _context.tailieu_Baigiang_Dbs where tailieu.UserId == id select tailieu).ToListAsync();
-                foreach (var item in result)
+                if (id > 0)
                 {
-                    var col = _context.Entry(item);
-                    await col.Reference(p => p.User).LoadAsync();
-                    User_Db user = new User_Db();
-                    user.UserFullname = item.User.UserFullname;
-                    user.UserName = item.User.UserName;
-                    user.Password = "***";
-                    user.Email = item.User.Email;
-                    user.Role = item.User.Role;
-                    user.Avt = item.User.Avt;
-                    user.Gioitinh = item.User.Gioitinh;
-                    user.Sdt = item.User.Sdt;
-                    user.Diachi = item.User.Diachi;
+                    var result = await (from file in _context.file_Tailen_Dbs
+                                        where file.Nguoitailen_Id == id
+                                        orderby file.Ngaytailen descending
+                                        select file).ToListAsync();
+                    if (result != null)
+                    {
 
-                    item.User = user;
-                }
-                List<Tailieu_Baigiang_Model> listtialieu = new List<Tailieu_Baigiang_Model>();
-                listtialieu = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
-                foreach (var item in listtialieu)
-                {
+                        List<File_Tailen_Model> listtialieu = new List<File_Tailen_Model>();
+                        listtialieu = _mapper.Map<List<File_Tailen_Model>>(result);
+                        foreach (var item in listtialieu)
+                        {
+                            if (item.Type == "2")
+                            {
+                                item.Type = "Tai Nguyen";
+                            }
+                            else if (item.Type == "1")
+                            {
+                                item.Type = "Bai Giang";
+                            }
 
+                            if (item.Status == "2")
+                            {
+                                item.Status = "Cho Duyet";
+                            }
+                            else if (item.Status == "3")
+                            {
+                                item.Status = "Da duyet";
+                            }
+                            else if (item.Status == "1")
+                            {
+                                item.Status = "Chua duyet"; //chua gui phe duyet
+                            }
+                            else if (item.Status == "4")
+                            {
+                                item.Status = "Tu Choi duyet"; //Admin khong duyet
+                            }
 
+                        }
 
-                    if (item.Type == "0")
-                    {
-                        item.Type = "Tai Nguyen";
-                    }
-                    else if (item.Type == "1")
-                    {
-                        item.Type = "Bai Giang";
-                    }
-
-                    if (item.Status == "0")
-                    {
-                        item.Status = "Cho Duyet";
-                    }
-                    else if (item.Status == "1")
-                    {
-                        item.Status = "Da duyet";
-                    }
-                    else if (item.Status == "-1")
-                    {
-                        item.Status = "Chua duyet"; //chua gui phe duyet
-                    }
-                    if (item.User.Role == "0")
-                    {
-                        item.User.Role = "Quan ly";
-                    }
-                    else if (item.User.Role == "1")
-                    {
-                        item.User.Role = "Giao vien";
+                        return listtialieu;
                     }
                     else
                     {
-                        item.User.Role = "Hoc sinh";
-                    }
-                    if (item.User.Gioitinh == "True")
-                    {
-                        item.User.Gioitinh = "Nam";
-                    }
-                    else
-                    {
-                        item.User.Gioitinh = "Nu";
+                        throw new Exception("Not Found");
                     }
                 }
-
-                return listtialieu;
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
 
         }
 
-        public async Task<IEnumerable<Tailieu_Baigiang_Model>> searchBaigiang(int id, string key)
+        public async Task<object> searchBaigiang(int id, string key)
         {
             try
             {
-                var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                    where baigiang.UserId == id && baigiang.TenDoc.Contains(key)
-                                    orderby baigiang.Sualancuoi descending
-                                    select baigiang).ToListAsync();
-                foreach (var item in result)
+                if (id > 0)
                 {
-                    var col = _context.Entry(item);
-                    await col.Reference(p => p.User).LoadAsync();
-                    User_Db user = new User_Db();
-                    user.UserFullname = item.User.UserFullname;
-                    user.UserName = item.User.UserName;
-                    user.Password = "***";
-                    user.Email = item.User.Email;
-                    user.Role = item.User.Role;
-                    user.Avt = item.User.Avt;
-                    user.Gioitinh = item.User.Gioitinh;
-                    user.Sdt = item.User.Sdt;
-                    user.Diachi = item.User.Diachi;
-
-                    item.User = user;
-
-                    await col.Reference(q => q.Monhoc).LoadAsync();
-                    Monhoc_Db monhoc = new Monhoc_Db();
-                    monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                    monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                    monhoc.Mota = item.Monhoc.Mota;
-                    monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                    monhoc.TobomonId = item.Monhoc.TobomonId;
-
-                    item.Monhoc = monhoc;
-
-                }
-                List<Tailieu_Baigiang_Model> listbaigiang = new List<Tailieu_Baigiang_Model>();
-                listbaigiang = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
-                foreach (var item in listbaigiang)
-                {
-                    item.Type = "Bai giang";
-                    if (item.Status == "0")
-                    {
-                        item.Status = "Cho Duyet";
-                    }
-                    else if (item.Status == "1")
-                    {
-                        item.Status = "Da duyet";
-                    }
-                    if (item.User.Role == "0")
-                    {
-                        item.User.Role = "Quan ly";
-                    }
-                    else if (item.User.Role == "1")
-                    {
-                        item.User.Role = "Giao vien";
-                    }
-                    else
-                    {
-                        item.User.Role = "Hoc sinh";
-                    }
-                    if (item.User.Gioitinh == "True")
-                    {
-                        item.User.Gioitinh = "Nam";
-                    }
-                    else
-                    {
-                        item.User.Gioitinh = "Nu";
-                    }
-                }
-
-                return listbaigiang;
-
-
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            };
-        }
-
-        public async Task<object> list_Tailieu_Monhoc(int monId, string status, string type)
-        {
-            try
-            {
-                int trangthai = int.Parse(status);
-                int loai = int.Parse(type);
-
-                if (monId > 0)
-                {
-
                     var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                        where baigiang.MonhocID == monId && baigiang.Status == trangthai
+                                        where baigiang.UserId == id && baigiang.TenDoc.Contains(key)
                                         orderby baigiang.Sualancuoi descending
                                         select baigiang).ToListAsync();
                     if (result.Count > 0)
@@ -310,43 +214,50 @@ namespace LMS_ELibrary.Services
                             monhoc.Mota = item.Monhoc.Mota;
                             monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
                             monhoc.TobomonId = item.Monhoc.TobomonId;
-                            monhoc.UserId = item.Monhoc.UserId;
+
                             item.Monhoc = monhoc;
+
+                            await col.Collection(p => p.list_Tainguyen).LoadAsync();
+                            List<Tainguyen_Db> listtn = new List<Tainguyen_Db>();
+                            foreach (var tn in item.list_Tainguyen)
+                            {
+
+                                Tainguyen_Db tainguyen = new Tainguyen_Db();
+                                tainguyen.Baigiang_Id = tn.Baigiang_Id;
+                                tainguyen.Ngaytao = tn.Ngaytao;
+                                tainguyen.Status = tn.Status;
+                                tainguyen.Nguoitao_Id = tn.Nguoitao_Id;
+                                tainguyen.File_Tainguyen_Id = tn.File_Tainguyen_Id;
+                                tainguyen.Nguoiduyet_Id = tn.Nguoiduyet_Id;
+                                tainguyen.Ngayduyet = tn.Ngayduyet;
+                                tainguyen.Ghichu = tn.Ghichu;
+                                listtn.Add(tainguyen);
+                            }
+                            item.list_Tainguyen = listtn;
 
                         }
                         List<Tailieu_Baigiang_Model> listbaigiang = new List<Tailieu_Baigiang_Model>();
                         listbaigiang = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
                         foreach (var item in listbaigiang)
                         {
-
-                            if (item.Type == "0")
-                            {
-                                item.Type = "Tai Nguyen";
-                            }
-                            else if (item.Type == "1")
-                            {
-                                item.Type = "Bai giang";
-                            }
-                            if (item.Status == "0")
+                            item.Type = "Bai giang";
+                            if (item.Status == "2")
                             {
                                 item.Status = "Cho Duyet";
                             }
-                            else if (item.Status == "1")
+                            else if (item.Status == "3")
                             {
                                 item.Status = "Da duyet";
                             }
-                            if (item.User.Role == "0")
+                            else if (item.Status == "1")
                             {
-                                item.User.Role = "Quan ly";
+                                item.Status = "Chua duyet"; //chua gui phe duyet
                             }
-                            else if (item.User.Role == "1")
+                            else if (item.Status == "4")
                             {
-                                item.User.Role = "Giao vien";
+                                item.Status = "Tu choi"; //Admin khong duyet
                             }
-                            else
-                            {
-                                item.User.Role = "Hoc sinh";
-                            }
+
                             if (item.User.Gioitinh == "True")
                             {
                                 item.User.Gioitinh = "Nam";
@@ -369,6 +280,7 @@ namespace LMS_ELibrary.Services
                 {
                     throw new Exception("Bad Request");
                 }
+
             }
             catch (Exception e)
             {
@@ -378,6 +290,7 @@ namespace LMS_ELibrary.Services
                 return kq;
             };
         }
+
 
         public async Task<KqJson> TaomoiBaigiang(Taomoi_Baigiang_Request_DTO model)
         {
@@ -394,6 +307,7 @@ namespace LMS_ELibrary.Services
                     _baigiang.File_Baigiang_Id = model.File_Baigiang_Id;
                     _baigiang.Mota = model.Mota != "" ? _baigiang.Mota = model.Mota : _baigiang.Mota = null;
                     _baigiang.Status = -1;
+                    _baigiang.Sualancuoi = DateTime.Now;
                     await _context.tailieu_Baigiang_Dbs.AddAsync(_baigiang);
                     int row = await _context.SaveChangesAsync();
                     if (row > 0)
@@ -462,48 +376,54 @@ namespace LMS_ELibrary.Services
                 return kq;
             }
         }
-        public async Task<KqJson> editTailieu(int id, Tailieu_Baigiang_Model tailieu)
+        public async Task<KqJson> editTailieu(Edit_Baigiang_Tainguyen_Request_DTO model)
         {
+            KqJson kq = new KqJson();
             try
             {
-                var _tailieu = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p => p.DocId == id);
-                KqJson kq = new KqJson();
-                if (_tailieu != null)
+                if (model.Id_Edit > 0 && model.Name != "")
                 {
-                    _tailieu.TenDoc = tailieu.TenDoc != null ? _tailieu.TenDoc = tailieu.TenDoc : _tailieu.TenDoc;
-                    _tailieu.UserId = tailieu.UserID != null ? _tailieu.UserId = tailieu.UserID : _tailieu.UserId;
-                    _tailieu.MonhocID = tailieu.MonhocID != null ? _tailieu.MonhocID = tailieu.MonhocID : _tailieu.MonhocID;
-                    _tailieu.ChudeID = tailieu.ChudeID != null ? _tailieu.ChudeID = tailieu.ChudeID : _tailieu.ChudeID;
-                    //_tailieu.Kichthuoc = tailieu.Kichthuoc != null ? _tailieu.Kichthuoc = tailieu.Kichthuoc : _tailieu.Kichthuoc;
-                    //_tailieu.Path = tailieu.Path != null ? _tailieu.Path = tailieu.Path : _tailieu.Path;
-                    //_tailieu.Status = tailieu.Status != null ? _tailieu.Status = int.Parse(tailieu.Status) : _tailieu.Status;
-                    //_tailieu.Type = tailieu.Type != null ? _tailieu.Type = int.Parse(tailieu.Type) : _tailieu.Type;
-                    _tailieu.Sualancuoi = DateTime.Now;
-
-                    int row_edit = await _context.SaveChangesAsync();
-                    if (row_edit > 0)
+                    var _tailieu = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p => p.DocId == model.Id_Edit);
+                    if (_tailieu != null)
                     {
-                        kq.Status = true;
-                        kq.Message = "Sua tai lieu thanh cong";
+                        if (_tailieu.Status == 3)
+                        {
+                            throw new Exception("Tai lieu nay da duyet! Khong the doi ten");
+                        }
+                        else
+                        {
+                            _tailieu.TenDoc = model.Name;
+                            _tailieu.Sualancuoi = DateTime.Now;
+
+                            int row_edit = await _context.SaveChangesAsync();
+                            if (row_edit > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Sua tai lieu thanh cong";
+                                return kq;
+                            }
+                            else
+                            {
+                                throw new Exception("Sua that bai");
+                            }
+                        }
+
                     }
                     else
                     {
-                        kq.Status = false;
-                        kq.Message = "Sua tai lieu khong thanh cong";
+                        throw new Exception("Not Found");
                     }
                 }
                 else
                 {
-                    kq.Status = false;
-                    kq.Message = "Khong tim thay tai lieu";
+                    throw new Exception("Bad Request");
                 }
-
-
-                return kq;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
         //Type= 1 -> Baigiang ; 2 -> Tainguyen
@@ -640,32 +560,68 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model.EntityId > 0)
+                if (model.EntityId > 0 && model.User_Id>0)
                 {
-                    var result = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p => p.DocId == model.EntityId);
-                    if (result != null)
+                    //check User la Admin hoac Giang vien
+                    var checkUser = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id &&
+                                           role.Phanquyen == 1 || role.Phanquyen == 2
+                                           select nd).FirstOrDefaultAsync();
+                    if (checkUser != null)
                     {
-                        _context.tailieu_Baigiang_Dbs.Remove(result);
-                        int num_row = await _context.SaveChangesAsync();
-                        if (num_row > 0)
+                        var quyen = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id
+                                           select role).FirstOrDefaultAsync();
+                        
+                        var result = await _context.tailieu_Baigiang_Dbs.SingleOrDefaultAsync(p => p.DocId == model.EntityId);
+                        if (result != null)
                         {
-                            kq.Status = true;
-                            kq.Message = "Xoa thanh cong";
-                            return kq;
+                            // chi xoa duoc Baigiang co tinhtrang = 1 (nhap) or 4 (Admin khong duyet)
+                            if (result.Status == 1 || result.Status == 4)
+                            {
+                                if (quyen.Phanquyen == 2)
+                                {
+                                    if (result.UserId != model.User_Id)
+                                    {
+                                        throw new Exception("Khong du quyen de xoa mon hoc nay");
+                                    }
+                                }
+                                _context.tailieu_Baigiang_Dbs.Remove(result);
+                                int num_row = await _context.SaveChangesAsync();
+                                if (num_row > 0)
+                                {
+                                    kq.Status = true;
+                                    kq.Message = "Xoa thanh cong";
+                                    return kq;
+                                }
+                                else
+                                {
+                                    throw new Exception("Xoa that bai");
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Khong the xoa bai giang o tinh trang nay");
+                            }
+                            
                         }
                         else
                         {
-                            throw new Exception("Xoa that bai");
+                            throw new Exception("Not Found");
                         }
                     }
                     else
                     {
-                        throw new Exception("Not Found");
+                        throw new Exception("Nguoi dung phai la Admin hoac Giang vien");
                     }
                 }
                 else
                 {
-                    throw new Exception("Khong co doi tuong nay");
+                    throw new Exception("Bad Request");
                 }
             }
             catch (Exception e)
@@ -722,12 +678,12 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<object> XemTailieutheoTrangthai(int status)
+        public async Task<object> XemBaigiangtheoTrangthai(int status)
         {
             KqJson kq = new KqJson();
             try
             {
-                if (status == -1 || status == 0 || status == 1)
+                if (status == 1 || status == 2 || status == 3 || status == 4)
                 {
                     var result = await (from tl in _context.tailieu_Baigiang_Dbs
                                         where tl.Status == status
@@ -755,29 +711,23 @@ namespace LMS_ELibrary.Services
                         listtialieu = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
                         foreach (var item in listtialieu)
                         {
+                            item.Type = "Bai Giang";
 
-
-
-                            if (item.Type == "0")
-                            {
-                                item.Type = "Tai Nguyen";
-                            }
-                            else if (item.Type == "1")
-                            {
-                                item.Type = "Bai Giang";
-                            }
-
-                            if (item.Status == "0")
+                            if (item.Status == "2")
                             {
                                 item.Status = "Cho Duyet";
                             }
-                            else if (item.Status == "1")
+                            else if (item.Status == "3")
                             {
                                 item.Status = "Da duyet";
                             }
-                            else if (item.Status == "-1")
+                            else if (item.Status == "1")
                             {
                                 item.Status = "Chua duyet"; //chua gui phe duyet
+                            }
+                            else if (item.Status == "3")
+                            {
+                                item.Status = "Tu choi duyet"; //Admin khong duyet
                             }
 
                             if (item.User.Gioitinh == "True")
@@ -810,43 +760,57 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> XetDuyetTaiLieu(Xetduyet_Request_DTO model)
+        public async Task<KqJson> XetDuyetBaigiang(Xetduyet_Request_DTO model)
         {
             KqJson kq = new KqJson();
             try
             {
-                if (model.Status == -1 || model.Status == 1 && model.ID_Canduyet != 0)
+                if (model.Status == -1 || model.Status == 1 && model.ID_Canduyet != 0 && model.ID_Nguoiduyet>0)
                 {
-                    var result = await (from tl in _context.tailieu_Baigiang_Dbs
-                                        where tl.DocId == model.ID_Canduyet && tl.Status == 0
-                                        select tl).SingleOrDefaultAsync();
-                    if (result != null)
+                    var checkUser = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.ID_Nguoiduyet &&
+                                           role.Phanquyen == 1
+                                           select nd).SingleOrDefaultAsync();
+                    if (checkUser != null)
                     {
-                        if (model.Ghichu != "")
+                        var result = await (from tl in _context.tailieu_Baigiang_Dbs
+                                            where tl.DocId == model.ID_Canduyet && tl.Status == 0
+                                            select tl).SingleOrDefaultAsync();
+                        if (result != null)
                         {
-                            result.Ghichu = model.Ghichu;
-                        }
-                        result.Status = model.Status;
+                            if (model.Ghichu != "")
+                            {
+                                result.Ghichu = model.Ghichu;
+                            }
+                            result.Status = model.Status;
 
-                        result.NgayDuyet = DateTime.Now;
-                        result.Nguoiduyet = model.ID_Nguoiduyet;
+                            result.NgayDuyet = DateTime.Now;
+                            result.Nguoiduyet = model.ID_Nguoiduyet;
 
-                        int row = await _context.SaveChangesAsync();
-                        if (row > 0)
-                        {
-                            kq.Status = true;
-                            kq.Message = "Xet duyet thanh cong";
-                            return kq;
+                            int row = await _context.SaveChangesAsync();
+                            if (row > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Xet duyet thanh cong";
+                                return kq;
+                            }
+                            else
+                            {
+                                throw new Exception("Xet duyet that bai");
+                            }
                         }
                         else
                         {
-                            throw new Exception("Xet duyet that bai");
+                            throw new Exception("Not Found");
                         }
                     }
                     else
                     {
-                        throw new Exception("Not Found");
+                        throw new Exception("Khong du quyen");
                     }
+                    
                 }
                 else
                 {
@@ -861,427 +825,141 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<object> list_Tailieu_Monhoc(int monId, string? type)
-        {
-            try
-            {
 
-                int loai = int.Parse(type);
-
-                if (monId > 0)
-                {
-
-                    var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                        where baigiang.MonhocID == monId
-                                        orderby baigiang.Sualancuoi descending
-                                        select baigiang).ToListAsync();
-                    if (result.Count > 0)
-                    {
-                        foreach (var item in result)
-                        {
-                            var col = _context.Entry(item);
-                            await col.Reference(p => p.User).LoadAsync();
-                            User_Db user = new User_Db();
-                            user.UserFullname = item.User.UserFullname;
-                            user.UserName = item.User.UserName;
-                            user.Password = "***";
-                            user.Email = item.User.Email;
-                            user.Role = item.User.Role;
-                            user.Avt = item.User.Avt;
-                            user.Gioitinh = item.User.Gioitinh;
-                            user.Sdt = item.User.Sdt;
-                            user.Diachi = item.User.Diachi;
-
-                            item.User = user;
-
-                            await col.Reference(q => q.Monhoc).LoadAsync();
-                            Monhoc_Db monhoc = new Monhoc_Db();
-                            monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                            monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                            monhoc.Mota = item.Monhoc.Mota;
-                            monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                            monhoc.TobomonId = item.Monhoc.TobomonId;
-                            monhoc.UserId = item.Monhoc.UserId;
-                            item.Monhoc = monhoc;
-
-                        }
-                        List<Tailieu_Baigiang_Model> listbaigiang = new List<Tailieu_Baigiang_Model>();
-                        listbaigiang = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
-                        foreach (var item in listbaigiang)
-                        {
-
-                            if (item.Type == "0")
-                            {
-                                item.Type = "Tai Nguyen";
-                            }
-                            else if (item.Type == "1")
-                            {
-                                item.Type = "Bai giang";
-                            }
-                            if (item.Status == "0")
-                            {
-                                item.Status = "Cho Duyet";
-                            }
-                            else if (item.Status == "1")
-                            {
-                                item.Status = "Da duyet";
-                            }
-                            if (item.User.Role == "0")
-                            {
-                                item.User.Role = "Quan ly";
-                            }
-                            else if (item.User.Role == "1")
-                            {
-                                item.User.Role = "Giao vien";
-                            }
-                            else
-                            {
-                                item.User.Role = "Hoc sinh";
-                            }
-                            if (item.User.Gioitinh == "True")
-                            {
-                                item.User.Gioitinh = "Nam";
-                            }
-                            else
-                            {
-                                item.User.Gioitinh = "Nu";
-                            }
-                        }
-
-                        return listbaigiang;
-                    }
-                    else
-                    {
-                        throw new Exception("Not Found");
-                    }
-
-                }
-                else
-                {
-                    throw new Exception("Bad Request");
-                }
-            }
-            catch (Exception e)
-            {
-                KqJson kq = new KqJson();
-                kq.Status = false;
-                kq.Message = e.Message;
-                return kq;
-            };
-        }
-
-        public async Task<object> list_Tailieu_Monhoc_status(int monId, string? status)
-        {
-            try
-            {
-
-                int trangthai = int.Parse(status);
-
-                if (monId > 0)
-                {
-
-                    var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                        where baigiang.MonhocID == monId && baigiang.Status == trangthai
-                                        orderby baigiang.Sualancuoi descending
-                                        select baigiang).ToListAsync();
-                    if (result.Count > 0)
-                    {
-                        foreach (var item in result)
-                        {
-                            var col = _context.Entry(item);
-                            await col.Reference(p => p.User).LoadAsync();
-                            User_Db user = new User_Db();
-                            user.UserFullname = item.User.UserFullname;
-                            user.UserName = item.User.UserName;
-                            user.Password = "***";
-                            user.Email = item.User.Email;
-                            user.Role = item.User.Role;
-                            user.Avt = item.User.Avt;
-                            user.Gioitinh = item.User.Gioitinh;
-                            user.Sdt = item.User.Sdt;
-                            user.Diachi = item.User.Diachi;
-
-                            item.User = user;
-
-                            await col.Reference(q => q.Monhoc).LoadAsync();
-                            Monhoc_Db monhoc = new Monhoc_Db();
-                            monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                            monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                            monhoc.Mota = item.Monhoc.Mota;
-                            monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                            monhoc.TobomonId = item.Monhoc.TobomonId;
-                            monhoc.UserId = item.Monhoc.UserId;
-                            item.Monhoc = monhoc;
-
-                        }
-                        List<Tailieu_Baigiang_Model> listbaigiang = new List<Tailieu_Baigiang_Model>();
-                        listbaigiang = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
-                        foreach (var item in listbaigiang)
-                        {
-
-                            if (item.Type == "0")
-                            {
-                                item.Type = "Tai Nguyen";
-                            }
-                            else if (item.Type == "1")
-                            {
-                                item.Type = "Bai giang";
-                            }
-                            if (item.Status == "0")
-                            {
-                                item.Status = "Cho Duyet";
-                            }
-                            else if (item.Status == "1")
-                            {
-                                item.Status = "Da duyet";
-                            }
-                            if (item.User.Role == "0")
-                            {
-                                item.User.Role = "Quan ly";
-                            }
-                            else if (item.User.Role == "1")
-                            {
-                                item.User.Role = "Giao vien";
-                            }
-                            else
-                            {
-                                item.User.Role = "Hoc sinh";
-                            }
-                            if (item.User.Gioitinh == "True")
-                            {
-                                item.User.Gioitinh = "Nam";
-                            }
-                            else
-                            {
-                                item.User.Gioitinh = "Nu";
-                            }
-                        }
-
-                        return listbaigiang;
-                    }
-                    else
-                    {
-                        throw new Exception("Not Found");
-                    }
-
-                }
-                else
-                {
-                    throw new Exception("Bad Request");
-                }
-            }
-            catch (Exception e)
-            {
-                KqJson kq = new KqJson();
-                kq.Status = false;
-                kq.Message = e.Message;
-                return kq;
-            };
-        }
-
-        public async Task<object> list_Tailieu_Monhoc(int monId)
-        {
-            try
-            {
-                if (monId > 0)
-                {
-
-                    var result = await (from baigiang in _context.tailieu_Baigiang_Dbs
-                                        where baigiang.MonhocID == monId
-                                        orderby baigiang.Sualancuoi descending
-                                        select baigiang).ToListAsync();
-                    if (result.Count > 0)
-                    {
-                        foreach (var item in result)
-                        {
-                            var col = _context.Entry(item);
-                            await col.Reference(p => p.User).LoadAsync();
-                            User_Db user = new User_Db();
-                            user.UserFullname = item.User.UserFullname;
-                            user.UserName = item.User.UserName;
-                            user.Password = "***";
-                            user.Email = item.User.Email;
-                            user.Role = item.User.Role;
-                            user.Avt = item.User.Avt;
-                            user.Gioitinh = item.User.Gioitinh;
-                            user.Sdt = item.User.Sdt;
-                            user.Diachi = item.User.Diachi;
-
-                            item.User = user;
-
-                            await col.Reference(q => q.Monhoc).LoadAsync();
-                            Monhoc_Db monhoc = new Monhoc_Db();
-                            monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                            monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                            monhoc.Mota = item.Monhoc.Mota;
-                            monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                            monhoc.TobomonId = item.Monhoc.TobomonId;
-                            monhoc.UserId = item.Monhoc.UserId;
-                            item.Monhoc = monhoc;
-
-                        }
-                        List<Tailieu_Baigiang_Model> listbaigiang = new List<Tailieu_Baigiang_Model>();
-                        listbaigiang = _mapper.Map<List<Tailieu_Baigiang_Model>>(result);
-                        foreach (var item in listbaigiang)
-                        {
-
-                            if (item.Type == "0")
-                            {
-                                item.Type = "Tai Nguyen";
-                            }
-                            else if (item.Type == "1")
-                            {
-                                item.Type = "Bai giang";
-                            }
-                            if (item.Status == "0")
-                            {
-                                item.Status = "Cho Duyet";
-                            }
-                            else if (item.Status == "1")
-                            {
-                                item.Status = "Da duyet";
-                            }
-                            if (item.User.Role == "0")
-                            {
-                                item.User.Role = "Quan ly";
-                            }
-                            else if (item.User.Role == "1")
-                            {
-                                item.User.Role = "Giao vien";
-                            }
-                            else
-                            {
-                                item.User.Role = "Hoc sinh";
-                            }
-                            if (item.User.Gioitinh == "True")
-                            {
-                                item.User.Gioitinh = "Nam";
-                            }
-                            else
-                            {
-                                item.User.Gioitinh = "Nu";
-                            }
-                        }
-
-                        return listbaigiang;
-                    }
-                    else
-                    {
-                        throw new Exception("Not Found");
-                    }
-
-                }
-                else
-                {
-                    throw new Exception("Bad Request");
-                }
-            }
-            catch (Exception e)
-            {
-                KqJson kq = new KqJson();
-                kq.Status = false;
-                kq.Message = e.Message;
-                return kq;
-            };
-        }
-
-        public async Task<object> Xem_File_theo_Mon(int monhoc_id)
+        public async Task<object> Xem_File_theo_Mon(int monhoc_id, int option, int status)
         {
             try
             {
                 if (monhoc_id > 0)
                 {
-                    var listchude = await (from cd in _context.chude_Dbs 
-                                           where cd.Monhoc_Id == monhoc_id 
-                                           select cd).ToListAsync();
-                    if (listchude.Count > 0)
+                    /*
+                     * option = 0(khong chon) -> xem tat ca
+                     * option = 1 -> xem file bai giang
+                     * option = 2 -> xem file tai nguyen
+                     */
+                    /*
+                     * Status = 0(khong chon) -> Tat ca
+                     * Status = 1 -> Luu nhap
+                     * Status = 2 -> Dang duyet (Gui yeu cau duyet)
+                     * Status = 3 -> Da duyet
+                     * Status = 4 -> Tu choi (Admin tu choi duyet)
+                     */
+                    List<File_Tailen_Db> listfile = new List<File_Tailen_Db>();
+
+                    if (option == 0)
                     {
-                        List<Tailieu_Baigiang_Db> listbaigiang = new List<Tailieu_Baigiang_Db>();
-                        foreach(var chude in listchude)
+                        string query = "exec Xemfiletrongmonhoc @monhoc_id=" + monhoc_id;
+                        var result = _context.file_Tailen_Dbs.FromSqlRaw(query).AsEnumerable().ToList();
+                        if (status < 0)
                         {
-                            listbaigiang = await (from bg in _context.tailieu_Baigiang_Dbs
-                                                where bg.ChudeID == chude.ChudeID
-                                                select bg).ToListAsync();
-                            
+                            throw new Exception("Trang thai khong phu hop");
                         }
-                        if (listbaigiang.Count > 0)
+                        else if (status == 0)
                         {
-                            List<File_Tailen_Db> listfile = new List<File_Tailen_Db>();
-                            List<int?> list_file_id = new List<int?>();
-                            foreach(var baig in listbaigiang)
-                            {
-                                list_file_id.Add(baig.File_Baigiang_Id);
-                                var listtn = await (from tn in _context.tainguyen_Dbs
-                                                    where tn.Baigiang_Id == baig.DocId
-                                                    select tn).ToListAsync();
-                                foreach(var tain in listtn)
-                                {
-                                    list_file_id.Add(tain.File_Tainguyen_Id);
-                                }
-                            }
-                            //return list_file_id;
-                            foreach (int id in list_file_id)
-                            {
-                                var filetailen = await (from file in _context.file_Tailen_Dbs
-                                                        where file.File_Tailen_Id == id
-                                                        select file).SingleOrDefaultAsync();
-                                listfile.Add(filetailen);
-                            }
-                            if (listfile.Count > 0)
-                            {
-                                //List<File_Tailen_Model> list_file_model = new List<File_Tailen_Model>();
-                                //list_file_model = _mapper.Map<List<File_Tailen_Model>>(listfile);
-                                //foreach (var file in list_file_model)
-                                //{
-                                //    if (file.Type == "1")
-                                //    {
-                                //        file.Type = "Bai giang";
-                                //    }
-                                //    else if (file.Type == "2")
-                                //    {
-                                //        file.Type = "Tai nguyen";
-                                //    }
-
-                                //    if (file.Status == "-1")
-                                //    {
-                                //        file.Status = "Luu nhap";
-                                //    }
-                                //    else if (file.Status == "0")
-                                //    {
-                                //        file.Status = "Cho duyet";
-                                //    }
-                                //    else if (file.Status == "1")
-                                //    {
-                                //        file.Status = "Da duyet";
-                                //    }
-                                //    else if (file.Status == "2")
-                                //    {
-                                //        file.Status = "Da huy";
-                                //    }
-                                //}
-                                return listfile;
-                            }
-                            else
-                            {
-                                throw new Exception("Khong co file nao");
-                            }
-
+                            listfile = result;
                         }
-                        else
+                        else if (status > 0)
                         {
-                            throw new Exception("Mon hoc nay khong co file nao");
+                            listfile = (from f in result where f.Status == status select f).ToList();
+                        }
+
+
+                    }
+                    else if (option == 1)
+                    {
+                        var result = await (from c in _context.chude_Dbs
+                                            join t in _context.tailieu_Baigiang_Dbs
+                                            on c.ChudeID equals t.ChudeID
+                                            join f in _context.file_Tailen_Dbs
+                                            on t.File_Baigiang_Id equals f.File_Tailen_Id
+                                            where c.Monhoc_Id == monhoc_id
+                                            select f).ToListAsync();
+                        if (status < 0)
+                        {
+                            throw new Exception("Trang thai khong phu hop");
+                        }
+                        else if (status == 0)
+                        {
+                            listfile = result;
+                        }
+                        else if (status > 0)
+                        {
+                            listfile = (from f in result where f.Status == status select f).ToList();
+                        }
+                    }
+                    else if (option == 2)
+                    {
+                        var result = await (from c in _context.chude_Dbs
+                                            join t in _context.tailieu_Baigiang_Dbs
+                                            on c.ChudeID equals t.ChudeID
+                                            join tn in _context.tainguyen_Dbs
+                                            on t.DocId equals tn.Baigiang_Id
+                                            join f in _context.file_Tailen_Dbs
+                                            on tn.File_Tainguyen_Id equals f.File_Tailen_Id
+                                            where c.Monhoc_Id == monhoc_id
+                                            select f).ToListAsync();
+                        if (status < 0)
+                        {
+                            throw new Exception("Trang thai khong phu hop");
+                        }
+                        else if (status == 0)
+                        {
+                            listfile = result;
+                        }
+                        else if (status > 0)
+                        {
+                            listfile = (from f in result where f.Status == status select f).ToList();
                         }
                     }
                     else
                     {
-                        throw new Exception("Mon hoc nay khong co file nao");
+                        throw new Exception("Option khong phu hop");
+                    }
+                    if (listfile.Count > 0)
+                    {
+                        List<File_Tailen_Model> list_file_model = new List<File_Tailen_Model>();
+                        list_file_model = _mapper.Map<List<File_Tailen_Model>>(listfile);
+                        foreach (var file in list_file_model)
+                        {
+                            if (file.Type == "1")
+                            {
+                                file.Type = "Bai giang";
+                            }
+                            else if (file.Type == "2")
+                            {
+                                file.Type = "Tai nguyen";
+                            }
+
+                            if (file.Status == "-1")
+                            {
+                                file.Status = "Luu nhap";
+                            }
+                            else if (file.Status == "0")
+                            {
+                                file.Status = "Cho duyet";
+                            }
+                            else if (file.Status == "1")
+                            {
+                                file.Status = "Da duyet";
+                            }
+                            else if (file.Status == "2")
+                            {
+                                file.Status = "Da huy";
+                            }
+                        }
+                        return list_file_model;
+                    }
+                    else
+                    {
+                        throw new Exception("Khong co file nao");
                     }
                 }
                 else
                 {
-                    throw new Exception("Khong co mon hoc nay");
+                    throw new Exception("Bad Request");
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 KqJson kq = new KqJson();
                 kq.Status = false;
@@ -1302,7 +980,8 @@ namespace LMS_ELibrary.Services
                         var checkUser = await (from nd in _context.user_Dbs
                                                join role in _context.role_Dbs
                                                on nd.Role equals role.RoleId
-                                               where nd.UserID == model.ID_Nguoiduyet
+                                               where nd.UserID == model.ID_Nguoiduyet &&
+                                               role.Phanquyen == 1
                                                select nd).SingleOrDefaultAsync();
                         if (checkUser != null)
                         {
@@ -1346,10 +1025,75 @@ namespace LMS_ELibrary.Services
                 {
                     throw new Exception("Bad Request");
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 kq.Status = false;
-                kq.Message=e.Message;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
+
+        public async Task<object> Top10_Filetailen_Gannhat(int user_id, int page)
+        {
+            try
+            {
+                if (user_id > 0 && page>=0)
+                {
+                    int skip = (page - 1) * 10;
+                    var result =await (from file in _context.file_Tailen_Dbs
+                                  where file.Nguoitailen_Id == user_id
+                                  orderby file.Ngaytailen descending
+                                  select file).Skip(skip).Take(10).ToListAsync();
+                    if (result != null)
+                    {
+
+                        List<File_Tailen_Model> listtialieu = new List<File_Tailen_Model>();
+                        listtialieu = _mapper.Map<List<File_Tailen_Model>>(result);
+                        foreach (var item in listtialieu)
+                        {
+                            if (item.Type == "2")
+                            {
+                                item.Type = "Tai Nguyen";
+                            }
+                            else if (item.Type == "1")
+                            {
+                                item.Type = "Bai Giang";
+                            }
+
+                            if (item.Status == "0")
+                            {
+                                item.Status = "Cho Duyet";
+                            }
+                            else if (item.Status == "1")
+                            {
+                                item.Status = "Da duyet";
+                            }
+                            else if (item.Status == "-1")
+                            {
+                                item.Status = "Chua duyet"; //chua gui phe duyet
+                            }
+
+                        }
+
+                        return listtialieu;
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }
+            catch (Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
                 return kq;
             }
         }

@@ -16,8 +16,8 @@ namespace LMS_ELibrary.Model
         public DateTime? Ngayduyet { get; set; }
         public string? Ghichu { get; set; }
 
-        public virtual User_Model? Nguoitailen { get; set; }
-        public virtual List<Tailieu_Baigiang_Model>? list_Baigiang { get; set; }
-        public virtual List<Tainguyen_Model>? list_Tainguyen { get; set; }
+        //public virtual User_Model? Nguoitailen { get; set; }
+        //public virtual List<Tailieu_Baigiang_Model>? list_Baigiang { get; set; }
+        //public virtual List<Tainguyen_Model>? list_Tainguyen { get; set; }
     }
 }

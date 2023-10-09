@@ -18,10 +18,10 @@ namespace LMS_ELibrary.Controllers
             _tailieuService = tailieuService;
         }
 
-        [HttpGet("Getall")]
+        [HttpGet("GetallBaigiang")]
         public async Task<IActionResult> getAll()
         {
-            return Ok(await _tailieuService.GetAlltailieu());  
+            return Ok(await _tailieuService.GetAllBaigiang());  
         }
 
         [HttpGet("/Giangvien/Tailieucuatoi")]
@@ -30,34 +30,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.Tailieucuatoi(user_id));
         }
 
-        [HttpGet("search/{key}")]
+        [HttpGet("search-Baigiang")]
         public async Task<IActionResult> searchBaigiang(int user_id, string key)
         {
             return Ok(await _tailieuService.searchBaigiang(user_id, key));
-        }
-
-        [HttpGet("TailieuMonhoc")]
-        public async Task<IActionResult> listTailieuMonhoc(int monId, string? status, string? type)
-        {
-            if(status!=null && type != null){
-                return Ok(await _tailieuService.list_Tailieu_Monhoc(monId, status, type));
-            }
-            else if(status==null && type == null)
-            {
-                return Ok(await _tailieuService.list_Tailieu_Monhoc(monId));
-            }else if (status!=null)
-            {
-                return Ok(await _tailieuService.list_Tailieu_Monhoc_status(monId, status));
-            }
-            else if (type != null)
-            {
-                return Ok(await _tailieuService.list_Tailieu_Monhoc(monId, type));
-            }
-            else
-            {
-                return BadRequest();
-            }
-            
         }
 
         [HttpPost("Themmoibaigiang")]
@@ -72,10 +48,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.Taotainguyen_cho_Baigiang(model));
         }
 
-        [HttpPut("updateTailieu/{id}")]
-        public async Task<IActionResult> updateTailieu(int id,Tailieu_Baigiang_Model tailieu)
+        [HttpPut("updateTailieu")]
+        public async Task<IActionResult> updateTailieu(Edit_Baigiang_Tainguyen_Request_DTO model)
         {
-            return Ok(await _tailieuService.editTailieu(id,tailieu));
+            return Ok(await _tailieuService.editTailieu(model));
         }
 
         [HttpPost("tai_len_Tai_Nguyen")]
@@ -102,22 +78,22 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.delTailieu(model));
         }
 
-        [HttpGet("XemTailieutheoTrangthai")]
-        public async Task<IActionResult>xemTaiLieuTheoTrangThai(int status)
+        [HttpGet("XemBaigiangtheoTrangthai")]
+        public async Task<IActionResult> XemBaigiangtheoTrangthai(int status)
         {
-            return Ok(await _tailieuService.XemTailieutheoTrangthai(status));
+            return Ok(await _tailieuService.XemBaigiangtheoTrangthai(status));
         }
 
-        [HttpGet("Xem_File_theo_Monhoc")]
-        public async Task<IActionResult> Xem_File_theo_Monhoc(int monhoc_id)
+        [HttpGet("Xem_File_theo_Monhoc/test")]
+        public async Task<IActionResult> Xem_File_theo_Monhoc(int monhoc_id,int option,int status)
         {
-            return Ok(await _tailieuService.Xem_File_theo_Mon(monhoc_id));
+            return Ok(await _tailieuService.Xem_File_theo_Mon(monhoc_id,option,status));
         }
 
-        [HttpPut("XetDuyetTaiLieu")]
-        public async Task<IActionResult> xetDuyetTaiLieu(Xetduyet_Request_DTO model)
+        [HttpPut("XetDuyetBaigiang")]
+        public async Task<IActionResult> XetDuyetBaigiang(Xetduyet_Request_DTO model)
         {
-            return Ok(await _tailieuService.XetDuyetTaiLieu(model));
+            return Ok(await _tailieuService.XetDuyetBaigiang(model));
         }
 
         [HttpPut("XetDuyetFile")]
@@ -125,6 +101,10 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _tailieuService.XetduyetFile(model));
         }
-
+        [HttpGet("Top10-Filetailen-Gannhat")]
+        public async Task<IActionResult>GetfileTop10(int user_id,int page)
+        {
+            return Ok(await _tailieuService.Top10_Filetailen_Gannhat(user_id,page));
+        }
     }
 }
