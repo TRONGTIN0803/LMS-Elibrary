@@ -4,6 +4,7 @@ using LMS_ELibrary.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LMS_ELibrary.ServiceInterface;
+using LMS_ELibrary.Model.DTO;
 
 namespace LMS_ELibrary.Controllers
 {
@@ -28,16 +29,16 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _chudeService.addChude(chude));
         }
 
-        [HttpPut("edit/{id}")]
-        public async Task<IActionResult>editChudu(int id,Chude_Model chude)
+        [HttpPut("edit")]
+        public async Task<IActionResult>editChudu(Edit_Baigiang_Tainguyen_Request_DTO model)
         {
-            return Ok(await _chudeService.editChude(id,chude));
+            return Ok(await _chudeService.editChude(model));
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> deleteChude(int id)
+        [HttpDelete("delete")]
+        public async Task<IActionResult> deleteChude(Delete_Entity_Request_DTO model)
         {
-            return Ok(await _chudeService.deletetChude(id));
+            return Ok(await _chudeService.deletetChude(model));
         }
 
         [HttpGet("Xem_Chude_trong_Monhoc")]

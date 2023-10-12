@@ -86,9 +86,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpPost("ThemtongquanMonhoc")]
-        public async Task<IActionResult>themTongquanmonhoc(List<Them_Tongquan_Monhoc_Request_DTO> listmodel)
+        public async Task<IActionResult>themTongquanmonhoc(Them_Tongquan_Monhoc_Request_DTO model)
         {
-            return Ok(await _monhocService.themTongquanMonhoc(listmodel));
+            return Ok(await _monhocService.themTongquanMonhoc(model));
         }
 
         [HttpPut("XetduyetMonhoc")]

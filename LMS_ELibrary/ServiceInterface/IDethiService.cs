@@ -8,21 +8,21 @@ namespace LMS_ELibrary.ServiceInterface
     {
         Task<object> getalldethi(int user_id);
 
-        Task<IEnumerable<Dethi_Model>> filterDethitheoMon(int id);
+        Task<object> filterDethitheoMon(int id);
 
-        Task<IEnumerable<Dethi_Model>> filterDethitheoTohomon(int id);
+        Task<object> filterDethitheoTohomon(int id);
 
         Task<KqJson> tao_dethi_nganhangcauhoi(Tao_dethi_tu_nganhangcauhoi_Request_DTO model);
 
         Task<KqJson> tao_dethi_tructiep(Tao_cauhoi_tructiep_Request_DTO model);
 
-        Task<IEnumerable<Dethi_Model>> searchDethi(string madethi);
+        Task<object> searchDethi(string madethi);
 
-        Task<Dethi_Model> chitietDethi(int id);
+        Task<object> chitietDethi(int id);
 
-        Task<KqJson> doiMadethi(int iddethi, Dethi_Model dethi);
+        Task<KqJson> doiMadethi(Edit_Baigiang_Tainguyen_Request_DTO model);
 
-        Task<KqJson> guiPheduyet(int iddethi);
+        Task<KqJson> guiPheduyet(Guiyeucau_Huyyeucau_Monhoc_Request_DTO model);
 
         Task<KqJson> deleteDethi(int id);
 

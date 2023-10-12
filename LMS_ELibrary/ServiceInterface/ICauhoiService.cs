@@ -5,17 +5,17 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface ICauhoiService
     {
-        Task<IEnumerable<QA_Model>> getAllCauhoi();
+        Task<object> getAllCauhoi();
 
-        Task<IEnumerable<QA_Model>> xemCauhoitheoMon(int idmon);
+        Task<object> xemCauhoitheoMon(int idmon);
 
-        Task<IEnumerable<QA_Model>> xemCauHoitheoToMon(int idtomon);
+        Task<object> xemCauHoitheoToMon(int idtomon);
 
-        Task<QA_Model> chitietCauhoi(int idcauhoi);
+        Task<object> chitietCauhoi(int idcauhoi);
 
-        Task<KqJson> editCauhoi(int idcauhoi, QA_Model cauhoi);
+        Task<KqJson> editCauhoi(Edit_Cauhoi_Request_DTO model);
 
-        Task<KqJson> xoaCauhoi(int idcauhoi);
+        Task<KqJson> xoaCauhoi(Delete_Entity_Request_DTO model);
 
         Task<KqJson> addCauhoi(Taocauhoi_Request_DTO model);
     }

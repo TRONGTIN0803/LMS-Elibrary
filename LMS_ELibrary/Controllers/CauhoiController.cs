@@ -47,16 +47,16 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _cauhoiSerivce.addCauhoi(model));
         }
 
-        [HttpPut("editCauhoi/{idcauhoi}")]
-        public async Task<IActionResult>editCauhoi(int idcauhoi,QA_Model cauhoi)
+        [HttpPut("editCauhoi")]
+        public async Task<IActionResult>editCauhoi(Edit_Cauhoi_Request_DTO model)
         {
-            return Ok(await _cauhoiSerivce.editCauhoi(idcauhoi, cauhoi));
+            return Ok(await _cauhoiSerivce.editCauhoi(model));
         }
 
-        [HttpDelete("xoaCauhoi/{idcauhoi}")]
-        public async Task<IActionResult> xoacauhoi(int idcauhoi)
+        [HttpDelete("xoaCauhoi")]
+        public async Task<IActionResult> xoacauhoi(Delete_Entity_Request_DTO model)
         {
-            return Ok(await _cauhoiSerivce.xoaCauhoi(idcauhoi));
+            return Ok(await _cauhoiSerivce.xoaCauhoi(model));
         }
     }
 }

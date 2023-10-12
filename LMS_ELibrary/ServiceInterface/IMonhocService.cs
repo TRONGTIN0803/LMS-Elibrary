@@ -24,7 +24,7 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<object> xemMonhocDanghoc(int hocvien_id);  //hoc vien xem list mon hoc cua ban than
 
-        Task<KqJson> themTongquanMonhoc(List<Them_Tongquan_Monhoc_Request_DTO> list_model);
+        Task<KqJson> themTongquanMonhoc(Them_Tongquan_Monhoc_Request_DTO model);
 
         Task<KqJson> xetduyetMonhoc(Xetduyet_Request_DTO model);
 

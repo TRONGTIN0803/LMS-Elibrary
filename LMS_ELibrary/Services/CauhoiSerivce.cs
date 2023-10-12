@@ -67,7 +67,7 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<QA_Model> chitietCauhoi(int idcauhoi)
+        public async Task<object> chitietCauhoi(int idcauhoi)
         {
             try
             {
@@ -91,56 +91,92 @@ namespace LMS_ELibrary.Services
                 }
                 else
                 {
-                    throw new Exception("khong tim thay");
+                    throw new Exception("Not found");
                 }
                 
 
                 return cauhoi_model;
             }catch(Exception e)
             {
-                throw new Exception(e.Message);
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
-        public async Task<KqJson> editCauhoi(int idcauhoi, QA_Model cauhoi)
+        public async Task<KqJson> editCauhoi(Edit_Cauhoi_Request_DTO model)
         {
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                var result = await _context.qA_Dbs.SingleOrDefaultAsync(p=>p.QAID==idcauhoi);
-                if (result != null)
+                if(model.Cauhoi_Id>0 && model.User_Id > 0)
                 {
-
-                    result.Cauhoi = cauhoi.Cauhoi!=null?cauhoi.Cauhoi: result.Cauhoi;
-                    result.Cautrl = cauhoi.Cautrl!=null?cauhoi.Cautrl: result.Cautrl;
-                    result.Lancuoisua = DateTime.Now;
-                    int row = await _context.SaveChangesAsync();
-                    if (row > 0)
+                    //check User la Admin hoac Giang vien
+                    var checkUser = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id &&
+                                           role.Phanquyen == 1 || role.Phanquyen == 2
+                                           select nd).FirstOrDefaultAsync();
+                    if (checkUser != null)
                     {
-                        kq.Status = true;
-                        kq.Message = "Sua thanh cong!";
+                        var quyen = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id
+                                           select role).FirstOrDefaultAsync();
+                        var result = await _context.qA_Dbs.SingleOrDefaultAsync(p => p.QAID == model.Cauhoi_Id);
+                        if (result != null)
+                        {
+                            if (quyen.Phanquyen == 2)
+                            {
+                                if (result.Nguoitao_Id != model.User_Id)
+                                {
+                                    throw new Exception("Khong du quyen thuc hien");
+                                }
+                            }
+                            result.Cauhoi = model.Cauhoi != null ? model.Cauhoi : result.Cauhoi;
+                            result.Cautrl = model.Cautrl != null ? model.Cautrl : result.Cautrl;
+                            result.Lancuoisua = DateTime.Now;
+                            int row = await _context.SaveChangesAsync();
+                            if (row > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Sua thanh cong!";
+                                return kq;
+                            }
+                            else
+                            {
+                                throw new Exception("Sua that bai");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
                     }
                     else
                     {
-                        kq.Status = false;
-                        kq.Message = "Sua that bai!";
+                        throw new Exception("Khong tim thay nguoi dung nay");
                     }
+                    
                 }
                 else
                 {
-                    kq.Status = false;
-                    kq.Message = "Khong tim thay!";
+                    throw new Exception("Bad Request");
                 }
-
-
-                return kq;
+                
+                
             }catch(Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
-        public async Task<IEnumerable<QA_Model>> getAllCauhoi()
+        public async Task<object> getAllCauhoi()
         {
             try
             {
@@ -170,105 +206,172 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<IEnumerable<QA_Model>> xemCauhoitheoMon(int idmon)
+        public async Task<object> xemCauhoitheoMon(int idmon)
         {
             try
             {
-                var result = await (from cauhoi in _context.qA_Dbs where cauhoi.MonhocID==idmon orderby cauhoi.Lancuoisua descending select cauhoi).ToListAsync();
-                foreach (var item in result)
+                if (idmon > 0)
                 {
-                    var col = _context.Entry(item);
-                    col.Reference(p => p.Monhoc).Load();
-                    Monhoc_Db monhoc = new Monhoc_Db();
-                    monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                    monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                    monhoc.Mota = item.Monhoc.Mota;
-                    monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                    monhoc.TobomonId = item.Monhoc.TobomonId;
-
-                    item.Monhoc = monhoc;
-
-                }
-                List<QA_Model> listcauhoi = new List<QA_Model>();
-                listcauhoi = _mapper.Map<List<QA_Model>>(result);
-
-
-                return listcauhoi;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
-
-        public async Task<IEnumerable<QA_Model>> xemCauHoitheoToMon(int idtomon)
-        {
-            try
-            {
-                var result = await(from cauhoi in _context.qA_Dbs 
-                                   join monhoc in _context.monhoc_Dbs
-                                   on cauhoi.MonhocID equals monhoc.MonhocID
-                                   where monhoc.TobomonId==idtomon
-                                   orderby cauhoi.Lancuoisua descending
-                                   select cauhoi).ToListAsync();
-                foreach (var item in result)
-                {
-                    var col = _context.Entry(item);
-                    col.Reference(p => p.Monhoc).Load();
-                    Monhoc_Db monhoc = new Monhoc_Db();
-                    monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
-                    monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
-                    monhoc.Mota = item.Monhoc.Mota;
-                    monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
-                    monhoc.TobomonId = item.Monhoc.TobomonId;
-
-                    item.Monhoc = monhoc;
-
-                }
-                List<QA_Model> listcauhoi = new List<QA_Model>();
-                listcauhoi = _mapper.Map<List<QA_Model>>(result);
-
-
-                return listcauhoi;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
-
-        public async Task<KqJson> xoaCauhoi(int idcauhoi)
-        {
-            try
-            {
-                KqJson kq = new KqJson();
-                var result = await _context.qA_Dbs.SingleOrDefaultAsync(p=>p.QAID==idcauhoi);
-                if (result != null)
-                {
-                    _context.qA_Dbs.Remove(result);
-                    int row = await _context.SaveChangesAsync();
-                    if (row > 0)
+                    var result = await (from cauhoi in _context.qA_Dbs where cauhoi.MonhocID == idmon orderby cauhoi.Lancuoisua descending select cauhoi).ToListAsync();
+                    if (result.Count > 0)
                     {
-                        kq.Status = true;
-                        kq.Message = "Xoa thanh cong!";
+                        //foreach (var item in result)
+                        //{
+                        //    var col = _context.Entry(item);
+                        //    col.Reference(p => p.Monhoc).Load();
+                        //    Monhoc_Db monhoc = new Monhoc_Db();
+                        //    monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
+                        //    monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
+                        //    monhoc.Mota = item.Monhoc.Mota;
+                        //    monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
+                        //    monhoc.TobomonId = item.Monhoc.TobomonId;
+
+                        //    item.Monhoc = monhoc;
+
+                        //}
+                        List<QA_Model> listcauhoi = new List<QA_Model>();
+                        listcauhoi = _mapper.Map<List<QA_Model>>(result);
+
+
+                        return listcauhoi;
                     }
                     else
                     {
-                        kq.Status = false;
-                        kq.Message = "Xoa that bai!";
+                        throw new Exception("Not Found");
                     }
                 }
                 else
                 {
-                    kq.Status = false;
-                    kq.Message = "Khong tim thay!";
+                    throw new Exception("Bad Request");
                 }
-
+            }
+            catch (Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
                 return kq;
+            }
+        }
 
+        public async Task<object> xemCauHoitheoToMon(int idtomon)
+        {
+            try
+            {
+                if (idtomon > 0)
+                {
+                    var result = await (from cauhoi in _context.qA_Dbs
+                                        join monhoc in _context.monhoc_Dbs
+                                        on cauhoi.MonhocID equals monhoc.MonhocID
+                                        where monhoc.TobomonId == idtomon
+                                        orderby cauhoi.Lancuoisua descending
+                                        select cauhoi).ToListAsync();
+                    if (result.Count > 0)
+                    {
+                        foreach (var item in result)
+                        {
+                            var col = _context.Entry(item);
+                            col.Reference(p => p.Monhoc).Load();
+                            Monhoc_Db monhoc = new Monhoc_Db();
+                            monhoc.MaMonhoc = item.Monhoc.MaMonhoc;
+                            monhoc.TenMonhoc = item.Monhoc.TenMonhoc;
+                            monhoc.Mota = item.Monhoc.Mota;
+                            monhoc.Tinhtrang = item.Monhoc.Tinhtrang;
+                            monhoc.TobomonId = item.Monhoc.TobomonId;
+
+                            item.Monhoc = monhoc;
+
+                        }
+                        List<QA_Model> listcauhoi = new List<QA_Model>();
+                        listcauhoi = _mapper.Map<List<QA_Model>>(result);
+
+
+                        return listcauhoi;
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                    
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+                
+            }
+            catch (Exception e)
+            {
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> xoaCauhoi(Delete_Entity_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+               if(model.EntityId>0 && model.User_Id > 0)
+                {
+                    //check User la Admin hoac Giang vien
+                    var checkUser = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id &&
+                                           role.Phanquyen == 1 || role.Phanquyen == 2
+                                           select nd).FirstOrDefaultAsync();
+                    if (checkUser != null)
+                    {
+                        var quyen = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id
+                                           select role).FirstOrDefaultAsync();
+                        var result = await _context.qA_Dbs.SingleOrDefaultAsync(p => p.QAID == model.EntityId);
+                        if (result != null)
+                        {
+                            if (quyen.Phanquyen == 2)
+                            {
+                                if (result.Nguoitao_Id != model.User_Id)
+                                {
+                                    throw new Exception("Khong du quyen thuc hien");
+                                }
+                            }
+                            _context.qA_Dbs.Remove(result);
+                            int row = await _context.SaveChangesAsync();
+                            if (row > 0)
+                            {
+                                kq.Status = true;
+                                kq.Message = "Xoa thanh cong!";
+                                return kq;
+                            }
+                            else
+                            {
+                                throw new Exception("Xoa that bai");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Khong tim thay nguoi dung nay");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
             }catch(Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
     }

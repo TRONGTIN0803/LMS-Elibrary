@@ -906,7 +906,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model.EntityId>0 && model.User_Id>0)
+                if (model.EntityId > 0 && model.User_Id > 0)
                 {
                     //check User la Admin hoac Giang vien
                     var checkUser = await (from nd in _context.user_Dbs
@@ -925,7 +925,7 @@ namespace LMS_ELibrary.Services
                         var result = await _context.monhoc_Dbs.SingleOrDefaultAsync(p => p.MonhocID == model.EntityId);
                         if (result != null)
                         {
-                            // chi xoa duoc mon co tinhtrang = 1 (nhap) or 4 (Admin khong duyet)
+
                             if (result.Tinhtrang == 1 || result.Tinhtrang == 4)
                             {
                                 if (quyen.Phanquyen == 2)
@@ -1081,9 +1081,12 @@ namespace LMS_ELibrary.Services
                                 tailieu.Status = e.Status;
                                 tailieu.MonhocID = e.MonhocID;
                                 tailieu.Sualancuoi = e.Sualancuoi;
-                                //tailieu.Path = e.Path;
-                                //tailieu.Kichthuoc = e.Kichthuoc;
                                 tailieu.ChudeID = e.ChudeID;
+                                tailieu.Mota = e.Mota;
+                                tailieu.Ghichu = e.Ghichu;
+                                tailieu.NgayDuyet = e.NgayDuyet;
+                                tailieu.Nguoiduyet = e.Nguoiduyet;
+                                tailieu.File_Baigiang_Id = e.File_Baigiang_Id;
                                 list.Add(tailieu);
 
 
@@ -1111,17 +1114,40 @@ namespace LMS_ELibrary.Services
                             model.Giangvien = gv.UserFullname;
                             int tongtailieu = model.ListTailieu_Baigiang.Count;
                             int tailieudaduyet = 0;
-
+                            if (model.Tinhtrang == "1")
+                            {
+                                model.Tinhtrang = "Luu Nhap";
+                            }
+                            else if (model.Tinhtrang == "2")
+                            {
+                                model.Tinhtrang = "Cho Duyet";
+                            }
+                            else if (model.Tinhtrang == "3")
+                            {
+                                model.Tinhtrang = "Da Duyet";
+                            }
+                            else if (model.Tinhtrang == "4")
+                            {
+                                model.Tinhtrang = "Bi tu choi duyet";
+                            }
                             foreach (var x1 in model.ListTailieu_Baigiang)
                             {
-                                if (x1.Status == "1")
+                                if (x1.Status == "3")
                                 {
                                     x1.Status = "Da duyet";
                                     tailieudaduyet++;
                                 }
-                                else if (x1.Status == "0")
+                                else if (x1.Status == "2")
                                 {
                                     x1.Status = "Cho duyet";
+                                }
+                                else if (x1.Status == "1")
+                                {
+                                    x1.Status = "Luu nhap";
+                                }
+                                else if (x1.Status == "4")
+                                {
+                                    x1.Status = "Da huy";
                                 }
 
                             }
@@ -1162,26 +1188,32 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> themTongquanMonhoc(List<Them_Tongquan_Monhoc_Request_DTO> list_model)
+        public async Task<KqJson> themTongquanMonhoc(Them_Tongquan_Monhoc_Request_DTO model)
         {
             KqJson kq = new KqJson();
             try
             {
-                if (list_model.Count > 0)
+                if (model.Giangvien_Id > 0 && model.Monhoc_Id > 0 && model.list_Tong_Quan_Mon_Hoc.Count > 0)
                 {
                     List<Tongquan_Db> listAdd = new List<Tongquan_Db>();
-                    foreach (var model in list_model)
+                    foreach (var tongquan in model.list_Tong_Quan_Mon_Hoc)
                     {
                         var mon = await _context.monhoc_Dbs.SingleOrDefaultAsync(p => p.MonhocID == model.Monhoc_Id);
                         var user = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == model.Giangvien_Id);
+
                         if (mon != null && user != null)
                         {
+                            var quyen = await (from nd in _context.user_Dbs
+                                               join role in _context.role_Dbs
+                                               on nd.Role equals role.RoleId
+                                               where nd.UserID == model.Giangvien_Id
+                                               select role).FirstOrDefaultAsync();
                             //chi nguoi them monhoc hoac role="ADMIN" moi them duoc tong quan
-                            if (mon.UserId == model.Giangvien_Id || user.Role == 1)
+                            if (mon.UserId == model.Giangvien_Id || quyen.Phanquyen == 1)
                             {
                                 Tongquan_Db tq = new Tongquan_Db();
-                                tq.Tieude = model.Tieude;
-                                tq.Noidung = model.Noidung;
+                                tq.Tieude = tongquan.Tieude;
+                                tq.Noidung = tongquan.Noidung;
                                 tq.Monhoc_Id = model.Monhoc_Id;
 
                                 listAdd.Add(tq);
@@ -1199,7 +1231,7 @@ namespace LMS_ELibrary.Services
 
                     await _context.tongquan_Dbs.AddRangeAsync(listAdd);
                     int row = await _context.SaveChangesAsync();
-                    if (row == list_model.Count)
+                    if (row == model.list_Tong_Quan_Mon_Hoc.Count)
                     {
                         kq.Status = true;
                         kq.Message = "Them thanh cong";
@@ -1228,47 +1260,64 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                //duyet -> 1 ; khong duyet -> 2 
-                if (model.Status == 1 || model.Status == 2 && model.ID_Canduyet != null)
+                if (model.ID_Nguoiduyet > 0)
                 {
-                    var result = await (from mh in _context.monhoc_Dbs
-                                        where mh.MonhocID == model.ID_Canduyet && mh.Tinhtrang == 0
-                                        select mh).SingleOrDefaultAsync();
-                    if (result != null)
+                    //check User la Admin
+                    var checkUser = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.ID_Nguoiduyet &&
+                                           role.Phanquyen == 1
+                                           select nd).FirstOrDefaultAsync();
+                    if (checkUser != null)
                     {
-                        if (model.Ghichu != "")
+                        //duyet -> 3 ; khong duyet -> 4 
+                        if (model.Status == 3 || model.Status == 4 && model.ID_Canduyet > 0)
                         {
-                            result.Ghichu = model.Ghichu;
-                        }
-                        result.Tinhtrang = model.Status;
-                        if (model.Status == 1 && model.ID_Nguoiduyet != 0)
-                        {
-                            result.Ngayduyet = DateTime.Now;
-                            result.Nguoiduyet = model.ID_Nguoiduyet;
-                        }
+                            var result = await (from mh in _context.monhoc_Dbs
+                                                where mh.MonhocID == model.ID_Canduyet && mh.Tinhtrang == 2
+                                                select mh).SingleOrDefaultAsync();
+                            if (result != null)
+                            {
 
-                        int row = await _context.SaveChangesAsync();
-                        if (row > 0)
-                        {
-                            kq.Status = true;
-                            kq.Message = "Phe duyet thanh cong";
+                                result.Ghichu = model.Ghichu != null ? model.Ghichu :  null;
+                                result.Tinhtrang = model.Status;
+                                result.Ngayduyet = DateTime.Now;
+                                result.Nguoiduyet = model.ID_Nguoiduyet;
 
-                            return kq;
+                                int row = await _context.SaveChangesAsync();
+                                if (row > 0)
+                                {
+                                    kq.Status = true;
+                                    kq.Message = "Phe duyet thanh cong";
+
+                                    return kq;
+                                }
+                                else
+                                {
+                                    throw new Exception("Phe duyet that bai");
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Not Found");
+                            }
                         }
                         else
                         {
-                            throw new Exception("Phe duyet that bai");
+                            throw new Exception("Bad Request");
                         }
                     }
                     else
                     {
-                        throw new Exception("Not Found");
+                        throw new Exception("Chi co ADMIN duoc su dung chuc nang nay");
                     }
                 }
                 else
                 {
-                    throw new Exception("Bad Request");
+                    throw new Exception("Khong tim thay nguoi dung nay");
                 }
+
             }
             catch (Exception e)
             {
@@ -1318,9 +1367,12 @@ namespace LMS_ELibrary.Services
                                     tailieu.Status = e.Status;
                                     tailieu.MonhocID = e.MonhocID;
                                     tailieu.Sualancuoi = e.Sualancuoi;
-                                    //tailieu.Path = e.Path;
-                                    //tailieu.Kichthuoc = e.Kichthuoc;
                                     tailieu.ChudeID = e.ChudeID;
+                                    tailieu.Mota = e.Mota;
+                                    tailieu.Ghichu = e.Ghichu;
+                                    tailieu.NgayDuyet = e.NgayDuyet;
+                                    tailieu.Nguoiduyet = e.Nguoiduyet;
+                                    tailieu.File_Baigiang_Id = e.File_Baigiang_Id;
                                     list.Add(tailieu);
 
 
@@ -1357,32 +1409,39 @@ namespace LMS_ELibrary.Services
                                 model.Giangvien = gv.UserFullname;
                                 int tongtailieu = model.ListTailieu_Baigiang.Count;
                                 int tailieudaduyet = 0;
-                                if (model.Tinhtrang == "-1")
+                                if (model.Tinhtrang == "1")
                                 {
                                     model.Tinhtrang = "Luu Nhap";
                                 }
-                                else if (model.Tinhtrang == "0")
+                                else if (model.Tinhtrang == "2")
                                 {
                                     model.Tinhtrang = "Cho Duyet";
                                 }
-                                else if (model.Tinhtrang == "1")
+                                else if (model.Tinhtrang == "3")
                                 {
                                     model.Tinhtrang = "Da Duyet";
                                 }
-                                else if (model.Tinhtrang == "2")
+                                else if (model.Tinhtrang == "4")
                                 {
                                     model.Tinhtrang = "Bi tu choi duyet";
                                 }
                                 foreach (var x1 in model.ListTailieu_Baigiang)
                                 {
-                                    if (x1.Status == "1")
+                                    if (model.Tinhtrang == "1")
                                     {
-                                        x1.Status = "Da duyet";
-                                        tailieudaduyet++;
+                                        model.Tinhtrang = "Luu Nhap";
                                     }
-                                    else if (x1.Status == "0")
+                                    else if (model.Tinhtrang == "2")
                                     {
-                                        x1.Status = "Cho duyet";
+                                        model.Tinhtrang = "Cho Duyet";
+                                    }
+                                    else if (model.Tinhtrang == "3")
+                                    {
+                                        model.Tinhtrang = "Da Duyet";
+                                    }
+                                    else if (model.Tinhtrang == "4")
+                                    {
+                                        model.Tinhtrang = "Bi tu choi duyet";
                                     }
 
                                 }
@@ -1470,9 +1529,12 @@ namespace LMS_ELibrary.Services
                                 tailieu.Status = e.Status;
                                 tailieu.MonhocID = e.MonhocID;
                                 tailieu.Sualancuoi = e.Sualancuoi;
-                                //tailieu.Path = e.Path;
-                                //tailieu.Kichthuoc = e.Kichthuoc;
                                 tailieu.ChudeID = e.ChudeID;
+                                tailieu.Mota = e.Mota;
+                                tailieu.Ghichu = e.Ghichu;
+                                tailieu.NgayDuyet = e.NgayDuyet;
+                                tailieu.Nguoiduyet = e.Nguoiduyet;
+                                tailieu.File_Baigiang_Id = e.File_Baigiang_Id;
                                 list.Add(tailieu);
 
 
@@ -1509,32 +1571,40 @@ namespace LMS_ELibrary.Services
                             model.Giangvien = gv.UserFullname;
                             int tongtailieu = model.ListTailieu_Baigiang.Count;
                             int tailieudaduyet = 0;
-                            if (model.Tinhtrang == "-1")
+                            if (model.Tinhtrang == "1")
                             {
                                 model.Tinhtrang = "Luu Nhap";
                             }
-                            else if (model.Tinhtrang == "0")
+                            else if (model.Tinhtrang == "2")
                             {
                                 model.Tinhtrang = "Cho Duyet";
                             }
-                            else if (model.Tinhtrang == "1")
+                            else if (model.Tinhtrang == "3")
                             {
                                 model.Tinhtrang = "Da Duyet";
                             }
-                            else if (model.Tinhtrang == "2")
+                            else if (model.Tinhtrang == "4")
                             {
                                 model.Tinhtrang = "Bi tu choi duyet";
                             }
                             foreach (var x1 in model.ListTailieu_Baigiang)
                             {
-                                if (x1.Status == "1")
+                                if (x1.Status == "3")
                                 {
                                     x1.Status = "Da duyet";
                                     tailieudaduyet++;
                                 }
-                                else if (x1.Status == "0")
+                                else if (x1.Status == "2")
                                 {
                                     x1.Status = "Cho duyet";
+                                }
+                                else if (x1.Status == "1")
+                                {
+                                    x1.Status = "Luu nhap";
+                                }
+                                else if (x1.Status == "4")
+                                {
+                                    x1.Status = "Da huy";
                                 }
 
                             }

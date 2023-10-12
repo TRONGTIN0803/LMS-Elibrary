@@ -65,15 +65,15 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpPut("doiMaDeThi")]
-        public async Task<IActionResult> changeExamCode(int iddethi, Dethi_Model dethi)
+        public async Task<IActionResult> changeExamCode(Edit_Baigiang_Tainguyen_Request_DTO model)
         {
-            return Ok(await _dethiService.doiMadethi(iddethi, dethi));
+            return Ok(await _dethiService.doiMadethi(model));
         }
 
-        [HttpPut("guiPheDuyet")]
-        public async Task<IActionResult>guiPheduyet([FromBody]int id_dethi)
+        [HttpPut("guiPheDuyet-Huyyeucau")]
+        public async Task<IActionResult>guiPheduyet(Guiyeucau_Huyyeucau_Monhoc_Request_DTO model)
         {
-            return Ok(await _dethiService.guiPheduyet(id_dethi));
+            return Ok(await _dethiService.guiPheduyet(model));
         }
 
         [HttpDelete("XoaDethi/{id}")]
