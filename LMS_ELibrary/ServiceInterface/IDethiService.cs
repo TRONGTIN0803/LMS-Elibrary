@@ -24,7 +24,7 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<KqJson> guiPheduyet(Guiyeucau_Huyyeucau_Monhoc_Request_DTO model);
 
-        Task<KqJson> deleteDethi(int id);
+        Task<KqJson> deleteDethi(Delete_Entity_Request_DTO model);
 
         Task<KqJson> tai_len_Dethi(int user_id,List<IFormFile>files);
 

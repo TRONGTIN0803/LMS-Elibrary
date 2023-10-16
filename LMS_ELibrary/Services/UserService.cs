@@ -28,17 +28,17 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if(model != null)
+                if(model.UserName!=""&&model.Password!=""&&model.UserFullname!=""&&model.Email!=""&model.Sdt!=""&&model.Nganh!="")
                 {
                     User_Db account = new User_Db();
                     account.UserName = model.UserName;
                     account.Password = model.Password;
                     account.UserFullname = model.UserFullname;
-                    account.Gioitinh = model.Gioitinh;
+                    account.Gioitinh = model.Gioitinh != null ? model.Gioitinh : null ;
                     account.Role = 3;
                     account.Email = model.Email;
                     account.Sdt = model.Sdt;
-                    account.Diachi = model.Diachi;
+                    account.Diachi = model.Diachi != "" ? model.Diachi : null ;
                     account.Nganh = model.Nganh;
                     account.Ngaysuadoi = DateTime.Now;
 
@@ -83,17 +83,17 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model != null)
+                if (model.UserName != "" && model.Password != "" && model.UserFullname != "" && model.Email != "" & model.Sdt != "" && model.Nganh != "")
                 {
                     User_Db account = new User_Db();
                     account.UserName = model.UserName;
                     account.Password = model.Password;
                     account.UserFullname = model.UserFullname;
-                    account.Gioitinh = model.Gioitinh;
+                    account.Gioitinh = model.Gioitinh != null?model.Gioitinh:null ;
                     account.Role = 2;
                     account.Email = model.Email;
                     account.Sdt = model.Sdt;
-                    account.Diachi = model.Diachi;
+                    account.Diachi = model.Diachi != "" ? model.Diachi : null;
                     account.Nganh = model.Nganh;
                     account.Ngaysuadoi = DateTime.Now;
 
@@ -133,24 +133,25 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<IEnumerable<Avt_Model>> Avt_da_tai_len(int user_id)
+        public async Task<object> Avt_da_tai_len(int user_id)
         {
             try
             {
-                if (user_id != null)
+                if (user_id > 0)
                 {
                     List<Avt_Model> list_avt = new List<Avt_Model>();
                     var result = await (from avt in _context.avt_Db where avt.UserId == user_id select avt).ToListAsync();
 
-                    if (result != null)
+                    if (result .Count>0)
                     {
                         list_avt = _mapper.Map<List<Avt_Model>>(result);
+                        return list_avt;
                     }
                     else
                     {
                         throw new Exception("Not Found");
                     }
-                    return list_avt;
+                    
                 }
                 else
                 {
@@ -159,77 +160,87 @@ namespace LMS_ELibrary.Services
 
             }catch(Exception e)
             {
-                
-                throw new Exception(e.Message);
+
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
         public async Task<KqJson> changePassword(int user_id, ChangePass pass)
         {
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                string newpass = pass.newPass;
-                string renewpass=pass.reNewass;
-                if (newpass != renewpass)
+                if(user_id > 0 && pass.newPass != "" && pass.reNewass != "")
                 {
-                    throw new Exception("Mat khau khong trung khop!");
-                }
-                else
-                {
-                    if (newpass.Length < 8)
+                    string newpass = pass.newPass;
+                    string renewpass = pass.reNewass;
+                    if (newpass != renewpass)
                     {
-                        throw new Exception("Mat khau it nhat 8 ky tu");
-                    }
-                    else if (newpass.Any(Char.IsDigit) == false)
-                    {
-                        throw new Exception("Mat khau phai chua so");
-                    }
-                    else if (newpass.Any(Char.IsLetter) == false)
-                    {
-                        throw new Exception("Mat khau phai chua chu cai");
-                    }
-                    else if (newpass.Any(Char.IsLower) == false)
-                    {
-                        throw new Exception("Mat khau phai chua chu thuong");
-                    }
-                    else if (newpass.Any(Char.IsUpper) == false)
-                    {
-                        throw new Exception("Mat khau phai chua chu hoa");
-                    }
-                    else if (newpass.Any(p => !char.IsLetterOrDigit(p)) == false)
-                    {
-                        throw new Exception("Mat khau phai chua ky tu dac biet");
+                        throw new Exception("Mat khau khong trung khop!");
                     }
                     else
                     {
-                        var result = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id && p.Password == pass.Password);
-                        if (result != null)
+                        if (newpass.Length < 8)
                         {
-                            result.Password = newpass;
-                            int row = await _context.SaveChangesAsync();
-                            if (row>0)
-                            {
-                                kq.Status = true;
-                                kq.Message = "Change Password Successful";
-                            }
-                            else
-                            {
-                                throw new Exception("Change Password Failed");
-                            }
-                            
+                            throw new Exception("Mat khau it nhat 8 ky tu");
+                        }
+                        else if (newpass.Any(Char.IsDigit) == false)
+                        {
+                            throw new Exception("Mat khau phai chua so");
+                        }
+                        else if (newpass.Any(Char.IsLetter) == false)
+                        {
+                            throw new Exception("Mat khau phai chua chu cai");
+                        }
+                        else if (newpass.Any(Char.IsLower) == false)
+                        {
+                            throw new Exception("Mat khau phai chua chu thuong");
+                        }
+                        else if (newpass.Any(Char.IsUpper) == false)
+                        {
+                            throw new Exception("Mat khau phai chua chu hoa");
+                        }
+                        else if (newpass.Any(p => !char.IsLetterOrDigit(p)) == false)
+                        {
+                            throw new Exception("Mat khau phai chua ky tu dac biet");
                         }
                         else
                         {
-                            throw new Exception("Not Found");
+                            var result = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id && p.Password == pass.Password);
+                            if (result != null)
+                            {
+                                result.Password = newpass;
+                                int row = await _context.SaveChangesAsync();
+                                if (row > 0)
+                                {
+                                    kq.Status = true;
+                                    kq.Message = "Change Password Successful";
+                                    return kq;
+                                }
+                                else
+                                {
+                                    throw new Exception("Change Password Failed");
+                                }
+
+                            }
+                            else
+                            {
+                                throw new Exception("Not Found");
+                            }
                         }
                     }
                 }
-                return kq;
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+                
             }
             catch(Exception e)
             {
-                KqJson kq = new KqJson();
                 kq.Status = false;
                 kq.Message = e.Message;
                 return kq;
@@ -241,53 +252,50 @@ namespace LMS_ELibrary.Services
         {
             try
             {
-                var result = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
-
-                if (result != null)
+                if (user_id > 0)
                 {
-                    User_Model user = new User_Model();
-                    user = _mapper.Map<User_Model>(result);
-                    user.Password = "***";
-                    if (result.Gioitinh == true)
+                    var result = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
+
+                    if (result != null)
                     {
-                        user.Gioitinh = "Nam";
+                        User_Model user = new User_Model();
+                        user = _mapper.Map<User_Model>(result);
+                        user.Password = "***";
+                        if (result.Gioitinh == true)
+                        {
+                            user.Gioitinh = "Nam";
+                        }
+                        else
+                        {
+                            user.Gioitinh = "Nu";
+                        }
+
+                        if (user.Avt == null)
+                        {
+                            user.Avt = "Khong co Anh dai dien";
+                        }
+
+                        
+                        return user;
                     }
                     else
                     {
-                        user.Gioitinh = "Nu";
+                        throw new Exception("Not Found");
                     }
-
-                    if (user.Avt == null)
-                    {
-                        user.Avt = "Khong co Anh dai dien";
-                    }
-
-                    if (result.Role == 0)
-                    {
-                        user.Role = "Quan ly";
-                    }
-                    else if (result.Role == 1)
-                    {
-                        user.Role = "Giao vien";
-                    }
-                    else
-                    {
-                        user.Role = "Hoc sinh";
-                    }
-                    return user;
                 }
                 else
                 {
-                    KqJson kq = new KqJson();
-                    kq.Status = false;
-                    kq.Message = "Not Found";
-                    return kq;
+                    throw new Exception("Bad Request");
                 }
+                
 
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
@@ -297,7 +305,7 @@ namespace LMS_ELibrary.Services
             try
             {
                 
-                if (_user != null)
+                if (_user .UserName!=""&&_user.Password!=""&&_user.Role!="")
                 {
                     int role =int.Parse(_user.Role);
                     string username = _user.UserName;
@@ -378,86 +386,91 @@ namespace LMS_ELibrary.Services
 
         public async Task<object> UpLoadAvt(int user_id, IFormFile file)
         {
-
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                //long size = file.Sum(f => f.Length);
-                string path = "";
-                double size = file.Length;
-                var result = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
-                if (result != null)
+                if (user_id > 0)
                 {
-                    if (file != null)
+                    //long size = file.Sum(f => f.Length);
+                    string path = "";
+                    double size = file.Length;
+                    var result = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
+                    if (result != null)
                     {
-                        var fileName = Path.GetFileName(file.FileName);
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Images\", fileName);
-
-                        using (var stream = System.IO.File.Create(filePath))
+                        if (file != null)
                         {
-                            await file.CopyToAsync(stream);
-                            path = filePath;
-                        }
+                            var fileName = Path.GetFileName(file.FileName);
+                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Images\", fileName);
 
-                        if (path != null)
-                        {
-                            Avt_Db avt = new Avt_Db();
-                            avt.Path = path;
-                            avt.Size = size;
-                            avt.Ngay_tai_len = DateTime.Now;
-                            avt.UserId = user_id;
-
-                            await _context.avt_Db.AddAsync(avt);
-                            int row_count = await _context.SaveChangesAsync();
-                            if (row_count > 0)
+                            using (var stream = System.IO.File.Create(filePath))
                             {
-                                int idavt = avt.AvtID;
-                                result.Avt = path;
-                                result.AvtId= idavt;
-                                int row = await _context.SaveChangesAsync();
-                                if (row > 0)
+                                await file.CopyToAsync(stream);
+                                path = filePath;
+                            }
+
+                            if (path != null)
+                            {
+                                Avt_Db avt = new Avt_Db();
+                                avt.Path = path;
+                                avt.Size = size;
+                                avt.Ngay_tai_len = DateTime.Now;
+                                avt.UserId = user_id;
+
+                                await _context.avt_Db.AddAsync(avt);
+                                int row_count = await _context.SaveChangesAsync();
+                                if (row_count > 0)
                                 {
-                                    kq.Status = true;
-                                    kq.Message = "Upadte Successful";
+                                    int idavt = avt.AvtID;
+                                    result.Avt = path;
+                                    result.AvtId = idavt;
+                                    int row = await _context.SaveChangesAsync();
+                                    if (row > 0)
+                                    {
+                                        kq.Status = true;
+                                        kq.Message = "Upadte Successful";
+                                        return kq;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Update Failed");
+                                    }
+
                                 }
                                 else
                                 {
-                                    throw new Exception("Update Failed");
+                                    throw new Exception("Loi luu avt!");
                                 }
-
                             }
                             else
                             {
-                                throw new Exception("Loi luu avt!");
+                                throw new Exception("Loi tai file");
                             }
+
                         }
                         else
                         {
-                            throw new Exception("Loi tai file");
+                            throw new Exception("Khong co file de tai");
                         }
-                       
+
                     }
                     else
                     {
-                        throw new Exception("Khong co file de tai");
+                        throw new Exception("Not Fuond");
                     }
                     
                 }
                 else
                 {
-                    throw new Exception("Not Fuond");
+                    throw new Exception("Bad Request");
                 }
-                return kq;
             }
             catch (Exception e)
             {
-                KqJson kq = new KqJson();
+                
                 kq.Status = false;
                 kq.Message = e.Message;
                 return kq;
             }
-
-            
         }
 
         public async Task<KqJson> xoaAccount(User_Model model)
@@ -465,12 +478,17 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model.UserID != null)
+                if (model.UserID >0)
                 {
                     var result = await _context.user_Dbs.SingleOrDefaultAsync(p=>p.UserID==model.UserID);
                     if (result != null)
                     {
-                        if (result.Role == 1)
+                        var quyen = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.UserID
+                                           select role).FirstOrDefaultAsync();
+                        if (quyen.Phanquyen == 1)
                         {
                             throw new Exception("Khong the xoa tai khoan ADMIN");
                         }
@@ -514,7 +532,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model.Tenvaitro != null && model.Mota !=null)
+                if (model.Tenvaitro != "" && model.Mota !=""&&model.Phanquyen>0)
                 {
                     Role_Db role = new Role_Db();
                     role.Tenvaitro=model.Tenvaitro;
@@ -532,6 +550,49 @@ namespace LMS_ELibrary.Services
                     else
                     {
                         throw new Exception("Them that bai");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }catch(Exception e)
+            {
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
+            }
+        }
+
+        public async Task<KqJson> SuaThongtinUser(SuathongtinUser_Request_DTO model)
+        {
+            KqJson kq = new KqJson();
+            try
+            {
+                if (model.User_Id > 0)
+                {
+                    var result = await _context.user_Dbs.SingleOrDefaultAsync(p=>p.UserID==model.User_Id);
+                    if(result!= null)
+                    {
+                        result.UserFullname = model.UserFullname != "" ? model.UserFullname : null;
+                        result.Diachi = model.Diachi != "" ? model.Diachi : null;
+                        result.Sdt = model.Sdt != "" ? model.Sdt : null;
+                        result.Email = model.Email != "" ? model.Email : null;
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Sua thanh cong";
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Sua that bai");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
                     }
                 }
                 else

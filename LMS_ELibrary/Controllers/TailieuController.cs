@@ -66,10 +66,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _tailieuService.tai_len_Bai_Giang(user_id, files));
         }
 
-        [HttpPut("them_vao_Monhoc_va_Chude")]
-        public async Task<IActionResult>themvaoMonhocvaChude(Gui_pheduyet_tailieu_Request_DTO model)
+        [HttpPut("Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet")]
+        public async Task<IActionResult> Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet(Gui_pheduyet_tailieu_Request_DTO model)
         {
-            return Ok(await _tailieuService.them_vao_Monhoc_va_Chude(model));
+            return Ok(await _tailieuService.Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet(model));
         }
 
         [HttpDelete("delTailieu")]
@@ -105,6 +105,11 @@ namespace LMS_ELibrary.Controllers
         public async Task<IActionResult>GetfileTop10(int user_id,int page)
         {
             return Ok(await _tailieuService.Top10_Filetailen_Gannhat(user_id,page));
+        }
+        [HttpPut("Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet_File")]
+        public async Task<IActionResult> Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet_File(Gui_pheduyet_tailieu_Request_DTO model)
+        {
+            return Ok(await _tailieuService.Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet_File(model));
         }
     }
 }

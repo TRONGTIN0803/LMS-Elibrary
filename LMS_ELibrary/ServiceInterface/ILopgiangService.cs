@@ -5,20 +5,20 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface ILopgiangService
     {
-        Task<IEnumerable<Lopgiangday_Model>> getAllLopgiang();
+        Task<object> getAllLopgiang();
 
-        Task<Lopgiangday_Model> detailLopgiangday(int id);
+        Task<object> detailLopgiangday(int id);
 
-        Task<KqJson> addLopgiang(Lopgiangday_Model lopgiangday_Model);
+        Task<KqJson> addLopgiang(Lopgiangday_Model mode);
 
-        Task<KqJson> editLopgiang(int lopgiang_id,Lopgiangday_Model lopgiang);
+        Task<KqJson> editLopgiang(int lopgiang_id,Lopgiangday_Model model);
         
-        Task<KqJson> deleteLopgiang(int lopgiang_id);
+        Task<KqJson> deleteLopgiang(Delete_Entity_Request_DTO model);
 
         Task<KqJson> xepLopChoHocVien(Hocvien_Lop_Model model);
 
         Task<object> lopDangTheoHoc(int user_id);
-        Task<KqJson> themHocvienVaolop(them_Hocvien_vao_Lop_Request_DTO model);
+        
 
     }
 }

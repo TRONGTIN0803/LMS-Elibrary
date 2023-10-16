@@ -76,10 +76,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _dethiService.guiPheduyet(model));
         }
 
-        [HttpDelete("XoaDethi/{id}")]
-        public async Task<IActionResult>deleteDethi(int id)
+        [HttpDelete("XoaDethi")]
+        public async Task<IActionResult>deleteDethi(Delete_Entity_Request_DTO model)
         {
-            return Ok(await _dethiService.deleteDethi(id));
+            return Ok(await _dethiService.deleteDethi(model));
         }
 
         [HttpPost("tai_len_Dethi")]

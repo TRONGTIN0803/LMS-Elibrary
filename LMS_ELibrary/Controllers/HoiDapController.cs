@@ -53,7 +53,7 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpDelete("xoaCautrl")]
-        public async Task<IActionResult> xoaCautrl(Cautrl_Model model)
+        public async Task<IActionResult> xoaCautrl(Delete_Entity_Request_DTO model)
         {
             return Ok(await _hoidapServicce.Xoacautrl(model));
         }

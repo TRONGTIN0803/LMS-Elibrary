@@ -71,5 +71,10 @@ namespace LMS_ELibrary.Controllers
         {
             return Ok(await _userService.ThemRole(model));
         }
+        [HttpPut("Suathongtin")]
+        public async Task<IActionResult>Suathongtin(SuathongtinUser_Request_DTO model)
+        {
+            return Ok(await _userService.SuaThongtinUser(model));
+        }
     }
 }

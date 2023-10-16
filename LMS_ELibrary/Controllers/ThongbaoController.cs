@@ -37,9 +37,9 @@ namespace LMS_ELibrary.Controllers
         }
 
         [HttpDelete("xoaThongbao")]
-        public async Task<IActionResult> deleteThongbao([FromQuery]List<int> listIdthongbai)
+        public async Task<IActionResult> deleteThongbao(Delete_Entity_Request_DTO model)
         {
-            return Ok(await _thongbaoService.xoaThongbao(listIdthongbai));
+            return Ok(await _thongbaoService.xoaThongbao(model));
         }
 
         [HttpGet("Locthongbao/{status}")]
@@ -48,10 +48,10 @@ namespace LMS_ELibrary.Controllers
             return Ok(await _thongbaoService.locThongBao(user_id, status));
         }
 
-        [HttpPut("danhDauThongBao/{thongbao_id}")]
-        public async Task<IActionResult> danhDauThongBao(int thongbao_id,int status)
+        [HttpPut("danhDauThongBao")]
+        public async Task<IActionResult> danhDauThongBao(Danhdauthongbao_Request_DTO model)
         {
-            return Ok(await _thongbaoService.danhDauThongBao(thongbao_id,status));
+            return Ok(await _thongbaoService.danhDauThongBao(model));
         }
         [HttpPost("Taothongbao")]
         public async Task<IActionResult> Taothongbao(Gui_Thongbao_Request_DTO model)

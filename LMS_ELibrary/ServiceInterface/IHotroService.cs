@@ -4,7 +4,7 @@ namespace LMS_ELibrary.ServiceInterface
 {
     public interface IHotroService
     {
-        Task<IEnumerable<Help_Model>> getAlllisthotro();
+        Task<object> getAlllisthotro();
 
         Task<KqJson> PostHelp(Help_Model help);
 

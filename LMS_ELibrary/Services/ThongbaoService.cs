@@ -5,6 +5,7 @@ using LMS_ELibrary.Model.DTO;
 using LMS_ELibrary.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LMS_ELibrary.Services
@@ -20,171 +21,256 @@ namespace LMS_ELibrary.Services
             _mapper = mapper;
         }
 
-        
 
-        //Status = 0 => chua doc ; 1 => da doc
+
+        //Status = 1 => chua doc ; 2 => da doc
         public async Task<object> chitietThongbao(int idthongbao, int user_id)
         {
+            KqJson kq = new KqJson();
             try
             {
-                ThongbaoLop_Model thongbao = new ThongbaoLop_Model();
-                var result = await (from tb in _context.thongbao_Dbs
-                                    join tbl in _context.thongbaoLop_Dbs
-                                    on tb.ThongbaoID equals tbl.Thongbao_Id
-                                    where tbl.Thongbao_Id == idthongbao && tbl.User_Id == user_id
-                                    select tbl).SingleOrDefaultAsync();
-                if (result != null)
+                if (idthongbao > 0 && user_id > 0)
                 {
-                    result.Status = 1;
-                    await _context.SaveChangesAsync();
-                    var col = _context.Entry(result);
-                    col.Reference(p => p.Thongbao).Load();
-                    Thongbao_Db tb = new Thongbao_Db();
-                    tb.Tieude = result.Thongbao.Tieude;
-                    tb.Noidung = result.Thongbao.Noidung;
-                    tb.Thoigian = result.Thongbao.Thoigian;
-                    result.Thongbao = tb;
+                    ThongbaoLop_Model thongbao = new ThongbaoLop_Model();
+                    var result = await (from tb in _context.thongbao_Dbs
+                                        join tbl in _context.thongbaoLop_Dbs
+                                        on tb.ThongbaoID equals tbl.Thongbao_Id
+                                        where tbl.Thongbao_Id == idthongbao && tbl.User_Id == user_id
+                                        select tbl).SingleOrDefaultAsync();
+                    if (result != null)
+                    {
+                        if (result.Status == 1)
+                        {
+                            result.Status = 2;
+                            await _context.SaveChangesAsync();
+                        }
+                        var col = _context.Entry(result);
+                        col.Reference(p => p.Thongbao).Load();
+                        Thongbao_Db tb = new Thongbao_Db();
+                        tb.Tieude = result.Thongbao.Tieude;
+                        tb.Noidung = result.Thongbao.Noidung;
+                        tb.Thoigian = result.Thongbao.Thoigian;
+                        result.Thongbao = tb;
 
-                    thongbao = _mapper.Map<ThongbaoLop_Model>(result);
-                    if (thongbao.Status == "0")
-                    {
-                        thongbao.Status = "Chua Xem";
-                    }else if (thongbao.Status == "1")
-                    {
+                        thongbao = _mapper.Map<ThongbaoLop_Model>(result);
+
                         thongbao.Status = "Da Xem";
+
+                        return thongbao;
                     }
-                    return thongbao;
+                    else
+                    {
+
+                        throw new Exception("Not Found");
+                    }
                 }
                 else
                 {
-                    KqJson kq = new KqJson();
-                    kq.Status = false;
-                    kq.Message = "Not found";
-
-                    return kq; 
+                    throw new Exception("Bad Request");
                 }
 
-            }catch(Exception e)
+
+            }
+            catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+
+                return kq;
             }
         }
 
-        public async Task<KqJson> danhDauThongBao(int thongbao_id, int status)
+        public async Task<KqJson> danhDauThongBao(Danhdauthongbao_Request_DTO model)
         {
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                var result = await _context.thongbao_Dbs.SingleOrDefaultAsync(p=>p.ThongbaoID==thongbao_id);
-                if (result!=null)
+                if (model.List_Id_Thongbao.Count > 1 && model.User_Id > 0)
                 {
-                    if (status == 0||status==1)
+                    if (model.Status == 1 || model.Status == 2)
                     {
-                        
+                        foreach (var thongbao_id in model.List_Id_Thongbao)
+                        {
+                            var result = await (from tb in _context.thongbao_Dbs
+                                                join tbl in _context.thongbaoLop_Dbs
+                                                on tb.ThongbaoID equals tbl.Thongbao_Id
+                                                where tbl.Thongbao_Id == thongbao_id && tbl.User_Id == model.User_Id
+                                                select tbl).SingleOrDefaultAsync();
+                            if (result != null)
+                            {
+                                if (model.Status == 1)
+                                {
+                                    if (result.Status == 2)
+                                    {
+                                        result.Status = 1;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Thong bao co ID: " + thongbao_id + " khong the danh dau");
+                                    }
+                                }
+                                else if (model.Status == 2)
+                                {
+                                    if (result.Status == 1)
+                                    {
+                                        result.Status = 2;
+                                    }
+                                    else
+                                    {
+                                        throw new Exception("Thong bao co ID: " + thongbao_id + " khong the danh dau");
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Result thongbao ID: " + thongbao_id + " is Not Found");
+                            }
+                        }
                         int row = await _context.SaveChangesAsync();
                         if (row > 0)
                         {
                             kq.Status = true;
                             kq.Message = "Update successful";
+                            return kq;
                         }
                         else
                         {
-                            kq.Status = false;
-                            kq.Message = "Update Failed";
+                            throw new Exception("Update Failed");
                         }
                     }
                     else
                     {
-                        kq.Status = false;
-                        kq.Message = "Bad Request";
+                        throw new Exception("Trang thai muon danh dau khong phu hop");
                     }
                 }
                 else
                 {
-                    
-                    kq.Status = false;
-                    kq.Message = "Not found";
-                    
+                    throw new Exception("Bad Request");
                 }
-                return kq;
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
-        public async Task<IEnumerable<Thongbao_Model>> getallThongbao(int id)
+        public async Task<object> getallThongbao(int id)
         {
             try
             {
-                var result = await (from tb in _context.thongbao_Dbs
-                                    join tbl in _context.thongbaoLop_Dbs
-                                    on tb.ThongbaoID equals tbl.Thongbao_Id
-                                    where tbl.User_Id == id orderby tb.Thoigian descending
-                                    select tb).ToListAsync();
-                List<Thongbao_Model> thongbao = new List<Thongbao_Model>();
-                thongbao = _mapper.Map<List<Thongbao_Model>>(result);
+                if (id > 0)
+                {
+                    var result = await (from tb in _context.thongbao_Dbs
+                                        join tbl in _context.thongbaoLop_Dbs
+                                        on tb.ThongbaoID equals tbl.Thongbao_Id
+                                        where tbl.User_Id == id
+                                        orderby tb.Thoigian descending
+                                        select tb).ToListAsync();
+                    List<Thongbao_Model> thongbao = new List<Thongbao_Model>();
+                    thongbao = _mapper.Map<List<Thongbao_Model>>(result);
 
-                return thongbao;
-            }catch(Exception e)
+                    return thongbao;
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+
+            }
+            catch (Exception e)
             {
-                throw new Exception(e.Message);
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
         public async Task<object> locThongBao(int user_id, int status)
         {
+            KqJson kq = new KqJson();
             try
             {
-                if(status != 0 && status != 1)
+                if (user_id > 0)
                 {
-                    KqJson kq = new KqJson();
-                    kq.Status = false;
-                    kq.Message = "Bad Request";
-                    return kq;
-                }
-                else
-                {
-                    var result = await (from tb in _context.thongbao_Dbs 
-                                        where tb.UserID==user_id 
-                                        select tb).ToListAsync();
-                    if (result != null)
+                    if (status == 1 || status == 2)
                     {
-                        List<Thongbao_Model> listtb = new List<Thongbao_Model>();
-                        listtb = _mapper.Map<List<Thongbao_Model>>(result);
-                        return listtb;
+                        var result = await (from tb in _context.thongbao_Dbs
+                                            join tbl in _context.thongbaoLop_Dbs
+                                            on tb.ThongbaoID equals tbl.Thongbao_Id
+                                            where tbl.User_Id == user_id &&
+                                            tbl.Status == status
+                                            orderby tb.Thoigian descending
+                                            select tb).ToListAsync();
+                        if (result != null)
+                        {
+                            List<Thongbao_Model> listtb = new List<Thongbao_Model>();
+                            listtb = _mapper.Map<List<Thongbao_Model>>(result);
+                            return listtb;
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
                     }
                     else
                     {
-                        KqJson kq = new KqJson();
-                        kq.Status = false;
-                        kq.Message = "Not found";
-                        return kq;
+                        throw new Exception("Trang thai khong phu hop");
                     }
-                   
                 }
-            }catch(Exception e)
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+            }
+            catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
-        public async Task<IEnumerable<Thongbao_Model>> searchThongbao(int user_id, string keyword)
+        public async Task<object> searchThongbao(int user_id, string keyword)
         {
             try
             {
-                var result = await (from tb in _context.thongbao_Dbs
-                                    where tb.UserID == user_id && tb.Tieude.Contains(keyword) || tb.Noidung.Contains(keyword)
-                                    orderby tb.Thoigian descending
-                                    select tb).ToListAsync();
-                List<Thongbao_Model> thongbao = new List<Thongbao_Model>();
-                thongbao = _mapper.Map<List<Thongbao_Model>>(result);
+                if (user_id > 0 && keyword != "")
+                {
+                    var result = await (from tb in _context.thongbao_Dbs
+                                        join tbl in _context.thongbaoLop_Dbs
+                                        on tb.ThongbaoID equals tbl.Thongbao_Id
+                                        where tb.UserID == user_id &&
+                                        tb.Tieude.Contains(keyword) || tb.Noidung.Contains(keyword)
+                                        orderby tb.Thoigian descending
+                                        select tbl).ToListAsync();
+                    if (result.Count > 0)
+                    {
+                        List<Thongbao_Model> thongbao = new List<Thongbao_Model>();
+                        thongbao = _mapper.Map<List<Thongbao_Model>>(result);
 
-                return thongbao;
-            }catch(Exception e)
+                        return thongbao;
+                    }
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Bad Request");
+                }
+
+            }
+            catch (Exception e)
             {
-                throw new Exception(e.Message);
+                KqJson kq = new KqJson();
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
@@ -193,7 +279,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model.Tieude!="" && model.Noidung!="")
+                if (model.Tieude != "" && model.Noidung != "")
                 {
                     Thongbao_Db tb = new Thongbao_Db();
                     tb.Tieude = model.Tieude;
@@ -209,7 +295,7 @@ namespace LMS_ELibrary.Services
                         //Neu co chon hoc vien -> Lớp đó chỉ gửi cho học viên được chọn
                         if (model.list_ID_Nguoinhan.Count > 0)
                         {
-                            foreach(var id_lop in model.list_ID_Lopgiang)
+                            foreach (var id_lop in model.list_ID_Lopgiang)
                             {
                                 List<int?> list_nguoinhan_Id = new List<int?>();
                                 //duyet xem hoc vien duoc chon o lop nao
@@ -227,10 +313,10 @@ namespace LMS_ELibrary.Services
                                 if (list_nguoinhan_Id.Count > 0)
                                 {
                                     List<ThongbaoLop_Db> list_add_tbl = new List<ThongbaoLop_Db>();
-                                    foreach(int idnn in list_nguoinhan_Id)
+                                    foreach (int idnn in list_nguoinhan_Id)
                                     {
                                         ThongbaoLop_Db tbl = new ThongbaoLop_Db();
-                                        tbl.Thongbao_Id=thongbao_Id;
+                                        tbl.Thongbao_Id = thongbao_Id;
                                         tbl.Lopgiang_Id = id_lop;
                                         tbl.User_Id = idnn;
                                         tbl.Status = 0;
@@ -281,7 +367,7 @@ namespace LMS_ELibrary.Services
                         }
                     }
                     //khong the gui thong bao cho hoc vien ma khong chon lop
-                    else if(model.list_ID_Lopgiang.Count==0 && model.list_ID_Nguoinhan.Count > 0)
+                    else if (model.list_ID_Lopgiang.Count == 0 && model.list_ID_Nguoinhan.Count > 0)
                     {
                         throw new Exception("Hay chon lop co hoc vien de gui");
                     }
@@ -289,16 +375,16 @@ namespace LMS_ELibrary.Services
                     else
                     {
                         var listlop = await _context.lopgiangday_Dbs.ToListAsync();
-                        foreach(var lop in listlop)
+                        foreach (var lop in listlop)
                         {
                             var listhocvien = await (from hvl in _context.hocvien_Lop_Dbs
                                                      where hvl.Lopgiang_Id == lop.LopgiangdayID
                                                      select hvl).ToListAsync();
                             List<ThongbaoLop_Db> list_tb_lop_add = new List<ThongbaoLop_Db>();
-                            foreach(var hv in listhocvien)
+                            foreach (var hv in listhocvien)
                             {
                                 ThongbaoLop_Db tbl = new ThongbaoLop_Db();
-                                tbl.Thongbao_Id= thongbao_Id;
+                                tbl.Thongbao_Id = thongbao_Id;
                                 tbl.Lopgiang_Id = lop.LopgiangdayID;
                                 tbl.User_Id = hv.User_Id;
                                 tbl.Status = 0;
@@ -334,37 +420,50 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> xoaThongbao(List<int> listid)
+        public async Task<KqJson> xoaThongbao(Delete_Entity_Request_DTO model)
         {
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                List<Thongbao_Db>listthongbao=new List<Thongbao_Db>();
-                foreach (int id in listid)
+                if (model.EntityId > 0 && model.User_Id > 0)
                 {
-                    var tb = await _context.thongbao_Dbs.SingleOrDefaultAsync(p=>p.ThongbaoID==id);
-                    if (tb != null)
+
+                    var result = await (from tbl in _context.thongbaoLop_Dbs
+                                        where tbl.User_Id == model.User_Id &&
+                                        tbl.Thongbao_Id==model.EntityId
+                                        select tbl).SingleOrDefaultAsync();
+
+                    
+                    if (result != null)
                     {
-                        listthongbao.Add(tb);
+                        _context.thongbaoLop_Dbs.RemoveRange(result);
+                        int row = await _context.SaveChangesAsync();
+                        if (row > 0)
+                        {
+                            kq.Status = true;
+                            kq.Message = "Xoa thanh cong!";
+                            return kq;
+                        }
+                        else
+                        {
+                            throw new Exception("Xoa that bai");
+                        }
                     }
-                }
-                _context.thongbao_Dbs.RemoveRange(listthongbao);
-                int row = await _context.SaveChangesAsync();
-                if (row > 0)
-                {
-                    kq.Status = true;
-                    kq.Message = "Xoa thanh cong!";
+                    else
+                    {
+                        throw new Exception("Not Found");
+                    }
                 }
                 else
                 {
-                    kq.Status=false;
-                    kq.Message = "Xoa that bai!";
+                    throw new Exception("Bad Request");
                 }
-
-                return kq;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
     }

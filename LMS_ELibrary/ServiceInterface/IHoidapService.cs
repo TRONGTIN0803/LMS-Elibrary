@@ -11,6 +11,6 @@ namespace LMS_ELibrary.ServiceInterface
         Task<KqJson> TrlCauhoi(Cautrl_Model model);
         Task<KqJson> ChinhsuaCautrl(Cautrl_Model model);
         Task<KqJson> YeuthichCauhoi(Yeuthich_Request_DTO model);
-        Task<KqJson> Xoacautrl(Cautrl_Model model);
+        Task<KqJson> Xoacautrl(Delete_Entity_Request_DTO model);
     }
 }

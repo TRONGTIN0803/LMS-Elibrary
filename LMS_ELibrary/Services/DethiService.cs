@@ -678,16 +678,16 @@ namespace LMS_ELibrary.Services
                         {
                             throw new Exception("Trang thai khong phu hop");
                         }
-                        
+
                     }
                     if (result.Count == model.List_Monhoc_Id.Count)
                     {
-                        foreach(var dethi in result)
+                        foreach (var dethi in result)
                         {
                             dethi.Status = model.Status;
                         }
                         int row = await _context.SaveChangesAsync();
-                        if (row ==model.List_Monhoc_Id.Count)
+                        if (row == model.List_Monhoc_Id.Count)
                         {
                             kq.Status = true;
                             kq.Message = "Thuc hien thanh cong!";
@@ -716,39 +716,81 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> deleteDethi(int id)
+        public async Task<KqJson> deleteDethi(Delete_Entity_Request_DTO model)
         {
+            KqJson kq = new KqJson();
             try
             {
-                KqJson kq = new KqJson();
-                var result = await (from dt in _context.dethi_Dbs
-                                    where dt.DethiID == id && dt.Status == -1 || dt.DethiID == id && dt.Status == 2
-                                    select dt).SingleOrDefaultAsync();
-                if (result != null)
+                if (model.EntityId > 0 && model.User_Id > 0)
                 {
-                    _context.dethi_Dbs.Remove(result);
-                    int row = await _context.SaveChangesAsync();
-                    if (row > 0)
+                    //check User la Admin || GV
+                    var checkUser = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id &&
+                                           role.Phanquyen == 1 || role.Phanquyen == 2
+                                           select nd).FirstOrDefaultAsync();
+                    if (checkUser != null)
                     {
-                        kq.Status = true;
-                        kq.Message = "thanh cong";
+                        var quyen = await (from nd in _context.user_Dbs
+                                           join role in _context.role_Dbs
+                                           on nd.Role equals role.RoleId
+                                           where nd.UserID == model.User_Id
+                                           select role).FirstOrDefaultAsync();
+
+                        var result = await (from dt in _context.dethi_Dbs
+                                            where dt.DethiID == model.EntityId
+                                            select dt).SingleOrDefaultAsync();
+                        if (result != null)
+                        {
+                            if (result.Status == 1 || result.Status == 4)
+                            {
+                                if (quyen.Phanquyen == 2)
+                                {
+                                    if (result.UserID != model.User_Id)
+                                    {
+                                        throw new Exception("Khong du quyen thuc hien");
+                                    }
+                                }
+                                _context.dethi_Dbs.Remove(result);
+                                int row = await _context.SaveChangesAsync();
+                                if (row > 0)
+                                {
+                                    kq.Status = true;
+                                    kq.Message = "thanh cong";
+                                    return kq;
+                                }
+                                else
+                                {
+                                    throw new Exception("That bai");
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("Khong the xoa de thi o trang thai nay");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Not Found");
+                        }
+
                     }
                     else
                     {
-                        kq.Status = false;
-                        kq.Message = "that bai";
+                        throw new Exception("Nguoi dung phai la Admin hoac Giang Vien");
                     }
                 }
                 else
                 {
-                    kq.Status = false;
-                    kq.Message = "Khong tim thay";
+                    throw new Exception("Bad Request");
                 }
-                return kq;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                kq.Status = false;
+                kq.Message = e.Message;
+                return kq;
             }
         }
 
@@ -757,7 +799,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (user_id != null && files != null)
+                if (user_id > 0 && files != null)
                 {
                     var user = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == user_id);
                     if (user != null)
@@ -843,7 +885,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (dethi_id != null && file != null)
+                if (dethi_id > 0 && file != null)
                 {
                     var result = await _context.dethi_Dbs.SingleOrDefaultAsync(p => p.DethiID == dethi_id);
                     if (result != null)
@@ -887,13 +929,12 @@ namespace LMS_ELibrary.Services
             try
             {
 
-
-                if (model != null)
+                if (model.Madethi != "" && model.Status > 0 && model.UserId > 0 && model.MonhocId > 0 && model.listcauhoi.Count > 0)
                 {
                     List<QA_Model> listcauhoi = model.listcauhoi;
                     Dethi_Db dt = new Dethi_Db();
                     dt.Madethi = model.Madethi;
-                    dt.Status = -1;
+                    dt.Status = 1;//luu nhap
                     dt.UserID = model.UserId;
                     dt.Ngaytao = DateTime.Now;
                     dt.MonhocID = model.MonhocId;
@@ -964,7 +1005,7 @@ namespace LMS_ELibrary.Services
         {
             try
             {
-                if (status == -1 || status == 0 || status == 1)
+                if (status == 1 || status == 2 || status == 3 || status == 4)
                 {
                     var result = await (from dt in _context.dethi_Dbs
                                         where dt.Status == status
@@ -1061,23 +1102,17 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model.ID_Canduyet > 0 && model.Status == 2 || model.Status == 1)
+                if (model.ID_Nguoiduyet > 0 && model.ID_Canduyet > 0 && model.Status == 3 || model.Status == 4)
                 {
                     var result = await (from dt in _context.dethi_Dbs
-                                        where dt.DethiID == model.ID_Canduyet && dt.Status == 0
+                                        where dt.DethiID == model.ID_Canduyet && dt.Status == 2
                                         select dt).SingleOrDefaultAsync();
                     if (result != null)
                     {
-                        if (model.Ghichu != "")
-                        {
-                            result.Ghichu = model.Ghichu;
-                        }
+                        result.Ghichu = model.Ghichu != null ? model.Ghichu : null;
                         result.Status = model.Status;
-                        if (model.Status == 1 && model.ID_Nguoiduyet != 0)
-                        {
-                            result.Ngayduyet = DateTime.Now;
-                            result.Nguoiduyet = model.ID_Nguoiduyet;
-                        }
+                        result.Ngayduyet = DateTime.Now;
+                        result.Nguoiduyet = model.ID_Nguoiduyet;
 
                         int row = await _context.SaveChangesAsync();
                         if (row > 0)

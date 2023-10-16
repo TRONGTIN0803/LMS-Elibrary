@@ -25,11 +25,15 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model != null)
+                if (model.CautrlID>0 && model.Cautrl!="" && model.UserId>0)
                 {
                     var cautrl = await _context.cautrl_Dbs.SingleOrDefaultAsync(p => p.CautrlID == model.CautrlID);
                     if (cautrl != null)
                     {
+                        if (cautrl.UserId != model.UserId)
+                        {
+                            throw new Exception("Khong the chinh sua cua trl cua nguoi khac");
+                        }
                         cautrl.Cautrl = model.Cautrl;
                         cautrl.Ngaytao = DateTime.Now;
 
@@ -70,7 +74,7 @@ namespace LMS_ELibrary.Services
             KqJson kqJson = new KqJson();
             try
             {
-                if (model.Tieude != null && model.User_Id != null && model.TailieuId != null && model.ChudeId != null && model.LopgiangId != null)
+                if (model.Tieude !="" && model.User_Id >0 && model.TailieuId >0 && model.ChudeId >0 && model.LopgiangId >0)
                 {
                     CauhoiVandap_Db ch = new CauhoiVandap_Db();
                     ch.Tieude = model.Tieude;
@@ -117,7 +121,8 @@ namespace LMS_ELibrary.Services
                 if (model.WishEntityId > 0 && model.UserId > 0)
                 {
                     var check = await (from cauhoi in _context.cauhoiYeuthich_Dbs
-                                       where cauhoi.CauhoiId == model.WishEntityId && cauhoi.UserId == model.UserId
+                                       where cauhoi.CauhoiId == model.WishEntityId && 
+                                       cauhoi.UserId == model.UserId
                                        select cauhoi).SingleOrDefaultAsync();
                     if (check != null)  //Da yeu thich ->xoa yeu thich
                     {
@@ -176,7 +181,7 @@ namespace LMS_ELibrary.Services
             KqJson kq = new KqJson();
             try
             {
-                if (model != null)
+                if (model.Cautrl!="" && model.UserId>0 && model.CauhoiId>0)
                 {
                     Cautrl_Db cautrl = new Cautrl_Db();
                     cautrl.Cautrl = model.Cautrl;
@@ -195,7 +200,7 @@ namespace LMS_ELibrary.Services
                     }
                     else
                     {
-                        throw new Exception("Trl cau hoi htat bai");
+                        throw new Exception("Trl cau hoi that bai");
                     }
                 }
                 else
@@ -216,7 +221,7 @@ namespace LMS_ELibrary.Services
         {
             try
             {
-                if (user_id != null)
+                if (user_id >0)
                 {
                     var result = await (from wishch in _context.cauhoiYeuthich_Dbs
                                         where wishch.UserId == user_id
@@ -236,17 +241,13 @@ namespace LMS_ELibrary.Services
                             chdb.TailieuId = ch.Cauhoi.TailieuId;
                             chdb.LopgiangId = ch.Cauhoi.LopgiangId;
                             chdb.ChudeId = ch.Cauhoi.ChudeId;
-
+                            
                             ch.Cauhoi = chdb;
 
                         }
                         List<CauhoiYeuthich_Model> listcauhoi = new List<CauhoiYeuthich_Model>();
                         listcauhoi = _mapper.Map<List<CauhoiYeuthich_Model>>(result);
-                        //foreach (var cauhoi in listcauhoi)
-                        //{
-                        //    int tongcautrl = cauhoi.list_Cautrl.Count;
-                        //    cauhoi.TongsoCautrl = tongcautrl;
-                        //}
+                        
                         return listcauhoi;
                     }
                     else
@@ -584,24 +585,30 @@ namespace LMS_ELibrary.Services
             }
         }
 
-        public async Task<KqJson> Xoacautrl(Cautrl_Model model)
+        public async Task<KqJson> Xoacautrl(Delete_Entity_Request_DTO model)
         {
             KqJson kq = new KqJson();
             try
             {
-                if (model.CautrlID != null && model.UserId != null)
+                if (model.EntityId >0 && model.User_Id >0)
                 {
-                    var cautrl = await _context.cautrl_Dbs.SingleOrDefaultAsync(p => p.CautrlID == model.CautrlID);
+                    var cautrl = await _context.cautrl_Dbs.SingleOrDefaultAsync(p => p.CautrlID == model.EntityId);
                     if (cautrl != null)
                     {
-                        if (cautrl.UserId == model.UserId)  //Chi nguoi trl moi duoc xoa
+                        if (cautrl.UserId == model.User_Id)  //Chi nguoi trl moi duoc xoa
                         {
                             _context.Remove(cautrl);
                         }
                         else
                         {
-                            var user = await _context.user_Dbs.SingleOrDefaultAsync(p => p.UserID == model.UserId);
-                            if (user.Role == 0)  //Nguoi quan ly duoc phep xoa bat ky cautrl nao
+                            //check User la Admin 
+                            var checkUser = await (from nd in _context.user_Dbs
+                                                   join role in _context.role_Dbs
+                                                   on nd.Role equals role.RoleId
+                                                   where nd.UserID == model.User_Id &&
+                                                   role.Phanquyen == 1 
+                                                   select nd).FirstOrDefaultAsync();
+                            if (checkUser!=null)  //Nguoi quan ly duoc phep xoa bat ky cautrl nao
                             {
                                 _context.Remove(cautrl);
                             }

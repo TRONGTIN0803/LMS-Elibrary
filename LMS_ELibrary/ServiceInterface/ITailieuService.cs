@@ -18,7 +18,8 @@ namespace LMS_ELibrary.ServiceInterface
 
         Task<KqJson> delTailieu(Delete_Entity_Request_DTO model);
 
-        Task<object> them_vao_Monhoc_va_Chude(Gui_pheduyet_tailieu_Request_DTO model);
+        Task<KqJson> Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet(Gui_pheduyet_tailieu_Request_DTO model);
+        Task<KqJson> Gui_Yeu_Cau_Huy_Yeu_Cau_Phe_Duyet_File(Gui_pheduyet_tailieu_Request_DTO model);
         Task<object> Xem_File_theo_Mon(int monhoc_id,int option,int status);
         Task<object> XemBaigiangtheoTrangthai(int status);
         Task<KqJson> XetDuyetBaigiang(Xetduyet_Request_DTO model);
